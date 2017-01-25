@@ -2,6 +2,7 @@ import React from 'react';
 import {
   StyleSheet,
   View,
+  Navigator
 } from 'react-native';
 import {
   Notifications,
@@ -19,16 +20,53 @@ import Alerts from '../constants/Alerts';
 import Colors from '../constants/Colors';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
 
+// import Signup from '../components/signup';
+
 export default class RootNavigation extends React.Component {
+   state = {
+      location: null,
+      signedup: false,
+   };
+
   componentDidMount() {
-    this._notificationSubscription = this._registerForPushNotifications();
+     this._notificationSubscription = this._registerForPushNotifications();
+
+   //   this.setState({signedup: true});
   }
 
   componentWillUnmount() {
     this._notificationSubscription && this._notificationSubscription.remove();
   }
 
+  onSignUpComplete() {
+
+  }
+
+  renderSignUp() {
+     return (
+      <TabNavigation
+        tabBarHeight={56}
+        initialTab="signup">
+
+        <TabNavigationItem
+          id="signup"
+          renderIcon={isSelected => this._renderIcon('user', isSelected)}>
+          <StackNavigation initialRoute="signup" />
+        </TabNavigationItem>
+
+      </TabNavigation>
+    );
+  }
+
   render() {
+     if (this.state.signedup) {
+        return this.renderTabNavigation();
+     } else {
+        return this.renderSignUp();
+     }
+  }
+
+  renderTabNavigation() {
     return (
       <TabNavigation
         tabBarHeight={56}
@@ -77,10 +115,11 @@ export default class RootNavigation extends React.Component {
 
   _handleNotification = ({origin, data}) => {
     this.props.navigator.showLocalAlert(
-      `Push notification ${origin} with data: ${JSON.stringify(data)}`,
+      `Thank you for using the OnSight PROS My Walk Thru`,
       Alerts.notice
     );
   }
+
 }
 
 const styles = StyleSheet.create({
@@ -90,5 +129,17 @@ const styles = StyleSheet.create({
   },
   selectedTab: {
     color: Colors.tabIconSelected,
+  },
+  contentContainer: {
+    paddingTop: 80,
+  },
+  titleText: {
+    fontSize: 24,
+    color: Colors.tabIconSelected,
+    lineHeight: 23,
+    marginTop: 4,
+    paddingBottom: 10,
+    fontWeight: '800',
+    textAlign: 'center',
   },
 });

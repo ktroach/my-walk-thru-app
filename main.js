@@ -18,9 +18,12 @@ import {
 import Router from './navigation/Router';
 import cacheAssetsAsync from './utilities/cacheAssetsAsync';
 
+import Signup from './components/signup';
+
 class AppContainer extends React.Component {
   state = {
     appIsReady: false,
+    userIsRegistered: false
   }
 
   componentWillMount() {
@@ -54,13 +57,33 @@ class AppContainer extends React.Component {
       return (
         <View style={styles.container}>
           <NavigationProvider router={Router}>
-            <StackNavigation id="root" initialRoute={Router.getRoute('rootNavigation')} />
+             <StackNavigation id="signup" initialRoute={Router.getRoute('signup')} />
           </NavigationProvider>
-
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
         </View>
-      );
+      );      
+      // if (this.state.userIsRegistered) {
+      //    return (
+      //      <View style={styles.container}>
+      //        <NavigationProvider router={Router}>
+      //          <StackNavigation id="root" initialRoute={Router.getRoute('rootNavigation')} />
+      //        </NavigationProvider>
+      //        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+      //        {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
+      //      </View>
+      //    );
+      // } else {
+      //    return (
+      //      <View style={styles.container}>
+      //        <NavigationProvider router={Router}>
+      //          <StackNavigation id="signup" initialRoute={Router.getRoute('signup')} />
+      //        </NavigationProvider>
+      //        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+      //        {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
+      //      </View>
+      //    );
+      // }
     } else {
       return (
         <Exponent.Components.AppLoading />
