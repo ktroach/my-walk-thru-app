@@ -1,5 +1,7 @@
 import Exponent from 'exponent';
 import React from 'react';
+import { Provider } from 'react-redux';
+import configureStore from './configureStore'
 import {
   AppRegistry,
   Platform,
@@ -18,13 +20,25 @@ import {
 import Router from './navigation/Router';
 import cacheAssetsAsync from './utilities/cacheAssetsAsync';
 
+import AppNavigator from './AppNavigator';
 import Signup from './components/signup';
 
 class AppContainer extends React.Component {
-  state = {
-    appIsReady: false,
-    userIsRegistered: false
-  }
+
+   constructor() {
+       super();
+       this.state = {
+           isLoading: false,
+           store: configureStore(()=> this.setState({isLoading: false})),
+           appIsReady: false,
+           userIsRegistered: false
+       };
+   }
+
+  // state = {
+  //   appIsReady: false,
+  //   userIsRegistered: false
+  // }
 
   componentWillMount() {
     this._loadAssetsAsync();
@@ -54,15 +68,12 @@ class AppContainer extends React.Component {
 
   render() {
     if (this.state.appIsReady) {
-      return (
-        <View style={styles.container}>
-          <NavigationProvider router={Router}>
-             <StackNavigation id="signup" initialRoute={Router.getRoute('signup')} />
-          </NavigationProvider>
-          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
-        </View>
-      );      
+      return(
+         <Provider store={this.state.store}>
+             <AppNavigator store={this.state.store} />
+         </Provider>
+
+      );
       // if (this.state.userIsRegistered) {
       //    return (
       //      <View style={styles.container}>
