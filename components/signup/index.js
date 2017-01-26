@@ -88,7 +88,9 @@ class Signup extends Component {
 function bindActions(dispatch){
     return {
         replaceRoute:(route)=>dispatch(replaceRoute(route)),
-        pushNewRoute:(route)=>dispatch(pushNewRoute(route))
+        pushNewRoute:(route)=>dispatch(pushNewRoute(route)),
+        openDrawer: ()=>dispatch(openDrawer()),
+        popRoute: () => dispatch(popRoute())        
     }
 }
 

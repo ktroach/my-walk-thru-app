@@ -20,7 +20,7 @@ class SideBar extends Component {
     render(){
         return (
             <Content style={{backgroundColor: '#252A30'}} >
-                <Thumbnail size={200} style={{alignSelf: 'center', marginTop: 20, marginBottom: 15, resizeMode: 'contain'}} circular source={require('../../assets/images/exponent-icon@2x.png')} />
+                <Thumbnail size={200} style={{alignSelf: 'center', marginTop: 20, marginBottom: 15, resizeMode: 'contain'}} circular source={require('../../assets/images/mwtlogo.png')} />
                 <List  foregroundColor={'white'} >
                     <ListItem button onPress={() => this.navigateTo('signUp')} iconLeft style={styles.links} >
                         <Icon name='ios-paper-outline' />
