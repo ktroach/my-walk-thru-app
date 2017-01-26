@@ -76,7 +76,7 @@ class Signup extends Component {
                         </Card>
                     </Content>
 
-                    <Button rounded block style={{marginBottom: 20}} onPress={() => this.replaceRoute('home', {email: this.state.email, fullName: this.state.fullName})}>
+                    <Button rounded block style={{marginBottom: 20}} onPress={() => this.replaceRoute('compose', {email: this.state.email, fullName: this.state.fullName})}>
                         Next
                     </Button>
                 </Image>

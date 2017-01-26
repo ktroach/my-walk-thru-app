@@ -16,6 +16,9 @@ import SideBar from './components/sideBar';
 
 import { statusBarColor } from './themes/base-theme';
 
+
+
+
 Navigator.prototype.replaceWithAnimation = function (route) {
     const activeLength = this.state.presentedIndex + 1;
     const activeStack = this.state.routeStack.slice(0, activeLength);
@@ -127,7 +130,7 @@ class AppNavigator extends Component {
                             gestures: {}
                         };
                     }}
-                    initialRoute={{id: (Platform.OS === 'android') ? 'splashscreen' : 'signUp', statusBarHidden: true}}
+                    initialRoute={{id: (Platform.OS === 'android') ? 'compose' : 'signUp', statusBarHidden: true}}
                     renderScene={this.renderScene}
                   />
             </Drawer>
