@@ -9,7 +9,7 @@ import { popRoute } from '../../actions/route';
 
 import { Container, Header, Title, Content, Text, Button, Icon, Card, CardItem, View } from 'native-base';
 
-import theme from '../../themes/base-theme';
+import theme from './form-theme';
 import styles from './styles';
 
 class Compose extends Component {
@@ -20,7 +20,7 @@ class Compose extends Component {
 
     render() {
         return (
-            <Container theme={theme} style={{backgroundColor: '#384850'}}>
+            <Container theme={theme} style={{backgroundColor: '#333'}}>
                <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
                         <Button transparent onPress={() => this.popRoute()}>

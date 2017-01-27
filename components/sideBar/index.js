@@ -24,11 +24,15 @@ class SideBar extends Component {
                 <List  foregroundColor={'white'} >
                     <ListItem button onPress={() => this.navigateTo('signUp')} iconLeft style={styles.links} >
                         <Icon name='ios-paper-outline' />
-                        <Text>signUp</Text>
+                        <Text>Sign Up</Text>
                     </ListItem>
                     <ListItem button onPress={() => this.navigateTo('compose')} iconLeft style={styles.links} >
                       <Icon name='ios-paper-plane' />
                       <Text>Compose</Text>
+                    </ListItem>
+                    <ListItem button onPress={() => this.navigateTo('categories')} iconLeft style={styles.links} >
+                      <Icon name='ios-eye' />
+                      <Text>Categories</Text>
                     </ListItem>
                 </List>
             </Content>

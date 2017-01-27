@@ -12,12 +12,10 @@ import { Drawer } from 'native-base';
 import Navigator from 'Navigator';
 import SignUp from './components/signup/';
 import Compose from './components/compose/';
+import TopCategories from './components/categories/top';
 import SideBar from './components/sideBar';
 
 import { statusBarColor } from './themes/base-theme';
-
-
-
 
 Navigator.prototype.replaceWithAnimation = function (route) {
     const activeLength = this.state.presentedIndex + 1;
@@ -143,6 +141,8 @@ class AppNavigator extends Component {
                 return <Compose navigator={navigator} />;
             case 'signUp':
                 return <SignUp navigator={navigator} />;
+             case 'categories':
+                return <TopCategories navigator={navigator} />;
             default :
                 return <SignUp navigator={navigator} />;
         }
