@@ -22,7 +22,7 @@ import { popRoute } from '../../actions/route';
 
 import { pushNewRoute, replaceRoute } from '../../actions/route';
 
-import { Container, Header, Title, Content, Text, Button, Icon, List, ListItem, Card, CardItem, InputGroup, Input } from 'native-base';
+import { Container, Header, Title, Content, Text, Button, Icon, List, ListItem, Card, CardItem, InputGroup, Input, Thumbnail } from 'native-base';
 
 import Config from '../../config'
 import Toolbar from '../toolbar'
@@ -31,6 +31,8 @@ import theme from './form-theme';
 import styles from './styles';
 // import styles from './styles/list';
 import CategoryRow from './row';
+
+// ad241f
 
 class TopCategories extends Component {
 
@@ -81,15 +83,13 @@ class TopCategories extends Component {
          <Container theme={theme} style={{backgroundColor: '#333'}} >
              <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                  <Header>
-                     <Button transparent onPress={() => this.popRoute()}>
-                         <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
-                     </Button>
+                    <Button transparent> </Button>
 
-                     <Title>Categories</Title>
+                    <Title>Categories</Title>
 
-                     <Button transparent onPress={this.props.openDrawer}>
-                         <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
-                     </Button>
+                    <Button transparent onPress={this.props.openDrawer} >
+                        <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
+                    </Button>
                  </Header>
                  <ActivityIndicator
                     animating={!this.state.loaded}
@@ -104,32 +104,30 @@ class TopCategories extends Component {
     renderListView() {
       var title =  "  Categories (" + this.state.categoryCount + ")";
       return (
-         <Container theme={theme} style={{backgroundColor: '#333'}} >
+         <Container theme={theme} style={{backgroundColor: '#FBFAFA'}} >
              <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
              <Header>
-                 <Button transparent onPress={() => this.popRoute()}>
-                     <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
-                 </Button>
+                <Button transparent> </Button>
 
-                 <Title>Categories</Title>
+                <Title>Categories</Title>
 
-                 <Button transparent onPress={this.props.openDrawer}>
-                     <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
-                 </Button>
+                <Button transparent onPress={this.props.openDrawer} >
+                    <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
+                </Button>
              </Header>
                 <Content style={{backgroundColor: 'transparent'}}>
-                  <ListView
-                        refreshControl={
-                           <RefreshControl
-                              refreshing={this.state.isRefreshing}
-                              onRefresh={this._onRefresh}
-                           />
-                        }
-                        renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
-                        enableEmptySections={true}
-                        dataSource={this.state.dataSource}
-                        renderRow={this.renderRow.bind(this)}
-                   />
+                <ListView
+                      refreshControl={
+                         <RefreshControl
+                            refreshing={this.state.isRefreshing}
+                            onRefresh={this._onRefresh}
+                         />
+                      }
+                      renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
+                      enableEmptySections={true}
+                      dataSource={this.state.dataSource}
+                      renderRow={this.renderRow.bind(this)}
+                 />
                </Content>
              </Image>
          </Container>
@@ -144,7 +142,6 @@ class TopCategories extends Component {
                loaded: true,
                categoryCount: responseData.length
             });
-            // this.props.onSetCategories(responseData);
         }).done();
     }
 
@@ -175,29 +172,6 @@ class TopCategories extends Component {
       return this.renderListView();
     }
 
-
-   //  render() {
-   //      return (
-   //          <Container theme={theme} style={{backgroundColor: '#333'}} >
-   //              <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
-   //                  <Header>
-   //                      <Button transparent onPress={() => this.popRoute()}>
-   //                          <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
-   //                      </Button>
-    //
-   //                      <Title>Categories</Title>
-    //
-   //                      <Button transparent onPress={this.props.openDrawer}>
-   //                          <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
-   //                      </Button>
-    //
-   //                      {this.renderContent}
-    //
-   //                  </Header>
-   //              </Image>
-   //          </Container>
-   //      )
-   //  }
 }
 
 function bindActions(dispatch){

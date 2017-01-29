@@ -6,7 +6,12 @@ var { StyleSheet } = React;
 
 module.exports = StyleSheet.create({
    container: {
-     flex: 1,
-     paddingTop: 15,
+      flex: 1,
+      width: null,
+      height: null,
    }
+   // container: {
+   //   flex: 1,
+   //   paddingTop: 15,
+   // }
 });

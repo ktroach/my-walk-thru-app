@@ -5,18 +5,33 @@ import { BackAndroid, Platform, StatusBar } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash/core';
 
+// Actions
 import { closeDrawer } from './actions/drawer';
 import { popRoute } from './actions/route';
 
+// Navigation
 import { Drawer } from 'native-base';
 import Navigator from 'Navigator';
-import SignUp from './components/signup/';
-import Compose from './components/compose/';
-import TopCategories from './components/categories/top';
 import SideBar from './components/sideBar';
 
+// Home
+import Home from './components/home/';
+
+// Sign Up Routes
+import Step1 from './components/signup/step-1';
+import Step2 from './components/signup/step-2';
+import Step3 from './components/signup/step-3';
+import Step4 from './components/signup/step-4';
+import Step5 from './components/signup/step-5';
+import Step6 from './components/signup/step-6';
+
+// Walkthru Categories
+import TopCategories from './components/categories/top';
+
+// StatusBar
 import { statusBarColor } from './themes/base-theme';
 
+// NAVIGATOR
 Navigator.prototype.replaceWithAnimation = function (route) {
     const activeLength = this.state.presentedIndex + 1;
     const activeStack = this.state.routeStack.slice(0, activeLength);
@@ -59,6 +74,7 @@ const reducerCreate = params=>{
 
 const drawerStyle  = { shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3};
 
+// APPNAVIGATOR
 class AppNavigator extends Component {
 
     constructor(props){
@@ -79,13 +95,13 @@ class AppNavigator extends Component {
         BackAndroid.addEventListener('hardwareBackPress', () => {
             var routes = this._navigator.getCurrentRoutes();
 
-            // if(routes[routes.length - 1].id == 'home' || routes[routes.length - 1].id == 'login') {
-            //     return false;
-            // }
-            // else {
-            //     this.popRoute();
-            //     return true;
-            // }
+            if(routes[routes.length - 1].id == 'home' || routes[routes.length - 1].id == 'login') {
+                return false;
+            }
+            else {
+                this.popRoute();
+                return true;
+            }
         });
     }
 
@@ -128,7 +144,7 @@ class AppNavigator extends Component {
                             gestures: {}
                         };
                     }}
-                    initialRoute={{id: (Platform.OS === 'android') ? 'compose' : 'signUp', statusBarHidden: true}}
+                    initialRoute={{id: (Platform.OS === 'android') ? 'signup-step1' : 'signup-step1', statusBarHidden: true}}
                     renderScene={this.renderScene}
                   />
             </Drawer>
@@ -137,14 +153,24 @@ class AppNavigator extends Component {
 
     renderScene(route, navigator) {
         switch (route.id) {
-            case 'compose':
-                return <Compose navigator={navigator} />;
-            case 'signUp':
-                return <SignUp navigator={navigator} />;
-             case 'categories':
-                return <TopCategories navigator={navigator} />;
+            case 'home':
+            return <Home navigator={navigator} />;
+            case 'signup-step1':
+            return <Step1 navigator={navigator} />;
+            case 'signup-step2':
+            return <Step2 navigator={navigator} />;
+            case 'signup-step3':
+            return <Step3 navigator={navigator} />;
+            case 'signup-step4':
+            return <Step4 navigator={navigator} />;
+            case 'signup-step5':
+            return <Step5 navigator={navigator} />;
+            case 'signup-step6':
+            return <Step6 navigator={navigator} />;
+            case 'categories':
+            return <TopCategories navigator={navigator} />;
             default :
-                return <SignUp navigator={navigator} />;
+            return <Step1 navigator={navigator} />;
         }
     }
 }

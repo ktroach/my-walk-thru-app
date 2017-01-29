@@ -14,7 +14,7 @@ import { Container, Header, Title, Content, Text, Button, Icon, List, ListItem, 
 import theme from '../../themes/form-theme';
 import styles from './styles';
 
-class Signup extends Component {
+class Step6 extends Component {
 
    constructor(props) {
       super(props);
@@ -46,7 +46,7 @@ class Signup extends Component {
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
-                        <Title>Welcome to your new home!</Title>
+                        <Title>Last Step.  Accept Terms of Service (required)</Title>
 
                         <Button transparent onPress={this.props.openDrawer}>
                             <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
@@ -76,7 +76,7 @@ class Signup extends Component {
                         </Card>
                     </Content>
 
-                    <Button rounded block style={{marginBottom: 20}} onPress={() => this.replaceRoute('compose', {email: this.state.email, fullName: this.state.fullName})}>
+                    <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}} onPress={() => this.replaceRoute('categories', {email: this.state.email, fullName: this.state.fullName})}>
                         Next
                     </Button>
                 </Image>
@@ -94,58 +94,4 @@ function bindActions(dispatch){
     }
 }
 
-export default connect(null, bindActions)(Signup);
-
-// export default Signup
-
-// import React, {
-//   PropTypes
-// } from 'react';
-// import {
-//   ScrollView,
-//   StyleSheet,
-//   Text,
-//   View,
-// } from 'react-native';
-//
-// export default class Signup extends React.Component {
-//    constructor(props) {
-//       super(props);
-//    }
-//
-//    render() {
-//        return (
-//          <View style={styles.container}>
-//            <ScrollView
-//              style={styles.container}
-//              contentContainerStyle={styles.contentContainer}>
-//
-//              <Text style={styles.titleText}>
-//                 Signup Screen
-//              </Text>
-//
-//            </ScrollView>
-//         </View>
-//        );
-//    }
-//
-// }
-//
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#333',
-//   },
-//   contentContainer: {
-//     paddingTop: 80,
-//   },
-//   titleText: {
-//     fontSize: 24,
-//     color: 'rgba(96,100,109, 1)',
-//     lineHeight: 23,
-//     marginTop: 4,
-//     paddingBottom: 10,
-//     fontWeight: '800',
-//     textAlign: 'center',
-//   },
-// });
+export default connect(null, bindActions)(Step6);

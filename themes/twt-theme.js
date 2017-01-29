@@ -62,7 +62,7 @@ module.exports = {
 
     footerHeight: 55,
     toolbarHeight: (Platform.OS === 'ios' ) ? 64 : 56,
-    toolbarDefaultBg: "#333",
+    toolbarDefaultBg: "#00c497",
     toolbarInverseBg: "#222",
 
     iosToolbarBtnColor: '#fff',
@@ -136,7 +136,7 @@ module.exports = {
         return this.textColor;
     },
     get inputColorPlaceholder () {
-        return '#595959';
+        return 'rgba(255, 255, 255, 1.0)';
     },
 
     inputBorderColor: "#fff",

@@ -4,7 +4,6 @@ import {
    StyleSheet,
    Image,
    View,
-   ListItem,
    TouchableHighlight,
    TouchableOpacity,
    ProgressViewIOS
@@ -14,7 +13,7 @@ import {
   FontAwesome,
 } from '@exponent/vector-icons';
 
-import { Container, Header, Title, Content, Text, Button, Icon, Card, CardItem, Thumbnail } from 'native-base';
+import { Container, Header, Title, Content, Text, Button, Icon, Card, CardItem, List, ListItem, Thumbnail, H1, H2, H3 } from 'native-base';
 
 // import { Ionicons } from '@exponent/vector-icons';
 // const Icon = Ionicons;
@@ -82,32 +81,41 @@ class CategoryRow extends React.Component {
 
       // Start Estimates badge count
       var details = ''; // TODO: get this from props
-      // Start Estimates badge count
+
+      // return(
+      //    <ListItem>
+      //        <Thumbnail circular size={50} source={require('../../assets/images/glow2.png')} />
+      //        <Text>{name}</Text>
+      //        <Text note>{description}</Text>
+      //    </ListItem>
+      // <ProgressViewIOS style={styles.progressView} progressTintColor="orange" progress={this.getProgress(0.6)}/>
+      // <Icon name="ios-arrow-forward" size={16} style={styles.arrow} />
+      // );
 
       return (
-        <View>
 
           <TouchableOpacity onPress={this.onPressed.bind(this)}>
-              <Card transparent foregroundColor='#fff' style={styles.card}>
+              <Card transparent  style={styles.card}>
                   <CardItem style={styles.cardHeader}  header>
-                      <Thumbnail source='http://' />
-                      <Text>{name}</Text>
-                      <Text note style={{marginTop: -8}}>{description}</Text>
-                      <Text style={styles.date}></Text>
+                      <Thumbnail circular size={50} source={require('../../assets/images/glow2.png')} />
+                      <H3 style={{ color: '#333' }}>{name}</H3>
+                      <Text note style={{ color: '#333' }}>{description}</Text>
+                      <Text style={styles.arrow}><Icon name="ios-arrow-forward" style={{ color: '#333' }} /></Text>
                   </CardItem>
 
                   <CardItem style={styles.cardItem} >
-                     <ProgressViewIOS style={styles.progressView} progressTintColor="orange" progress={this.getProgress(0.6)}/>
+                     <List>
+                          <ListItem style={{borderBottomWidth: 0}}>
+                              <ProgressViewIOS style={styles.progressView} progressTintColor="orange" progress={this.getProgress(0.6)}/>
+                          </ListItem>
+                     </List>
                   </CardItem>
 
-                  <CardItem style={styles.cardItem} >
-                     <Icon style={styles.chevronLg} name="ios-arrow-forward" size={48} color="#C8C7CC" />
-                  </CardItem>
               </Card>
          </TouchableOpacity>
 
-        </View>
       );
+
     } // end render
 
     // End React LifeCycles

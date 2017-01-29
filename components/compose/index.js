@@ -9,7 +9,7 @@ import { popRoute } from '../../actions/route';
 
 import { Container, Header, Title, Content, Text, Button, Icon, Card, CardItem, View } from 'native-base';
 
-import theme from './form-theme';
+import theme from '../../themes/form-theme';
 import styles from './styles';
 
 class Compose extends Component {
@@ -27,7 +27,7 @@ class Compose extends Component {
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
-                        <Title>Compose</Title>
+                        <Title>Semd Message</Title>
 
                         <Button transparent onPress={this.props.openDrawer}>
                             <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
@@ -38,20 +38,20 @@ class Compose extends Component {
                         <View style={styles.box}>
                             <Card foregroundColor='#000'>
                                 <CardItem header>
-                                    <Text>Compose Mail</Text>
+                                    <Text>Send MEssage tpo Properyy Manager</Text>
                                 </CardItem>
 
                                 <CardItem header>
-                                    <Text>To : pratik@gmail.com</Text>
+                                    <Text>To : kroach@gmail.com</Text>
                                 </CardItem>
 
                                 <CardItem header>
-                                    <Text>Subject: Enquiry about StrapUI</Text>
+                                    <Text>Subject: Enquiry about MWT</Text>
                                 </CardItem>
 
                                 <CardItem>
                                     <Text>
-                                        I watched Leicester City lose in the 1969 FA Cup final with my dad and granddad when I was eight and cried all the way home. I have seen them get promoted and relegated. I played for them for eight years. I even got a group of like‑minded fans and friends to stump up a few quid to salvage the club when they went into liquidation.
+                                        tewt tets test tesetset test wets tewrtwrgwrglsl
                                     </Text>
                                 </CardItem>
 

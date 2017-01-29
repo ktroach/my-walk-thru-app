@@ -26,11 +26,27 @@ module.exports = StyleSheet.create({
    },
    date: {
       textAlign: 'right',
-      marginTop: -35,
+      marginTop: -15,
       fontSize: 13,
       fontWeight: '400',
       color: '#ddd'
-   }   
+   },
+   // date: {
+   //    textAlign: 'right',
+   //    marginTop: -35,
+   //    fontSize: 13,
+   //    fontWeight: '400',
+   //    color: '#ddd'
+   // },
+   arrow: {
+      textAlign: 'right',
+      marginTop: -35,
+      paddingTop: 10,
+      fontSize: 13,
+      fontWeight: '400',
+      // color: '#ddd'
+      color: '#333'
+   }
   //  container: {
   //     backgroundColor: '#fff',
   //     borderWidth: 1,
