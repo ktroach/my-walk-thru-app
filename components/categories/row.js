@@ -18,6 +18,11 @@ import { Container, Header, Title, Content, Text, Button, Icon, Card, CardItem, 
 // import { Ionicons } from '@exponent/vector-icons';
 // const Icon = Ionicons;
 
+import { connect } from 'react-redux';
+
+import { closeDrawer } from '../../actions/drawer';
+import { replaceOrPushRoute } from '../../actions/route';
+
 import Config from '../../config'
 import styles from './styles/row';
 
@@ -45,9 +50,17 @@ class CategoryRow extends React.Component {
 
    // Start Press Event
    onPressed() {
-     this.props.onCategoryDetails(this.props.category);
+   //   this.props.onCategoryDetails(this.props.category);
+      alert(this.props.category.id);
    }
    // End Press Event
+
+
+   navigateTo(route) {
+alert(route);
+        this.props.closeDrawer();
+        this.props.replaceOrPushRoute(route);
+    }
 
    // Start React LifeCycles
    render() {
@@ -74,27 +87,31 @@ class CategoryRow extends React.Component {
       }
       // End description details
 
+      //  button onPress={this.onPressed()}
+
+      // <Card transparent style={styles.card}>
+      // </Card>
+      
       return (
 
-          <TouchableOpacity onPress={this.onPressed.bind(this)}>
-              <Card transparent  style={styles.card}>
-                  <CardItem style={styles.cardHeader}  header>
-                      <Thumbnail circular size={50} source={require('../../assets/images/3d-house-1.png')} />
-                      <H3 style={{ color: '#333' }}>{name}</H3>
-                      <Text note style={{ color: '#333' }}>{description}</Text>
-                      <Text style={styles.arrow}><Icon name="ios-arrow-forward" style={{ color: '#333' }} /></Text>
-                  </CardItem>
+            <TouchableOpacity  style={styles.card} onPress={() => this.navigateTo('home')}>
 
-                  <CardItem style={styles.cardItem} >
-                     <List>
-                          <ListItem style={{borderBottomWidth: 0}}>
-                              <ProgressViewIOS style={styles.progressView} progressTintColor="orange" progress={this.getProgress(0.6)}/>
-                          </ListItem>
-                     </List>
-                  </CardItem>
+               <CardItem style={styles.cardHeader}  header>
+                   <Thumbnail circular size={50} source={require('../../assets/images/3d-house-1.png')} />
+                   <H3 style={{ color: '#333' }}>{name}</H3>
+                   <Text note style={{ color: '#333' }}>{description}</Text>
+                   <Text style={styles.arrow}><Icon name="ios-arrow-forward" style={{ color: '#333' }} /></Text>
+               </CardItem>
 
-              </Card>
-         </TouchableOpacity>
+               <CardItem style={styles.cardItem} >
+                  <List>
+                       <ListItem style={{borderBottomWidth: 0}}>
+                           <ProgressViewIOS style={styles.progressView} progressTintColor="orange" progress={this.getProgress(0.6)}/>
+                       </ListItem>
+                  </List>
+               </CardItem>
+
+            </TouchableOpacity>
 
       );
 
@@ -109,4 +126,14 @@ CategoryRow.propTypes = {
     }).isRequired,
 };
 
-export default CategoryRow;
+// export default CategoryRow;
+
+
+function bindAction(dispatch) {
+    return {
+    	closeDrawer: ()=>dispatch(closeDrawer()),
+        replaceOrPushRoute:(route)=>dispatch(replaceOrPushRoute(route))
+    }
+}
+
+export default connect(null, bindAction)(CategoryRow);
