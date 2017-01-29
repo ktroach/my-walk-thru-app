@@ -8,6 +8,7 @@ import _ from 'lodash/core';
 // Actions
 import { closeDrawer } from './actions/drawer';
 import { popRoute } from './actions/route';
+import { subitem } from './actions/sub';
 
 // Navigation
 import { Drawer } from 'native-base';
@@ -27,6 +28,7 @@ import Step6 from './components/signup/step-6';
 
 // Walkthru Categories
 import TopCategories from './components/categories/top';
+import SubCategories from './components/categories/details';
 
 // StatusBar
 import { statusBarColor } from './themes/base-theme';
@@ -90,6 +92,14 @@ class AppNavigator extends Component {
 
             if(this.props.store.getState().drawer.drawerState == 'closed')
                 this._drawer.close();
+
+            // if(this.props.store.getState().subitem){
+            //    var sub_id = this.props.store.getState().subitem.id;
+            //    if(sub_id) {
+            //       alert(sub_id);
+            //    }
+            // }
+
         });
 
         BackAndroid.addEventListener('hardwareBackPress', () => {
@@ -154,23 +164,25 @@ class AppNavigator extends Component {
     renderScene(route, navigator) {
         switch (route.id) {
             case 'home':
-            return <Home navigator={navigator} />;
+               return <Home navigator={navigator} />;
             case 'signup-step1':
-            return <Step1 navigator={navigator} />;
+               return <Step1 navigator={navigator} />;
             case 'signup-step2':
-            return <Step2 navigator={navigator} />;
+               return <Step2 navigator={navigator} />;
             case 'signup-step3':
-            return <Step3 navigator={navigator} />;
+               return <Step3 navigator={navigator} />;
             case 'signup-step4':
-            return <Step4 navigator={navigator} />;
+               return <Step4 navigator={navigator} />;
             case 'signup-step5':
-            return <Step5 navigator={navigator} />;
+               return <Step5 navigator={navigator} />;
             case 'signup-step6':
-            return <Step6 navigator={navigator} />;
+               return <Step6 navigator={navigator} />;
             case 'categories':
-            return <TopCategories navigator={navigator} />;
+               return <TopCategories navigator={navigator} />;
+            case 'subcategories':
+               return <SubCategories navigator={navigator} />;
             default :
-            return <Step1 navigator={navigator} />;
+               return <Home navigator={navigator} />;
         }
     }
 }

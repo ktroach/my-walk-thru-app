@@ -10,7 +10,7 @@ export type State = {
 }
 
 const initialState = {
-  routes: ['signup']
+  routes: ['home']
 };
 
 export default function (state:State = initialState, action:Action): State {

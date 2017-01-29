@@ -15,13 +15,11 @@ import {
 
 import { Container, Header, Title, Content, Text, Button, Icon, Card, CardItem, List, ListItem, Thumbnail, H1, H2, H3 } from 'native-base';
 
-// import { Ionicons } from '@exponent/vector-icons';
-// const Icon = Ionicons;
-
 import { connect } from 'react-redux';
 
 import { closeDrawer } from '../../actions/drawer';
 import { replaceOrPushRoute } from '../../actions/route';
+import { toggleTodo } from '../../actions/sub';
 
 import Config from '../../config'
 import styles from './styles/row';
@@ -47,22 +45,12 @@ class CategoryRow extends React.Component {
       return Math.sin(progress % Math.PI) % 1;
     }
 
-
-   // Start Press Event
-   onPressed() {
-   //   this.props.onCategoryDetails(this.props.category);
-      alert(this.props.category.id);
-   }
-   // End Press Event
-
-
    navigateTo(route) {
-alert(route);
-        this.props.closeDrawer();
-        this.props.replaceOrPushRoute(route);
+      this.props.toggleTodo(this.props.category.id);
+      this.props.closeDrawer();
+      this.props.replaceOrPushRoute(route);
     }
 
-   // Start React LifeCycles
    render() {
       // Category name ( trim it )
       var name = '';
@@ -87,37 +75,31 @@ alert(route);
       }
       // End description details
 
-      //  button onPress={this.onPressed()}
-
-      // <Card transparent style={styles.card}>
-      // </Card>
-      
       return (
-
-            <TouchableOpacity  style={styles.card} onPress={() => this.navigateTo('home')}>
-
-               <CardItem style={styles.cardHeader}  header>
+         <View>
+            <TouchableOpacity  style={styles.card} onPress={() => this.navigateTo('subcategories')}>
+               <CardItem style={styles.cardHeader}  header  onPress={() => this.navigateTo('subcategories')}>
                    <Thumbnail circular size={50} source={require('../../assets/images/3d-house-1.png')} />
                    <H3 style={{ color: '#333' }}>{name}</H3>
                    <Text note style={{ color: '#333' }}>{description}</Text>
                    <Text style={styles.arrow}><Icon name="ios-arrow-forward" style={{ color: '#333' }} /></Text>
                </CardItem>
-
-               <CardItem style={styles.cardItem} >
+               <CardItem style={styles.cardItem}   onPress={() => this.navigateTo('subcategories')}>
                   <List>
                        <ListItem style={{borderBottomWidth: 0}}>
                            <ProgressViewIOS style={styles.progressView} progressTintColor="orange" progress={this.getProgress(0.6)}/>
                        </ListItem>
+                       <ListItem>
+                           <Text style={{ color: '#333' }}>{this.props.category.id}</Text>
+                       </ListItem>
                   </List>
                </CardItem>
-
             </TouchableOpacity>
-
+         </View>
       );
 
     } // end render
 
-    // End React LifeCycles
 }
 
 CategoryRow.propTypes = {
@@ -126,13 +108,11 @@ CategoryRow.propTypes = {
     }).isRequired,
 };
 
-// export default CategoryRow;
-
-
 function bindAction(dispatch) {
     return {
     	closeDrawer: ()=>dispatch(closeDrawer()),
-        replaceOrPushRoute:(route)=>dispatch(replaceOrPushRoute(route))
+      replaceOrPushRoute:(route)=>dispatch(replaceOrPushRoute(route)),
+      toggleTodo: (id)=>dispatch(toggleTodo(id))
     }
 }
 

@@ -28,11 +28,11 @@ import Exponent, {
    Constants,
    ImagePicker,
 } from 'exponent';
-import Config from '../../../config'
+import Config from '../../config'
 import styles from './styles/details';
 import rowStyles from './styles/row';
-import AttributeMap from '../../attributemap';
-import Toolbar from '../../toolbar'
+// import AttributeMap from '../../attributemap';
+import Toolbar from '../toolbar'
 import shortid from 'shortid';
 import { SegmentedControls } from 'react-native-radio-buttons';
 import {

@@ -1,4 +1,5 @@
 import React, {
+  Component,
   PropTypes
 } from 'react';
 import {
@@ -27,14 +28,17 @@ import Exponent, {
    Constants,
    ImagePicker,
 } from 'exponent';
-import Config from '../../../config'
+import Config from '../../config'
 import styles from './styles/details';
 import rowStyles from './styles/row';
 
 import DetailRow from './detailrow';
 
+import { connect } from 'react-redux'
+import { toggleTodo } from '../../actions/sub'
+
 // import AttributeMap from '../../attributemap';
-import Toolbar from '../../toolbar'
+import Toolbar from '../toolbar'
 // import shortid from 'shortid';
 // import { SegmentedControls } from 'react-native-radio-buttons';
 
@@ -47,6 +51,10 @@ const Icon = Ionicons;
 class CategoryDetails extends React.Component {
    constructor(props, context) {
       super(props, context);
+
+
+
+
       this.state = {
            isRefreshing: false,
            isLoaded: false,
@@ -59,9 +67,9 @@ class CategoryDetails extends React.Component {
            categories: [],
            selectedSegmentIndex: undefined,
            selectedTab: 'All',
-           toolbarTitle: this.props.category.name + " Items ",
+           toolbarTitle: " Items ",
            uploading: false,
-           categoryId: this.props.category.id,
+           categoryId: this.props.id,
            categoryIndex: 0,
            nextCategory: {},
            categoryName: "",
@@ -75,6 +83,13 @@ class CategoryDetails extends React.Component {
    }
 
    componentDidMount() {
+      // this.props.store.store.subscribe(() => {
+      //    var state = store.getState();
+      //    alert(this.state.id);
+      //    console.log(this.state.id);
+      //  });
+      //
+
       this.fetchWalkthroughItems();
    }
 
@@ -123,9 +138,9 @@ class CategoryDetails extends React.Component {
       let count = 0;
       let categoryName = this.state.categoryName;
 
-      if(!categoryName||categoryName===''){
-         categoryName = this.props.category.name;
-      }
+      // if(!categoryName||categoryName===''){
+      //    categoryName = this.props.category.name;
+      // }
 
       fetch(query).then((response) => response.json()).then((responseData) => {
          let count = responseData.length;
@@ -321,12 +336,26 @@ class CategoryDetails extends React.Component {
    }
 }
 
+// const mapStateToProps = (state) => ({
+//   id: state.id
+// });
+
+const mapStateToProps = (state, ownProps) => ({
+  id: ownProps.id
+})
+
+
+
+   // category: React.PropTypes.shape({name: React.PropTypes.string.isRequired,}).isRequired,
+
 CategoryDetails.propTypes = {
-   onWalkthroughItemDetails: React.PropTypes.func.isRequired,
-   onCancel: React.PropTypes.func.isRequired,
-   category: React.PropTypes.shape({name: React.PropTypes.string.isRequired,}).isRequired,
-   categories: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-   onAddWalkthroughItem: React.PropTypes.func.isRequired,
+   // onWalkthroughItemDetails: React.PropTypes.func.isRequired,
+   // onCancel: React.PropTypes.func.isRequired,
+   // category: React.PropTypes.shape({name: React.PropTypes.string.isRequired,}).isRequired,
+   // categories: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+   // onAddWalkthroughItem: React.PropTypes.func.isRequired,
 };
 
-export default CategoryDetails;
+// export default CategoryDetails;
+
+export default connect(mapStateToProps)(CategoryDetails)
