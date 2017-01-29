@@ -24,17 +24,11 @@ class SideBar extends Component {
         this.props.replaceOrPushRoute(route);
     }
 
-// #faf6ec
-// #252A30
-
-// background-color: #133740;
-// color: #ecebeb;
-
     render(){
         return (
             <Content style={styles.sidebar} >
                <Image source={require('../../assets/images/slide_properties.jpg')}>
-                   <Thumbnail size={500} style={{alignSelf: 'left', marginTop: 20, marginBottom: 15, resizeMode: 'contain'}} circular source={require('../../assets/images/mwtlogo.png')} />
+                   <Thumbnail size={500} style={{marginLeft: 164, marginTop: 5, marginBottom: 15, resizeMode: 'contain'}} circular source={require('../../assets/images/mwtlogo.png')} />
                    <List>
                         <ListItem button onPress={() => this.navigateTo('home')} iconLeft style={styles.links} >
                           <Icon style={styles.sidebarIcon} name='ios-home' />
@@ -46,7 +40,7 @@ class SideBar extends Component {
                        </ListItem>
                        <ListItem button onPress={() => this.navigateTo('categories')} iconLeft style={styles.links} >
                          <Icon style={styles.sidebarIcon} name='ios-list' />
-                         <Text style={styles.text}>Walkthru</Text>
+                         <Text style={styles.text}>My Walk Thru</Text>
                        </ListItem>
                    </List>
                </Image>

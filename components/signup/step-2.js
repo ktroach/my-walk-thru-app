@@ -46,7 +46,7 @@ class Step2 extends Component {
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
-                        <Title>Where your new home is located?</Title>
+                        <Title>Where your new Home?</Title>
 
                         <Button transparent onPress={this.props.openDrawer}>
                             <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />

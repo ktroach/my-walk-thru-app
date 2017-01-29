@@ -65,12 +65,7 @@ class CategoryRow extends React.Component {
       // Start description details
       var description = '';
       if (!this.props.category.description || this.props.category.description === 'undefined') {
-          // TODO: hard-coded Exterior
-          if(this.props.category.name === 'Exterior'){
-             description="Driveway, Sidewalks, Fence, Sprinklers...";
-          } else {
-             description="No description";
-          }
+         description = '10 Areas, 0 Comments, 0 Photos';
       } else {
          description=this.props.category.description;
       }
@@ -79,25 +74,12 @@ class CategoryRow extends React.Component {
       }
       // End description details
 
-      // Start Estimates badge count
-      var details = ''; // TODO: get this from props
-
-      // return(
-      //    <ListItem>
-      //        <Thumbnail circular size={50} source={require('../../assets/images/glow2.png')} />
-      //        <Text>{name}</Text>
-      //        <Text note>{description}</Text>
-      //    </ListItem>
-      // <ProgressViewIOS style={styles.progressView} progressTintColor="orange" progress={this.getProgress(0.6)}/>
-      // <Icon name="ios-arrow-forward" size={16} style={styles.arrow} />
-      // );
-
       return (
 
           <TouchableOpacity onPress={this.onPressed.bind(this)}>
               <Card transparent  style={styles.card}>
                   <CardItem style={styles.cardHeader}  header>
-                      <Thumbnail circular size={50} source={require('../../assets/images/glow2.png')} />
+                      <Thumbnail circular size={50} source={require('../../assets/images/3d-house-1.png')} />
                       <H3 style={{ color: '#333' }}>{name}</H3>
                       <Text note style={{ color: '#333' }}>{description}</Text>
                       <Text style={styles.arrow}><Icon name="ios-arrow-forward" style={{ color: '#333' }} /></Text>
@@ -122,7 +104,6 @@ class CategoryRow extends React.Component {
 }
 
 CategoryRow.propTypes = {
-    onCategoryDetails: React.PropTypes.func.isRequired,
     category: React.PropTypes.shape({
         name: React.PropTypes.string.isRequired,
     }).isRequired,

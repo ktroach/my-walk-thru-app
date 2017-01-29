@@ -109,7 +109,7 @@ class TopCategories extends Component {
              <Header>
                 <Button transparent> </Button>
 
-                <Title>Categories</Title>
+                <Title>My Walk Thru - Categories</Title>
 
                 <Button transparent onPress={this.props.openDrawer} >
                     <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
@@ -155,8 +155,6 @@ class TopCategories extends Component {
    renderRow(category) {
      return (
          <CategoryRow
-             onCategoryDetails={this.props.onCategoryDetails}
-             onCancel={this.props.onCancel}
              category={category}
          />
         );

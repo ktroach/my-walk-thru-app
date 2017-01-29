@@ -4,6 +4,9 @@ var React = require('react-native');
 
 var { StyleSheet, Platform } = React;
 
+var fontSizeBase = 15;
+var largeFont = fontSizeBase * 3.8;
+
 // #232323
 module.exports = StyleSheet.create({
     sidebar: {
@@ -16,16 +19,18 @@ module.exports = StyleSheet.create({
         borderBottomColor: '#454545'
     },
     sidebarIcon: {
-        fontSize: 21,
+        fontSize: largeFont,
         color: '#fff',
-        lineHeight: (Platform.OS === 'android') ? 32 : 36,
+        lineHeight: largeFont,
+      //   lineHeight: (Platform.OS === 'android') ? 32 : 36,
         backgroundColor: 'transparent',
     },
     text: {
         backgroundColor: 'transparent',
         color: '#ecebeb',
         fontWeight: '600',
-        fontSize: 21,
+        fontSize: largeFont,
+        lineHeight: largeFont,
     }
 });
 
