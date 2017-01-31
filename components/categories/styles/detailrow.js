@@ -7,12 +7,17 @@ var {
 } = React;
 
 module.exports = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'flex-start',
-        paddingTop: 2,
-        backgroundColor: '#F7F7F7',
-    },
+   container: {
+      flex: 1,
+      width: null,
+      height: null,
+   },   
+   //  container: {
+   //      flex: 1,
+   //      justifyContent: 'flex-start',
+   //      paddingTop: 2,
+   //      backgroundColor: '#F7F7F7',
+   //  },
     scrollviewcontainer: {
       flex: 1,
       justifyContent: 'flex-start',

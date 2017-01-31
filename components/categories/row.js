@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {
+   AsyncStorage,
    StyleSheet,
    Image,
    View,
@@ -45,7 +46,9 @@ class CategoryRow extends React.Component {
       return Math.sin(progress % Math.PI) % 1;
     }
 
-   navigateTo(route) {
+    navigateTo(route) {
+      AsyncStorage.setItem("categoryId", this.props.category.id);
+      AsyncStorage.setItem("categoryName", this.props.category.name);
       this.props.toggleTodo(this.props.category.id);
       this.props.closeDrawer();
       this.props.replaceOrPushRoute(route);

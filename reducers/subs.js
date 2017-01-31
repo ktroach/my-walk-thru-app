@@ -24,19 +24,24 @@ export default function (state:State = initialState, action:Action): State {
 
     if (action.type === TOGGLE_TODO) {
 
+      return {
+         ...state,
+         id: action.id 
+      }
+
       // alert('TOGGLE_TODO');
 
       // alert('state.id:'+state.id);
       // alert('action.id:'+action.id);
 
-      if (state.id !== action.id) {
-        return state
-      }
-
-      return {
-        ...state,
-        completed: !state.completed
-      }
+      // if (state.id !== action.id) {
+      //   return state
+      // }
+      //
+      // return {
+      //   ...state,
+      //   completed: !state.completed
+      // }
     }
 
     return state;

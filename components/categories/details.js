@@ -3,13 +3,14 @@ import React, {
   PropTypes
 } from 'react';
 import {
+   AsyncStorage,
    StyleSheet,
-   Text,
+   // Text,
    TextInput,
    View,
    TouchableHighlight,
    Alert,
-   Button,
+   // Button,
    // Clipboard,
    // Image,
    // Share,
@@ -19,7 +20,8 @@ import {
    RefreshControl,
    RecyclerViewBackedScrollView,
    StatusBar,
-   Switch
+   Switch,
+    Image
 } from 'react-native';
 import Exponent, {
    Components,
@@ -37,6 +39,12 @@ import DetailRow from './detailrow';
 import { connect } from 'react-redux'
 import { toggleTodo } from '../../actions/sub'
 
+
+import { openDrawer } from '../../actions/drawer';
+import { popRoute, replaceRoute } from '../../actions/route';
+
+import { Container, Header, Title, Content, Button, List, ListItem, Text } from 'native-base';
+
 // import AttributeMap from '../../attributemap';
 import Toolbar from '../toolbar'
 // import shortid from 'shortid';
@@ -48,11 +56,11 @@ import {
 import { Ionicons } from '@exponent/vector-icons';
 const Icon = Ionicons;
 
+import theme from '../../themes/form-theme';
+
 class CategoryDetails extends React.Component {
    constructor(props, context) {
       super(props, context);
-
-
 
 
       this.state = {
@@ -69,7 +77,7 @@ class CategoryDetails extends React.Component {
            selectedTab: 'All',
            toolbarTitle: " Items ",
            uploading: false,
-           categoryId: this.props.id,
+           categoryId: '',
            categoryIndex: 0,
            nextCategory: {},
            categoryName: "",
@@ -83,17 +91,70 @@ class CategoryDetails extends React.Component {
    }
 
    componentDidMount() {
-      // this.props.store.store.subscribe(() => {
-      //    var state = store.getState();
-      //    alert(this.state.id);
-      //    console.log(this.state.id);
-      //  });
-      //
-
-      this.fetchWalkthroughItems();
+      var categoryId = '';
+      AsyncStorage.getItem("categoryId").then((categoryId) => {
+          this.setState({"categoryId": categoryId});
+         if (categoryId) {
+            AsyncStorage.getItem("categoryName").then((categoryName) => {
+               this.setState({"categoryName": categoryName});
+               console.log('categoryName: '+categoryName);
+               this.fetchWalkthroughItems(categoryId);
+           }).then(res => {});
+         }
+      }).then(res => {});
    }
 
-   renderWalkthrough() {
+
+    replaceRoute(route) {
+        this.props.replaceRoute(route);
+    }
+
+    popRoute() {
+        this.props.popRoute();
+    }
+
+
+    renderWalkthrough() {
+      return (
+          <Container theme={theme} style={{backgroundColor: '#333'}}>
+              <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
+                   <Header>
+                   <Button transparent onPress={() => this.replaceRoute('categories')}>
+                       <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
+                   </Button>
+                       <Title>{this.state.toolbarTitle}</Title>
+
+                       <Button transparent onPress={this.props.openDrawer} >
+                           <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
+                       </Button>
+                   </Header>
+
+                   <Content padder style={{backgroundColor: 'transparent'}}>
+                   <View style={[styles.subHeaderBar]}>
+                      <View style={{flex: 1,justifyContent: 'space-between',flexDirection: 'row', padding: 10}}>
+                         <View>
+                             <Switch onValueChange={(value) => this.toggleAllObserved(value)}
+                                onTintColor="#00ff00"
+                                thumbTintColor="#0000ff"
+                                tintColor="#C8C7CC"
+                                value={this.state.allObservedSwitchIsOn} />
+                             <Text style={{color:'#333', fontSize:10, fontWeight:'500', textAlign: 'center', paddingTop: 3}}>
+                             All Observed</Text>
+                         </View>
+                      </View>
+                  </View>
+
+                  {
+                   this.renderListView()
+                  }
+                   </Content>
+              </Image>
+          </Container>
+      );
+   }
+
+
+   xrenderWalkthrough() {
       return (
         <View style={styles.container}>
            <Toolbar
@@ -133,8 +194,8 @@ class CategoryDetails extends React.Component {
       );
    }
 
-   fetchWalkthroughItems() {
-      let query = Config.PRICING_ITEMS_API + '?filter={"where": {"rank": 999, "divisionid": "'+this.state.categoryId+'"}}';
+   fetchWalkthroughItems(categoryId) {
+      let query = Config.PRICING_ITEMS_API + '?filter={"where": {"rank": 999, "divisionid": "'+categoryId+'"}}';
       let count = 0;
       let categoryName = this.state.categoryName;
 
@@ -270,7 +331,7 @@ class CategoryDetails extends React.Component {
    renderRow(item) {
      return (
         <View>
-            <DetailRow itemId={item.id} />
+            <DetailRow itemId={item.id} allObservedSwitchIsOn={this.state.allObservedSwitchIsOn} />
         </View>
         );
    }
@@ -278,7 +339,8 @@ class CategoryDetails extends React.Component {
 
    onActionSelected(position) {
       if (position === 0) {
-         this.props.onCancel();
+         this.replaceRoute('categories')
+         // this.props.onCancel();
       } else if (position === 1) {
          this.onPrevious();
       } else if (position === 2) {
@@ -332,7 +394,8 @@ class CategoryDetails extends React.Component {
    }
 
    onPressed(){
-      this.props.onCancel();
+      // this.props.onCancel();
+
    }
 }
 
@@ -358,4 +421,15 @@ CategoryDetails.propTypes = {
 
 // export default CategoryDetails;
 
-export default connect(mapStateToProps)(CategoryDetails)
+// export default connect(mapStateToProps)(CategoryDetails)
+
+
+function bindAction(dispatch) {
+    return {
+        openDrawer: ()=>dispatch(openDrawer()),
+        popRoute: () => dispatch(popRoute()),
+        replaceRoute:(route)=>dispatch(replaceRoute(route))
+    }
+}
+
+export default connect(null, bindAction)(CategoryDetails);

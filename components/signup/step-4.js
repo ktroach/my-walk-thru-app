@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Image, View } from 'react-native';
+import { Image, View, TouchableWithoutFeedback, Switch } from 'react-native';
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -14,6 +14,8 @@ import { Container, Header, Title, Content, Text, Button, Icon, List, ListItem, 
 import theme from '../../themes/form-theme';
 import styles from './styles';
 
+import { SegmentedControls } from 'react-native-radio-buttons'
+
 class Step4 extends Component {
 
    constructor(props) {
@@ -21,7 +23,10 @@ class Step4 extends Component {
       this.state = {
            email: '',
            fullName: '',
-           scroll: false
+           scroll: false,
+           selectedOption: 0,
+           trueSwitchIsOn: true,
+           falseSwitchIsOn: false
       };
    }
 
@@ -37,16 +42,47 @@ class Step4 extends Component {
         this.props.popRoute();
     }
 
+
+    getOptions() {
+      var options = [
+       "Phone",
+       "Email",
+       "Text/SMS"
+      ];
+      return options;
+   }
+
+
+    setSelectedOption(selectedOption){
+     this.setState({
+        selectedOption
+     });
+    }
+
+    renderOption(option, selected, onSelect, index){
+     const style = selected ? { fontWeight: 'bold'} : {};
+
+     return (
+        <TouchableWithoutFeedback onPress={onSelect} key={index}>
+          <Text style={style}>{option}</Text>
+        </TouchableWithoutFeedback>
+     );
+    }
+
+    renderContainer(optionNodes){
+     return <View>{optionNodes}</View>;
+    }
+
     render() {
         return (
             <Container theme={theme} style={{backgroundColor: '#333'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
-                        <Button transparent onPress={() => this.popRoute()}>
+                        <Button transparent onPress={() => this.replaceRoute('signup-step3')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
-                        <Title>To better serve you, please give us a few more details</Title>
+                        <Title>Your Contact Info</Title>
 
                         <Button transparent onPress={this.props.openDrawer}>
                             <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
@@ -56,23 +92,39 @@ class Step4 extends Component {
                     <Content padder style={{backgroundColor: 'transparent'}} >
                         <Card transparent foregroundColor="#000">
                             <CardItem header>
-                                <Text>What's your name</Text>
+                                <Text>Your best contact #</Text>
                             </CardItem>
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
-                                    <Icon name="ios-person" style={{color: '#000'}} />
-                                    <Input placeholder="Full Name" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                    <Icon name="ios-call-outline" style={{color: '#000'}} />
+                                    <Input placeholder="Phone" placeholderTextColor="#878787" style={{color: '#000'}} />
                                 </InputGroup>
                             </CardItem>
                             <CardItem header>
-                                <Text>What's your Email address?</Text>
+                                <Text>Preferred Contact Method</Text>
                             </CardItem>
                             <CardItem>
-                                <InputGroup style={{borderColor: '#d5d5d5'}}>
-                                    <Icon name="ios-mail-open-outline" style={{color: '#000'}} />
-                                    <Input placeholder="EMAIL" placeholderTextColor="#878787" style={{color: '#000'}} />
-                                </InputGroup>
-                            </CardItem>
+                               <SegmentedControls
+                                tint={'#007AFF'}
+                                selectedTint= {'#ffffff'}
+                                backTint= {'#ffffff'}
+                                options={ this.getOptions() }
+                                allowFontScaling={ true }
+                                onSelection={ this.setSelectedOption.bind(this) }
+                                selectedOption={ this.state.selectedOption }
+                                optionStyles={{fontFamily: 'AvenirNext-Medium'}}
+                                optionContainerStyle={{flex: 1}}
+                              />
+                           </CardItem>
+                           <CardItem header>
+                              <Text>Do you want to receive SMS text alerts?</Text>
+                           </CardItem>
+                           <CardItem>
+                                 <Switch
+                                   onValueChange={(value) => this.setState({trueSwitchIsOn: value})}
+                                   value={this.state.trueSwitchIsOn} />
+                           </CardItem>
+
                         </Card>
                     </Content>
 

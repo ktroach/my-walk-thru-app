@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 
 import {
+  AsyncStorage,
   Image,
   Linking,
   ScrollView,
@@ -12,6 +13,8 @@ import {
 } from 'react-native';
 
 import { connect } from 'react-redux';
+
+import moment from 'moment';
 
 import { openDrawer } from '../../actions/drawer';
 import { popRoute, replaceRoute } from '../../actions/route';
@@ -25,6 +28,12 @@ class Home extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            termsAccepted: "",
+            termsAcceptedOn: "",
+            deadlineDate: "",
+            daysLeft: ""
+       };
     }
 
     replaceRoute(route) {
@@ -33,6 +42,37 @@ class Home extends Component {
 
     popRoute() {
         this.props.popRoute();
+    }
+
+    getCurrentDateTime(){
+      return moment().format('MMM DD YYYY h:mm:ss a');
+    }
+
+    componentDidMount(){
+      var termsAccepted = false;
+      var termsAcceptedOn = "";
+      var deadlineDate = "";
+      var daysLeft = "";
+
+      AsyncStorage.getItem("termsAccepted").then((termsAccepted) => {
+          this.setState({"termsAccepted": termsAccepted});
+      }).then(res => {});
+
+      AsyncStorage.getItem("termsAcceptedOn").then((termsAcceptedOn) => {
+          this.setState({"termsAcceptedOn": termsAcceptedOn});
+      }).then(res => {});
+
+      if (termsAcceptedOn) {
+         // daysLeft = moment(termsAcceptedOn).add(5, 'days').calendar();
+
+         daysLeft = moment().add(5, 'days').calendar();
+         alert('daysLeft:', daysLeft);
+
+         deadlineDate = moment(termsAcceptedOn, "DD.MM.YYYY");
+         deadlineDate.add(5, 'days');
+         alert('deadlineDate:', deadlineDate);
+      }
+
     }
 
     render() {
@@ -50,19 +90,23 @@ class Home extends Component {
                    </Header>
 
                    <Content padder style={{backgroundColor: 'transparent'}}>
-                       <List>
-                           <ListItem iconLeft >
-                              <Icon name='ios-megaphone'/>
-                              <Text>Sign Up to Start your Walkthru</Text>
-                              <Text style={{fontWeight: '400'}} note>8:00 AM</Text>
-                           </ListItem>
-                       </List>
+                         <List>
+                            <ListItem iconLeft >
+                               <Icon name='ios-checkmark-circle-outline'/>
+                               <Text>Completed Sign Up</Text>
+                               <Text style={{fontWeight: '400'}} note>{this.state.termsAcceptedOn}</Text>
+                            </ListItem>
+                            <ListItem iconLeft >
+                               <Icon name='ios-megaphone'/>
+                               <Text>You have 5 days left to complete your Walk Thru</Text>
+                               <Text style={{fontWeight: '400'}} note>{this.state.deadlineDate}</Text>
+                            </ListItem>
+                        </List>
 
-                       <Button transparent large style={styles.roundedButton} onPress={() => this.replaceRoute('signup-step-1')}>
+                       <Button transparent large style={styles.roundedButton} onPress={() => this.replaceRoute('categories')}>
                            <Icon name='ios-close-outline' />
                        </Button>
                    </Content>
-
               </Image>
           </Container>
       );

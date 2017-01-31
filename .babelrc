@@ -1,8 +1,8 @@
 {
-  "presets": ["babel-preset-exponent"],
+  "presets": ["react-native","babel-preset-exponent"],
   "env": {
     "development": {
-      "plugins": ["transform-react-jsx-source"]
+      "plugins": ["transform-async-to-generator","transform-react-jsx-source"]
     }
   }
 }

@@ -42,7 +42,7 @@ class Step1 extends Component {
             <Container theme={theme} style={{backgroundColor: '#333'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
-                        <Button transparent onPress={() => this.popRoute()}>
+                        <Button transparent onPress={() => this.replaceRoute('signup-step1')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
@@ -69,7 +69,7 @@ class Step1 extends Component {
                             </CardItem>
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
-                                    <Icon name="ios-mail-open-outline" style={{color: '#000'}} />
+                                    <Icon name="ios-mail-outline" style={{color: '#000'}} />
                                     <Input placeholder="EMAIL" placeholderTextColor="#878787" style={{color: '#000'}} />
                                 </InputGroup>
                             </CardItem>

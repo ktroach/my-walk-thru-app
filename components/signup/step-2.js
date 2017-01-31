@@ -42,11 +42,11 @@ class Step2 extends Component {
             <Container theme={theme} style={{backgroundColor: '#333'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
-                        <Button transparent onPress={() => this.popRoute()}>
+                        <Button transparent onPress={() => this.replaceRoute('signup-step1')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
-                        <Title>Where your new Home?</Title>
+                        <Title>Where is your new Home?</Title>
 
                         <Button transparent onPress={this.props.openDrawer}>
                             <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
@@ -56,21 +56,48 @@ class Step2 extends Component {
                     <Content padder style={{backgroundColor: 'transparent'}} >
                         <Card transparent foregroundColor="#000">
                             <CardItem header>
-                                <Text>What's your name</Text>
+                                <Text>Street Address 1</Text>
                             </CardItem>
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
-                                    <Icon name="ios-person" style={{color: '#000'}} />
-                                    <Input placeholder="Full Name" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                    <Icon name="ios-pin-outline" style={{color: '#000'}} />
+                                    <Input placeholder="" placeholderTextColor="#878787" style={{color: '#000'}} />
                                 </InputGroup>
                             </CardItem>
                             <CardItem header>
-                                <Text>What's your Email address?</Text>
+                                <Text>Street Address 2 (optional)</Text>
                             </CardItem>
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
-                                    <Icon name="ios-mail-open-outline" style={{color: '#000'}} />
-                                    <Input placeholder="EMAIL" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                    <Icon name="ios-pin-outline" style={{color: '#000'}} />
+                                    <Input placeholder="" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                </InputGroup>
+                            </CardItem>
+                            <CardItem header>
+                                <Text>City</Text>
+                            </CardItem>
+                            <CardItem>
+                                <InputGroup style={{borderColor: '#d5d5d5'}}>
+                                    <Icon name="ios-pin-outline" style={{color: '#000'}} />
+                                    <Input placeholder="" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                </InputGroup>
+                            </CardItem>
+                            <CardItem header>
+                                <Text>State</Text>
+                            </CardItem>
+                            <CardItem>
+                                <InputGroup style={{borderColor: '#d5d5d5'}}>
+                                    <Icon name="ios-pin-outline" style={{color: '#000'}} />
+                                    <Input placeholder="" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                </InputGroup>
+                            </CardItem>
+                            <CardItem header>
+                                <Text>Zip</Text>
+                            </CardItem>
+                            <CardItem>
+                                <InputGroup style={{borderColor: '#d5d5d5'}}>
+                                    <Icon name="ios-pin-outline" style={{color: '#000'}} />
+                                    <Input placeholder="" placeholderTextColor="#878787" style={{color: '#000'}} />
                                 </InputGroup>
                             </CardItem>
                         </Card>

@@ -42,7 +42,7 @@ class Step3 extends Component {
             <Container theme={theme} style={{backgroundColor: '#333'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
-                        <Button transparent onPress={() => this.popRoute()}>
+                        <Button transparent onPress={() => this.replaceRoute('signup-step2')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
@@ -55,24 +55,48 @@ class Step3 extends Component {
 
                     <Content padder style={{backgroundColor: 'transparent'}} >
                         <Card transparent foregroundColor="#000">
+
                             <CardItem header>
-                                <Text>What's your name</Text>
+                                <Text>Property Management Company</Text>
                             </CardItem>
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
-                                    <Icon name="ios-person" style={{color: '#000'}} />
-                                    <Input placeholder="Full Name" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                    <Icon name="ios-briefcase-outline" style={{color: '#000'}} />
+                                    <Input placeholder="Company Name" placeholderTextColor="#878787" style={{color: '#000'}} />
                                 </InputGroup>
                             </CardItem>
+
                             <CardItem header>
-                                <Text>What's your Email address?</Text>
+                                <Text>Property Manager's Name (if different than company)</Text>
                             </CardItem>
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
-                                    <Icon name="ios-mail-open-outline" style={{color: '#000'}} />
-                                    <Input placeholder="EMAIL" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                    <Icon name="ios-man-outline" style={{color: '#000'}} />
+                                    <Input placeholder="Contact Name" placeholderTextColor="#878787" style={{color: '#000'}} />
                                 </InputGroup>
                             </CardItem>
+
+                            <CardItem header>
+                                <Text>Property Manager's Email</Text>
+                            </CardItem>
+                            <CardItem>
+                                <InputGroup style={{borderColor: '#d5d5d5'}}>
+                                    <Icon name="ios-mail-outline" style={{color: '#000'}} />
+                                    <Input placeholder="Email" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                </InputGroup>
+                            </CardItem>
+
+                            <CardItem header>
+                                <Text>Property Manager's Phone #</Text>
+                            </CardItem>
+                            <CardItem>
+                                <InputGroup style={{borderColor: '#d5d5d5'}}>
+                                    <Icon name="ios-call-outline" style={{color: '#000'}} />
+                                    <Input placeholder="Phone" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                </InputGroup>
+                            </CardItem>
+
+
                         </Card>
                     </Content>
 

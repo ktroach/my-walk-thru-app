@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Image, View } from 'react-native';
+import { Image, View, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -9,20 +9,51 @@ import { popRoute } from '../../actions/route';
 
 import { pushNewRoute, replaceRoute } from '../../actions/route';
 
-import { Container, Header, Title, Content, Text, Button, Icon, List, ListItem, Card, CardItem, InputGroup, Input } from 'native-base';
+// import Button from './Button';
+
+import { Container, Header, Title, Content, Button, Text, Icon, List, ListItem, Card, CardItem, InputGroup, Input } from 'native-base';
 
 import theme from '../../themes/form-theme';
 import styles from './styles';
 
-class Step5 extends Component {
+import { SegmentedControls } from 'react-native-radio-buttons'
 
+import stripe from 'tipsi-stripe'
+
+class Step5 extends Component {
+   state = {
+     loading: false,
+     token: null,
+     params: {
+       number: '4242424242424242',
+       expMonth: 11,
+       expYear: 17,
+       cvc: '223',
+       name: 'Test User',
+       currency: 'usd',
+     },
+   }
    constructor(props) {
       super(props);
-      this.state = {
-           email: '',
-           fullName: '',
-           scroll: false
-      };
+      // state = {
+      //     loading: false,
+      //     token: null,
+      //     params: {
+      //       number: '4242424242424242',
+      //       expMonth: 11,
+      //       expYear: 17,
+      //       cvc: '223',
+      //       name: 'Test User',
+      //       currency: 'usd'
+      // };
+      // this.state = {
+      //      email: '',
+      //      fullName: '',
+      //      scroll: false,
+      //      selectedOption: 0,
+      //      loading: false,
+      //     token: null,
+      // };
    }
 
    replaceRoute(route) {
@@ -37,16 +68,113 @@ class Step5 extends Component {
         this.props.popRoute();
     }
 
+    handleCustomPayPress() {
+        try {
+          this.setState({
+            loading: true,
+            token: null,
+          })
+          var token = stripe.createTokenWithCard(this.state.params)
+          console.log('Result:', token) // eslint-disable-line no-console
+          this.setState({
+            loading: false,
+            token,
+          })
+        } catch (error) {
+          console.log('Error:', error) // eslint-disable-line no-console
+         //  this.setState({
+         //    loading: false,
+         //  })
+        }
+      }
+
+
+      //   render() {
+      //     const { loading, token, params } = this.state
+        //
+      //     return (
+      //       <View style={styles.container}>
+      //         <Text style={styles.header}>
+      //           Custom Card Params Example
+      //         </Text>
+      //         <View style={styles.params}>
+      //           <Text style={styles.instruction}>
+      //             Number: {params.number}
+      //           </Text>
+      //           <Text style={styles.instruction}>
+      //             Month: {params.expMonth}
+      //           </Text>
+      //           <Text style={styles.instruction}>
+      //             Year: {params.expYear}
+      //           </Text>
+      //           <Text style={styles.instruction}>
+      //             CVC: {params.cvc}
+      //           </Text>
+      //           <Text style={styles.instruction}>
+      //             Name: {params.name}
+      //           </Text>
+      //           <Text style={styles.instruction}>
+      //             Currency: {params.currency.toUpperCase()}
+      //           </Text>
+      //         </View>
+      //         <Text style={styles.instruction}>
+      //           Click button to get token based on params.
+      //         </Text>
+      //         <Button
+      //           text="Pay with custom params"
+      //           loading={loading}
+      //           style={styles.button}
+      //           accessible
+      //           accessibilityLabel={'customCardButton'}
+      //           onPress={this.handleCustomPayPress}
+      //         />
+      //         <View
+      //           accessible
+      //           accessibilityLabel={'customCardToken'}
+      //           style={styles.token}>
+      //           {token &&
+      //             <Text style={styles.instruction}>
+      //               Token: {token.tokenId}
+      //             </Text>
+      //           }
+      //         </View>
+      //       </View>
+      //     )
+      //   }
+        //
+
+
+   //  getOptions() {
+   //    var options = [
+   //     "Credit Card",
+   //     "Apple Pay",
+   //     "PayPal"
+   //    ];
+   //    return options;
+   // }
+
+   // createCreditCardToken(){
+   //    return fetch('https://api.stripe.com/v1/tokens', {
+   //      method: 'post',
+   //      headers: {
+   //        'Accept': 'application/json',
+   //        'Content-Type': 'application/x-www-form-urlencoded',
+   //        'Authorization': 'Bearer ' + '<YOUR-STRIPE-API-KEY>'
+   //      },
+   //      body: formBody
+   //    });
+   // }
+
     render() {
         return (
             <Container theme={theme} style={{backgroundColor: '#333'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
-                        <Button transparent onPress={() => this.popRoute()}>
+                        <Button transparent onPress={() => this.replaceRoute('signup-step4')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
-                        <Title>Enter your Payment Method</Title>
+                        <Title>How do you want Pay?</Title>
 
                         <Button transparent onPress={this.props.openDrawer}>
                             <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
@@ -56,21 +184,39 @@ class Step5 extends Component {
                     <Content padder style={{backgroundColor: 'transparent'}} >
                         <Card transparent foregroundColor="#000">
                             <CardItem header>
-                                <Text>What's your name</Text>
+                                <Text>Credit Card</Text>
                             </CardItem>
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
-                                    <Icon name="ios-person" style={{color: '#000'}} />
-                                    <Input placeholder="Full Name" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                    <Icon name="ios-card" style={{color: '#000'}} />
+                                    <Input placeholder="Credit Card" placeholderTextColor="#878787" style={{color: '#000'}} />
                                 </InputGroup>
                             </CardItem>
                             <CardItem header>
-                                <Text>What's your Email address?</Text>
+                                <Text>Name on Card</Text>
                             </CardItem>
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
-                                    <Icon name="ios-mail-open-outline" style={{color: '#000'}} />
-                                    <Input placeholder="EMAIL" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                    <Icon name="ios-contact-outline" style={{color: '#000'}} />
+                                    <Input placeholder="Cardholder Name" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                </InputGroup>
+                            </CardItem>
+                            <CardItem header>
+                                <Text>Expiration Date</Text>
+                            </CardItem>
+                            <CardItem>
+                                <InputGroup style={{borderColor: '#d5d5d5'}}>
+                                    <Icon name="ios-calendar-outline" style={{color: '#000'}} />
+                                    <Input placeholder="Expiration" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                </InputGroup>
+                            </CardItem>
+                            <CardItem header>
+                                <Text>CVV</Text>
+                            </CardItem>
+                            <CardItem>
+                                <InputGroup style={{borderColor: '#d5d5d5'}}>
+                                    <Icon name="ios-lock-outline" style={{color: '#000'}} />
+                                    <Input placeholder="CVV" placeholderTextColor="#878787" style={{color: '#000'}} />
                                 </InputGroup>
                             </CardItem>
                         </Card>
@@ -83,7 +229,43 @@ class Step5 extends Component {
             </Container>
         )
     }
+
+
+
 }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: '#F5FCFF',
+//   },
+//   header: {
+//     fontSize: 20,
+//     textAlign: 'center',
+//     margin: 10,
+//   },
+//   instruction: {
+//     textAlign: 'center',
+//     color: '#333333',
+//     marginBottom: 5,
+//   },
+//   button: {
+//     margin: 10,
+//     borderWidth: 1,
+//   },
+//   token: {
+//     height: 20,
+//   },
+//   params: {
+//     backgroundColor: '#fff',
+//     borderRadius: 10,
+//     padding: 10,
+//     alignItems: 'flex-start',
+//     margin: 5,
+//   },
+// });
 
 function bindActions(dispatch){
     return {
