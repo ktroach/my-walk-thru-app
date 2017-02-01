@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Image, View } from 'react-native';
+import { AsyncStorage, Image, View } from 'react-native';
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -19,14 +19,44 @@ class Step3 extends Component {
    constructor(props) {
       super(props);
       this.state = {
-           email: '',
-           fullName: '',
-           scroll: false
+           pm_companyname: '',
+           pm_contactname: '',
+           pm_email: '',
+           pm_phone: '',
+           validForm: false
       };
    }
 
+   saveInputs(route) {
+      if (this.inputsValidated()) {
+         this.setState({validForm: true});
+         try {
+            AsyncStorage.setItem("pm_companyname", this.state.pm_companyname);
+            AsyncStorage.setItem("pm_contactname", this.state.pm_contactname);
+            AsyncStorage.setItem("pm_email", this.state.pm_email);
+            AsyncStorage.setItem("pm_phone", this.state.pm_phone);
+            this.props.replaceRoute(route);
+         } catch(err) {
+            console.log(err);
+         }
+      }
+   }
+
+   inputsValidated() {
+      if (!this.state.pm_companyname || this.state.pm_companyname.length===0) return this.invalidInput('Property Management Company');
+      if (!this.state.pm_email || this.state.pm_email.length===0) return this.invalidInput('Property Managers Email');
+      if (!this.state.pm_phone || this.state.pm_phone.length===0) return this.invalidInput('Property Managers Phone');
+      return true;
+   }
+
+   invalidInput(inputName) {
+      alert(inputName + ' is required.');
+      this.setState({validForm: false});
+      return false;
+   }
+
    replaceRoute(route) {
-      this.props.replaceRoute(route);
+      this.saveInputs(route);
    }
 
    pushNewRoute(route) {
@@ -62,7 +92,8 @@ class Step3 extends Component {
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
                                     <Icon name="ios-briefcase-outline" style={{color: '#000'}} />
-                                    <Input placeholder="Company Name" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                    <Input placeholder="Company Name" placeholderTextColor="#878787" style={{color: '#000'}}
+                                    onChangeText={(pm_companyname) => this.setState({pm_companyname})} value={this.state.pm_companyname} />
                                 </InputGroup>
                             </CardItem>
 
@@ -72,7 +103,8 @@ class Step3 extends Component {
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
                                     <Icon name="ios-man-outline" style={{color: '#000'}} />
-                                    <Input placeholder="Contact Name" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                    <Input placeholder="Contact Name" placeholderTextColor="#878787" style={{color: '#000'}}
+                                    onChangeText={(pm_contactname) => this.setState({pm_contactname})} value={this.state.pm_contactname} />
                                 </InputGroup>
                             </CardItem>
 
@@ -82,7 +114,8 @@ class Step3 extends Component {
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
                                     <Icon name="ios-mail-outline" style={{color: '#000'}} />
-                                    <Input placeholder="Email" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                    <Input placeholder="Email" placeholderTextColor="#878787" style={{color: '#000'}}
+                                    onChangeText={(pm_email) => this.setState({pm_email})} value={this.state.pm_email} />
                                 </InputGroup>
                             </CardItem>
 
@@ -92,7 +125,8 @@ class Step3 extends Component {
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
                                     <Icon name="ios-call-outline" style={{color: '#000'}} />
-                                    <Input placeholder="Phone" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                    <Input placeholder="Phone" placeholderTextColor="#878787" style={{color: '#000'}}
+                                    onChangeText={(pm_phone) => this.setState({pm_phone})} value={this.state.pm_phone} />
                                 </InputGroup>
                             </CardItem>
 
@@ -100,7 +134,7 @@ class Step3 extends Component {
                         </Card>
                     </Content>
 
-                    <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}} onPress={() => this.replaceRoute('signup-step4', {email: this.state.email, fullName: this.state.fullName})}>
+                    <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}} onPress={() => this.replaceRoute('signup-step4', {pm_companyname: this.state.pm_companyname, pm_contactname: this.state.pm_contactname, pm_email: this.state.pm_email, pm_phone: this.state.pm_phone })}>
                         Next
                     </Button>
                 </Image>

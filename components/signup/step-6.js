@@ -91,6 +91,10 @@ class Step6 extends Component {
      onCreateUser() {
        console.log('onCreateUser...');
 
+       // try to load AsyncStorage stuff
+
+       
+
       //  if (!this.state.name || this.state.name === ' ') {
       //     alert('Item Name is required');
       //     return;

@@ -59,10 +59,7 @@ class Step2 extends Component {
    }
 
    replaceRoute(route) {
-      this.saveInputs();
-      if (this.state.validForm) {
-         this.props.replaceRoute(route);
-      }
+      this.saveInputs(route);
    }
 
    pushNewRoute(route) {

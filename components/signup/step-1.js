@@ -32,7 +32,6 @@ class Step1 extends Component {
             AsyncStorage.setItem("username", this.state.username);
             AsyncStorage.setItem("email", this.state.email);
             this.props.replaceRoute(route);
-            // if (this.state.validForm) alert('Input Validated, Click Next');
          } catch(err) {
             console.log(err);
          }
@@ -53,10 +52,6 @@ class Step1 extends Component {
 
    replaceRoute(route) {
       this.saveInputs(route);
-      // this.props.replaceRoute(route);
-      // if (this.state.validForm) {
-      //    this.props.replaceRoute(route);
-      // }
    }
 
    pushNewRoute(route) {

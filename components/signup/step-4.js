@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Image, View, TouchableWithoutFeedback, Switch } from 'react-native';
+import { AsyncStorage, Image, View, TouchableWithoutFeedback, Switch } from 'react-native';
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -17,21 +17,60 @@ import styles from './styles';
 import { SegmentedControls } from 'react-native-radio-buttons'
 
 class Step4 extends Component {
-
    constructor(props) {
       super(props);
       this.state = {
-           email: '',
-           fullName: '',
-           scroll: false,
-           selectedOption: 0,
-           trueSwitchIsOn: true,
-           falseSwitchIsOn: false
+        email: '',
+        username: '',
+        validForm: false,
+        scroll: false,
+        selectedOption: 0,
+        trueSwitchIsOn: true,
+        falseSwitchIsOn: false,
+        tenant_phone: '',
+        preferred_contact: '',
+        sms_alerts: 'true'
       };
    }
 
+   saveInputs(route) {
+      if (this.inputsValidated()) {
+         this.setState({validForm: true});
+         try {
+            if (this.state.tenant_phone && this.state.tenant_phone !== '' ) {
+                AsyncStorage.setItem("tenant_phone", this.state.tenant_phone);
+             }
+             if (this.state.selectedOption && this.state.selectedOption !== '' ) {
+                AsyncStorage.setItem("preferred_contact", this.state.selectedOption);
+             }
+             if (this.state.trueSwitchIsOn) {
+                AsyncStorage.setItem("sms_alerts", "true");
+             } else {
+                AsyncStorage.setItem("sms_alerts", "false");
+             }
+            this.props.replaceRoute(route);
+         } catch(err) {
+            console.log(err);
+         }
+      }
+   }
+
+   inputsValidated() {
+      if(this.state.selectedOption === 'Phone' && this.state.tenant_phone === '' ){
+         alert('Please enter your Phone Number.');
+         return false;
+      }
+      return true;
+   }
+
+   invalidInput(inputName) {
+      alert(inputName + ' is required.');
+      this.setState({validForm: false});
+      return false;
+   }
+
    replaceRoute(route) {
-      this.props.replaceRoute(route);
+      this.saveInputs(route);
    }
 
    pushNewRoute(route) {
@@ -42,7 +81,6 @@ class Step4 extends Component {
         this.props.popRoute();
     }
 
-
     getOptions() {
       var options = [
        "Phone",
@@ -52,7 +90,6 @@ class Step4 extends Component {
       return options;
    }
 
-
     setSelectedOption(selectedOption){
      this.setState({
         selectedOption
@@ -60,13 +97,13 @@ class Step4 extends Component {
     }
 
     renderOption(option, selected, onSelect, index){
-     const style = selected ? { fontWeight: 'bold'} : {};
+        const style = selected ? { fontWeight: 'bold'} : {};
 
-     return (
-        <TouchableWithoutFeedback onPress={onSelect} key={index}>
-          <Text style={style}>{option}</Text>
-        </TouchableWithoutFeedback>
-     );
+        return (
+           <TouchableWithoutFeedback onPress={onSelect} key={index}>
+             <Text style={style}>{option}</Text>
+           </TouchableWithoutFeedback>
+        );
     }
 
     renderContainer(optionNodes){
@@ -82,7 +119,7 @@ class Step4 extends Component {
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
-                        <Title>Your Contact Info</Title>
+                        <Title>Your Contact Options</Title>
 
                         <Button transparent onPress={this.props.openDrawer}>
                             <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
@@ -92,12 +129,13 @@ class Step4 extends Component {
                     <Content padder style={{backgroundColor: 'transparent'}} >
                         <Card transparent foregroundColor="#000">
                             <CardItem header>
-                                <Text>Your best contact #</Text>
+                                <Text>Your Phone Number</Text>
                             </CardItem>
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
                                     <Icon name="ios-call-outline" style={{color: '#000'}} />
-                                    <Input placeholder="Phone" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                    <Input placeholder="(888) 888-5555" placeholderTextColor="#878787" style={{color: '#000'}}
+                                    onChangeText={(tenant_phone) => this.setState({tenant_phone})} value={this.state.tenant_phone} />
                                 </InputGroup>
                             </CardItem>
                             <CardItem header>

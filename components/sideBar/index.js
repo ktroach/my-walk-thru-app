@@ -29,7 +29,7 @@ class SideBar extends Component {
                <Image source={require('../../assets/images/slide_properties.jpg')}>
                    <Thumbnail size={500} style={{marginLeft: 17, marginTop: 27, marginBottom: 15, resizeMode: 'contain'}} circular source={require('../../assets/images/mwtlogo.png')} />
                    <List>
-                         <ListItem button onPress={() => this.navigateTo('signup-step6')} iconLeft style={styles.links} >
+                         <ListItem button onPress={() => this.navigateTo('signup-step4')} iconLeft style={styles.links} >
                              <Icon style={styles.sidebarIcon} name='ios-person' />
                              <Text style={styles.text}>Sign Up</Text>
                          </ListItem>
