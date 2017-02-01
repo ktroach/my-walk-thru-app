@@ -18,16 +18,70 @@ import styles from './styles';
 
 import { SegmentedControls } from 'react-native-radio-buttons'
 
+import Config from '../../config'
+
 class Step6 extends Component {
    constructor(props) {
       super(props);
       this.state = {
            email: '',
            username: '',
+           street1: '',
+           street2: '',
+           city: '',
+           stateabbr: '',
+           zip: '',
+           pm_companyname: '',
+           pm_contactname: '',
+           pm_email: '',
+           pm_phone: '',
+           tenant_phone: '',
+           preferred_contact: '',
+           sms_alerts: '',
            selectedOption: 0,
            termsAcceptedOn: '',
            userCreatedSuccess: false,
       };
+   }
+
+   mapStorageToState() {
+      AsyncStorage.getItem("email").then((email) => {
+          this.setState({"email": email});
+      }).then(res => {});
+      AsyncStorage.getItem("username").then((username) => {
+        this.setState({"username": username});
+      }).then(res => {});
+      AsyncStorage.getItem("street1").then((street1) => {
+        this.setState({"street1": street1});
+      }).then(res => {});
+      AsyncStorage.getItem("street2").then((street2) => {
+        this.setState({"street2": street2});
+      }).then(res => {});
+      AsyncStorage.getItem("city").then((city) => {
+        this.setState({"city": city});
+      }).then(res => {});
+      AsyncStorage.getItem("stateabbr").then((stateabbr) => {
+        this.setState({"stateabbr": stateabbr});
+      }).then(res => {});
+      AsyncStorage.getItem("zip").then((zip) => {
+        this.setState({"zip": zip});
+      }).then(res => {});
+      AsyncStorage.getItem("pm_companyname").then((pm_companyname) => {
+        this.setState({"pm_companyname": pm_companyname});
+      }).then(res => {});
+      AsyncStorage.getItem("pm_contactname").then((pm_contactname) => {
+        this.setState({"pm_contactname": pm_contactname});
+      }).then(res => {});
+      AsyncStorage.getItem("tenant_phone").then((tenant_phone) => {
+        this.setState({"tenant_phone": tenant_phone});
+      }).then(res => {});
+      AsyncStorage.getItem("preferred_contact").then((preferred_contact) => {
+        this.setState({"preferred_contact": preferred_contact});
+      }).then(res => {});
+      AsyncStorage.getItem("sms_alerts").then((sms_alerts) => {
+        this.setState({"sms_alerts": sms_alerts});
+      }).then(res => {});
+     return true;
    }
 
    replaceRoute(route) {
@@ -91,24 +145,15 @@ class Step6 extends Component {
      onCreateUser() {
        console.log('onCreateUser...');
 
-       // try to load AsyncStorage stuff
+       if (!this.state.email || this.state.email === '') {
+          alert('Email address is required');
+          return;
+       }
 
-       
-
-      //  if (!this.state.name || this.state.name === ' ') {
-      //     alert('Item Name is required');
-      //     return;
-      //  }
-       //
-      //  if (!this.state.description || this.state.description === 0) {
-      //     alert('Item Description is required');
-      //     return;
-      //  }
-       //
-      //  if (!this.props.category.id) {
-      //     alert('Category Id is required');
-      //     return;
-      //  }
+       if (!this.state.username || this.state.username === 0) {
+          alert('username is required');
+          return;
+       }
 
        var now = new Date();
        var url = Config.USERS_API + '/';
@@ -118,20 +163,32 @@ class Step6 extends Component {
          "email": this.state.email,
          "password": "p@ss1word",
          "status": "active",
-         "created": now
+         "created": now,
+         "street1": this.state.street1,
+         "street2": this.state.street2,
+         "city": this.state.city,
+         "stateabbr": this.state.stateabbr,
+         "zip": this.state.zip,
+         "pm_companyname": this.state.pm_companyname,
+         "pm_contactname": this.state.pm_contactname,
+         "pm_email": this.state.pm_email,
+         "pm_phone": this.state.pm_phone,
+         "tenant_phone": this.state.tenant_phone,
+         "preferred_contact": this.state.preferred_contact,
+         "sms_alerts": this.state.sms_alerts,
+         "termsAcceptedOn": this.state.termsAcceptedOn
        });
        fetch(url, {
-              method: 'post',
-              headers: {
-                "Content-type": "application/json; charset=UTF-8"
-              },
-             body: data
+           method: 'post',
+           headers: {
+             "Content-type": "application/json; charset=UTF-8"
+           },
+          body: data
       }).then((response) => response.json()).then((responseData) => {
        console.log('USER CREATED: ', responseData);
-
+       this.replaceRoute('home', {email: this.state.email, username: this.state.username});
       }).done();
      }
-
 
      createUserAccount(){
          var termsAcceptedOn = "";
@@ -146,7 +203,16 @@ class Step6 extends Component {
          AsyncStorage.setItem("termsAccepted", this.state.selectedOption );
          AsyncStorage.setItem("termsAcceptedOn", termsAcceptedOn);
 
-         this.replaceRoute('home', {email: this.state.email, username: this.state.username});
+
+         if (this.mapStorageToState()) {
+            this.onCreateUser();
+
+            // this.replaceRoute('home', {email: this.state.email, username: this.state.username});
+         }
+
+
+
+         // this.replaceRoute('home', {email: this.state.email, username: this.state.username});
      }
 
      maybeProceed() {
