@@ -25,6 +25,7 @@ export default {
    PRICING_ITEMS_API_URL_NO: API_BASE_URL+'teams?filter=%7B%20%22where%22%20%3A%20%7B%20%22rank%22%3A%20999%20%7D%20%7D',
    PRICING_ITEMS_API_URL: API_BASE_URL+'/teams?filter={"where": {"rank": "999"}}',
    PRICING_ITEMS_API: API_BASE_URL+'/teams',
-   IMAGE_UPLOADER_PHOTOS_API: IMAGE_UPLOADER_BASE+'/upload/'
+   IMAGE_UPLOADER_PHOTOS_API: IMAGE_UPLOADER_BASE+'/upload/',
+   USERS_API: API_BASE_URL+'/users',
 
 };

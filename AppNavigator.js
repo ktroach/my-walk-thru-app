@@ -19,6 +19,7 @@ import SideBar from './components/sideBar';
 import Home from './components/home/';
 
 // Sign Up Routes
+import Step0 from './components/signup/step-0';
 import Step1 from './components/signup/step-1';
 import Step2 from './components/signup/step-2';
 import Step3 from './components/signup/step-3';
@@ -154,7 +155,7 @@ class AppNavigator extends Component {
                             gestures: {}
                         };
                     }}
-                    initialRoute={{id: (Platform.OS === 'android') ? 'signup-step1' : 'signup-step1', statusBarHidden: true}}
+                    initialRoute={{id: (Platform.OS === 'android') ? 'signup-step0' : 'signup-step0', statusBarHidden: true}}
                     renderScene={this.renderScene}
                   />
             </Drawer>
@@ -165,6 +166,8 @@ class AppNavigator extends Component {
         switch (route.id) {
             case 'home':
                return <Home navigator={navigator} />;
+            case 'signup-step0':
+               return <Step0 navigator={navigator} />;
             case 'signup-step1':
                return <Step1 navigator={navigator} />;
             case 'signup-step2':

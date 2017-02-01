@@ -207,7 +207,7 @@ class Step5 extends Component {
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
                                     <Icon name="ios-calendar-outline" style={{color: '#000'}} />
-                                    <Input placeholder="Expiration" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                    <Input placeholder="MM/YYYY" placeholderTextColor="#878787" style={{color: '#000'}} />
                                 </InputGroup>
                             </CardItem>
                             <CardItem header>

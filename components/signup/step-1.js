@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Image, View } from 'react-native';
+import { AsyncStorage, Image, View } from 'react-native';
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -20,13 +20,43 @@ class Step1 extends Component {
       super(props);
       this.state = {
            email: '',
-           fullName: '',
-           scroll: false
+           username: '',
+           validForm: false
       };
    }
 
+   saveInputs(route) {
+      if (this.inputsValidated()) {
+         this.setState({validForm: true});
+         try {
+            AsyncStorage.setItem("username", this.state.username);
+            AsyncStorage.setItem("email", this.state.email);
+            this.props.replaceRoute(route);
+            // if (this.state.validForm) alert('Input Validated, Click Next');
+         } catch(err) {
+            console.log(err);
+         }
+      }
+   }
+
+   inputsValidated() {
+      if (!this.state.username || this.state.username.length===0) return this.invalidInput('Name');
+      if (!this.state.email || this.state.email.length===0) return this.invalidInput('Email');
+      return true;
+   }
+
+   invalidInput(inputName) {
+      alert(inputName + ' is required.');
+      this.setState({validForm: false});
+      return false;
+   }
+
    replaceRoute(route) {
-      this.props.replaceRoute(route);
+      this.saveInputs(route);
+      // this.props.replaceRoute(route);
+      // if (this.state.validForm) {
+      //    this.props.replaceRoute(route);
+      // }
    }
 
    pushNewRoute(route) {
@@ -42,11 +72,11 @@ class Step1 extends Component {
             <Container theme={theme} style={{backgroundColor: '#333'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
-                        <Button transparent onPress={() => this.replaceRoute('signup-step1')}>
+                        <Button transparent onPress={() => this.replaceRoute('signup-step0')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
-                        <Title>Welcome to your new home!</Title>
+                        <Title>WELCOME TO YOUR NEW HOME!</Title>
 
                         <Button transparent onPress={this.props.openDrawer}>
                             <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
@@ -61,7 +91,7 @@ class Step1 extends Component {
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
                                     <Icon name="ios-person" style={{color: '#000'}} />
-                                    <Input placeholder="Full Name" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                    <Input placeholder="First Name Last Name" placeholderTextColor="#878787" style={{color: '#000'}} onChangeText={(username) => this.setState({username})} value={this.state.username} />
                                 </InputGroup>
                             </CardItem>
                             <CardItem header>
@@ -70,13 +100,13 @@ class Step1 extends Component {
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
                                     <Icon name="ios-mail-outline" style={{color: '#000'}} />
-                                    <Input placeholder="EMAIL" placeholderTextColor="#878787" style={{color: '#000'}} />
+                                    <Input placeholder="youremail@someemail.com" placeholderTextColor="#878787" style={{color: '#000'}}  onChangeText={(email) => this.setState({email})} value={this.state.email} />
                                 </InputGroup>
                             </CardItem>
                         </Card>
                     </Content>
 
-                    <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}} onPress={() => this.replaceRoute('signup-step2', {email: this.state.email, fullName: this.state.fullName})}>
+                    <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}} onPress={() => this.replaceRoute('signup-step2', {email: this.state.email, username: this.state.username})}>
                         Next
                     </Button>
                 </Image>
