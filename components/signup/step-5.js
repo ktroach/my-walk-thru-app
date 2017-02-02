@@ -175,6 +175,7 @@ class Step5 extends Component {
                         </Button>
 
                         <Title>How do you want Pay?</Title>
+                        <Text>For your security we do not store any Credit Card / Payment Information on our systems or on your device </Text>
 
                         <Button transparent onPress={this.props.openDrawer}>
                             <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />

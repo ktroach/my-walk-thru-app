@@ -26,12 +26,16 @@ class SideBar extends Component {
         this.props.replaceOrPushRoute(route);
     }
 
+    componentDidMount(){
+      this.haveTheySignedUp();
+    }
+
     // if we have the username stored on the device then yes they signed up before
     haveTheySignedUp () {
       AsyncStorage.getItem("username")
       .then( (username) =>
             {
-              return this.setState({email:username})
+              return this.setState({username:username})
             }
       )
       .done();

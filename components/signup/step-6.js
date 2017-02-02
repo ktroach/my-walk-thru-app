@@ -41,6 +41,7 @@ class Step6 extends Component {
            selectedOption: 0,
            termsAcceptedOn: '',
            userCreatedSuccess: false,
+           updating: false
       };
    }
 
@@ -227,22 +228,36 @@ class Step6 extends Component {
 
        console.log('data: ', data);
 
+       // @todo: we probably want to store the user id returned
+       // from the user api on the device for future reference
 
-         //  // API Call
-         //  fetch(url, {
-         //      method: 'post',
-         //      headers: {
-         //        "Content-type": "application/json; charset=UTF-8"
-         //      },
-         //     body: data
-         // }).then((response) => response.json()).then((responseData) => {
-         //  console.log('USER CREATED: ', responseData);
-         //  this.replaceRoute('home', {email: this.state.email, username: this.state.username});
-         // }).done();
+       if (!this.state.updating) {
+          //  API Call
+          fetch(url, {
+               method: 'post',
+               headers: {
+                 "Content-type": "application/json; charset=UTF-8"
+               },
+             body: data
+          }).then((response) => response.json()).then((responseData) => {
+             this.setState({"updating": true});
+             console.log('RESPONSEDATA: ', responseData);
 
-         console.log('<<< Finished onCreateUser');
+            //  if (responseData.indexOf('error')) {
+            //     handleError(responseData);
+            //  }
 
-         this.replaceRoute('home', {email: this.state.email, username: this.state.username});
+             this.replaceRoute('home', {email: this.state.email, username: this.state.username});
+          }).done();
+       }
+
+       console.log('<<< Finished onCreateUser');
+
+       // this.replaceRoute('home', {email: this.state.email, username: this.state.username});
+     }
+
+     handleError(error){
+        console.error('error: ', error);
      }
 
      createUserAccount(){
