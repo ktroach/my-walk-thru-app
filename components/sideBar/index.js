@@ -3,7 +3,8 @@
 import React, { Component } from 'react';
 
 import {
-  Image
+   AsyncStorage,
+   Image
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -16,23 +17,45 @@ import { Text, Icon, List, ListItem, Content, Thumbnail, Badge, View } from 'nat
 import styles from './style';
 
 class SideBar extends Component {
+   state = {
+     username: '',
+   }
 
     navigateTo(route) {
         this.props.closeDrawer();
         this.props.replaceOrPushRoute(route);
     }
 
-    render(){
+    // if we have the username stored on the device then yes they signed up before
+    haveTheySignedUp () {
+      AsyncStorage.getItem("username")
+      .then( (username) =>
+            {
+              return this.setState({email:username})
+            }
+      )
+      .done();
+   }
 
+    render(){
+      if (this.state.username && this.state.username.length>0) {
+         return (
+            this.renderSignedUp()
+         );
+      } else {
+         return (
+            this.renderNotSignedUp()
+         );
+      }
+    }
+
+    // they are signed up to use the app so display the good stuff
+    renderSignedUp(){
         return (
             <Content style={styles.sidebar} >
                <Image source={require('../../assets/images/slide_properties.jpg')}>
                    <Thumbnail size={500} style={{marginLeft: 17, marginTop: 27, marginBottom: 15, resizeMode: 'contain'}} circular source={require('../../assets/images/mwtlogo.png')} />
                    <List>
-                         <ListItem button onPress={() => this.navigateTo('signup-step6')} iconLeft style={styles.links} >
-                             <Icon style={styles.sidebarIcon} name='ios-person' />
-                             <Text style={styles.text}>Sign Up</Text>
-                         </ListItem>
                         <ListItem button onPress={() => this.navigateTo('home')} iconLeft style={styles.links} >
                           <Icon style={styles.sidebarIcon} name='ios-home' />
                           <Text style={styles.text}>Home</Text>
@@ -46,6 +69,24 @@ class SideBar extends Component {
             </Content>
         );
     }
+
+    // they need to sign up first so dont display the good stuff . tough luck sukers
+    renderNotSignedUp(){
+        return (
+            <Content style={styles.sidebar} >
+               <Image source={require('../../assets/images/slide_properties.jpg')}>
+                   <Thumbnail size={500} style={{marginLeft: 17, marginTop: 27, marginBottom: 15, resizeMode: 'contain'}} circular source={require('../../assets/images/mwtlogo.png')} />
+                   <List>
+                         <ListItem button onPress={() => this.navigateTo('signup-step6')} iconLeft style={styles.links} >
+                             <Icon style={styles.sidebarIcon} name='ios-person' />
+                             <Text style={styles.text}>Sign Up</Text>
+                         </ListItem>
+                   </List>
+               </Image>
+            </Content>
+        );
+    }
+
 }
 
 function bindAction(dispatch) {
