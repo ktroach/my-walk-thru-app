@@ -98,7 +98,7 @@ class Home extends Component {
                             </ListItem>
                             <ListItem iconLeft >
                                <Icon name='ios-megaphone'/>
-                               <Text>You have 5 days left to complete your Walk Thru</Text>
+                               <Text>You have 5 days left to complete your Walk Thru. Better get busy.</Text>
                                <Text style={{fontWeight: '400'}} note>{this.state.deadlineDate}</Text>
                             </ListItem>
                         </List>

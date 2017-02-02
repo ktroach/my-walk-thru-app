@@ -28,13 +28,35 @@ class Step3 extends Component {
    }
 
    saveInputs(route) {
+      console.log(">>> ENTERED: step-3 saveInputs");
       if (this.inputsValidated()) {
          this.setState({validForm: true});
          try {
-            AsyncStorage.setItem("pm_companyname", this.state.pm_companyname);
-            AsyncStorage.setItem("pm_contactname", this.state.pm_contactname);
-            AsyncStorage.setItem("pm_email", this.state.pm_email);
-            AsyncStorage.setItem("pm_phone", this.state.pm_phone);
+            // AsyncStorage.setItem("pm_companyname", this.state.pm_companyname);
+            // AsyncStorage.setItem("pm_contactname", this.state.pm_contactname);
+            // AsyncStorage.setItem("pm_email", this.state.pm_email);
+            // AsyncStorage.setItem("pm_phone", this.state.pm_phone);
+
+            AsyncStorage.setItem("pm_companyname", this.state.pm_companyname)
+            .then( () =>
+                  {
+                    return AsyncStorage.setItem("pm_contactname", this.state.pm_contactname)
+                  }
+            )
+            .then( () =>
+                {
+                    return AsyncStorage.setItem("pm_email", this.state.pm_email)
+                }
+            )
+            .then( () =>
+                {
+                    return AsyncStorage.setItem("pm_phone", this.state.pm_phone)
+                }
+            )
+            .done( );
+
+            console.log("<<< FINISHED: step-3 saveInputs AsyncStorage.setItem");
+
             this.props.replaceRoute(route);
          } catch(err) {
             console.log(err);

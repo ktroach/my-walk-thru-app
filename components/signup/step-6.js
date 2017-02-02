@@ -44,44 +44,90 @@ class Step6 extends Component {
       };
    }
 
-   mapStorageToState() {
-      AsyncStorage.getItem("email").then((email) => {
-          this.setState({"email": email});
-      }).then(res => {});
-      AsyncStorage.getItem("username").then((username) => {
-        this.setState({"username": username});
-      }).then(res => {});
-      AsyncStorage.getItem("street1").then((street1) => {
-        this.setState({"street1": street1});
-      }).then(res => {});
-      AsyncStorage.getItem("street2").then((street2) => {
-        this.setState({"street2": street2});
-      }).then(res => {});
-      AsyncStorage.getItem("city").then((city) => {
-        this.setState({"city": city});
-      }).then(res => {});
-      AsyncStorage.getItem("stateabbr").then((stateabbr) => {
-        this.setState({"stateabbr": stateabbr});
-      }).then(res => {});
-      AsyncStorage.getItem("zip").then((zip) => {
-        this.setState({"zip": zip});
-      }).then(res => {});
-      AsyncStorage.getItem("pm_companyname").then((pm_companyname) => {
-        this.setState({"pm_companyname": pm_companyname});
-      }).then(res => {});
-      AsyncStorage.getItem("pm_contactname").then((pm_contactname) => {
-        this.setState({"pm_contactname": pm_contactname});
-      }).then(res => {});
-      AsyncStorage.getItem("tenant_phone").then((tenant_phone) => {
-        this.setState({"tenant_phone": tenant_phone});
-      }).then(res => {});
-      AsyncStorage.getItem("preferred_contact").then((preferred_contact) => {
-        this.setState({"preferred_contact": preferred_contact});
-      }).then(res => {});
-      AsyncStorage.getItem("sms_alerts").then((sms_alerts) => {
-        this.setState({"sms_alerts": sms_alerts});
-      }).then(res => {});
-     return true;
+   mapStorageToState(cb) {
+      console.log(">>> ENTERED: step-6 mapStorageToState");
+      AsyncStorage.getItem("email")
+      .then( (email) =>
+            {
+              this.setState({email:email})
+              return AsyncStorage.getItem("username")
+            }
+      )
+      .then( (username) =>
+          {
+              this.setState({username: username})
+              return AsyncStorage.getItem("street1")
+          }
+      )
+      .then( (street1) =>
+          {
+              this.setState({street1:street1})
+              return AsyncStorage.getItem("street2")
+          }
+      )
+      .then( (street2) =>
+          {
+             this.setState({street2:street2})
+             return AsyncStorage.getItem("city")
+          }
+      )
+      .then( (city) =>
+            {
+              this.setState({city:city})
+              return AsyncStorage.getItem("stateabbr")
+            }
+      )
+      .then( (stateabbr) =>
+            {
+              this.setState({stateabbr:stateabbr})
+              return AsyncStorage.getItem("zip")
+            }
+      )
+      .then( (zip) =>
+            {
+              this.setState({zip:zip})
+              return AsyncStorage.getItem("pm_companyname")
+            }
+      )
+      .then( (pm_companyname) =>
+            {
+              this.setState({pm_companyname:pm_companyname})
+              return AsyncStorage.getItem("pm_contactname")
+            }
+      )
+      .then( (pm_contactname) =>
+            {
+              this.setState({pm_contactname:pm_contactname})
+              return AsyncStorage.getItem("tenant_phone")
+            }
+      )
+      .then( (tenant_phone) =>
+            {
+              this.setState({tenant_phone:tenant_phone})
+              return AsyncStorage.getItem("preferred_contact")
+            }
+      )
+      .then( (preferred_contact) =>
+            {
+              this.setState({preferred_contact:preferred_contact})
+              return AsyncStorage.getItem("sms_alerts")
+            }
+      )
+      .then( (sms_alerts) =>
+          {
+               this.setState({sms_alerts:sms_alerts})
+               console.log(">>> FINISHED: step-6 mapStorageToState");
+               this.onCreateUser();this.onCreateUser();
+               return cb(null, 'done');
+          }
+      )
+      .done(
+
+      );
+
+      // console.log("AsyncStorage.getItem done");
+      //
+      // return cb(null, 'done');
    }
 
    replaceRoute(route) {
@@ -133,17 +179,16 @@ class Step6 extends Component {
       return <View>{optionNodes}</View>;
      }
 
-     postUser(){
+   //   postUser(){
         // create on api user
         // store the userid in device storage!
         // send the user a welcome email
         // copy the sub category models and patch the user id
         // change the queries to filter by that userid
-
-     }
+   //   }
 
      onCreateUser() {
-       console.log('onCreateUser...');
+       console.log('>>> ENTERED : onCreateUser...');
 
        if (!this.state.email || this.state.email === '') {
           alert('Email address is required');
@@ -157,6 +202,7 @@ class Step6 extends Component {
 
        var now = new Date();
        var url = Config.USERS_API + '/';
+
        var data = JSON.stringify({
          "username": this.state.username,
          "usertype": "Tenant",
@@ -178,19 +224,30 @@ class Step6 extends Component {
          "sms_alerts": this.state.sms_alerts,
          "termsAcceptedOn": this.state.termsAcceptedOn
        });
-       fetch(url, {
-           method: 'post',
-           headers: {
-             "Content-type": "application/json; charset=UTF-8"
-           },
-          body: data
-      }).then((response) => response.json()).then((responseData) => {
-       console.log('USER CREATED: ', responseData);
-       this.replaceRoute('home', {email: this.state.email, username: this.state.username});
-      }).done();
+
+       console.log('data: ', data);
+
+
+         //  // API Call
+         //  fetch(url, {
+         //      method: 'post',
+         //      headers: {
+         //        "Content-type": "application/json; charset=UTF-8"
+         //      },
+         //     body: data
+         // }).then((response) => response.json()).then((responseData) => {
+         //  console.log('USER CREATED: ', responseData);
+         //  this.replaceRoute('home', {email: this.state.email, username: this.state.username});
+         // }).done();
+
+         console.log('<<< Finished onCreateUser');
+
+         this.replaceRoute('home', {email: this.state.email, username: this.state.username});
      }
 
      createUserAccount(){
+        console.log('<<< ENTERED createUserAccount');
+
          var termsAcceptedOn = "";
          let termsAccepted = this.state.selectedOption === "I Accept" ? true : false;
 
@@ -200,19 +257,34 @@ class Step6 extends Component {
 
          this.setState({"termsAcceptedOn": termsAcceptedOn});
 
-         AsyncStorage.setItem("termsAccepted", this.state.selectedOption );
-         AsyncStorage.setItem("termsAcceptedOn", termsAcceptedOn);
+         // AsyncStorage.setItem("termsAccepted", this.state.selectedOption );
+         // AsyncStorage.setItem("termsAcceptedOn", termsAcceptedOn);
 
+         AsyncStorage.setItem("termsAccepted", this.state.selectedOption)
+         .then( () =>
+             {
+                 return AsyncStorage.setItem("termsAcceptedOn", termsAcceptedOn)
+             }
+         )
+         .done( );
 
-         if (this.mapStorageToState()) {
-            this.onCreateUser();
+         this.mapStorageToState(function(err, res){
+            if (err){
+               console.log(err);
+            } else {
+               console.log(res);
+            }
+         });
 
-            // this.replaceRoute('home', {email: this.state.email, username: this.state.username});
-         }
-
-
+         // if (this.mapStorageToState()) {
+         //    this.onCreateUser();
+         //
+         //    // this.replaceRoute('home', {email: this.state.email, username: this.state.username});
+         // }
 
          // this.replaceRoute('home', {email: this.state.email, username: this.state.username});
+
+         console.log('<<< FINISHED createUserAccount');
      }
 
      maybeProceed() {
@@ -245,7 +317,7 @@ class Step6 extends Component {
                                 <Text>Terms of Use</Text>
                             </CardItem>
                             <CardItem>
-                                 <Textarea placeholder="Use Agreement" style={{color: '#333', height: 500, overflow: 'scroll'}} value='OnSight PROS My Walk Thru is a service provided to landlords, property managers, and insurance companies and the reports reflect the condition of the property on the date of the Report. These reports are provided by trained individuals. This report is not to be mistaken with the report one will receive by a licensed inspector in a particular state.  OnSight PROS My Walk Thru is is not responsible for personal data usage.
+                                 <Textarea disabled placeholder="Use Agreement" style={{color: '#333', height: 500, overflow: 'scroll'}} value='OnSight PROS My Walk Thru is a service provided to landlords, property managers, and insurance companies and the reports reflect the condition of the property on the date of the Report. These reports are provided by trained individuals. This report is not to be mistaken with the report one will receive by a licensed inspector in a particular state.  OnSight PROS My Walk Thru is is not responsible for personal data usage.
                                  Please read these Terms of Service ("Terms", "Terms of Service") carefully before using the http://www.onsightpros.com/ website (the "Service") operated by My Walk Thru ("us", "we", or "our").
 
 Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms. These Terms apply to all visitors, users and others who access or use the Service.

@@ -31,6 +31,7 @@ class Step1 extends Component {
          try {
             AsyncStorage.setItem("username", this.state.username);
             AsyncStorage.setItem("email", this.state.email);
+            
             this.props.replaceRoute(route);
          } catch(err) {
             console.log(err);

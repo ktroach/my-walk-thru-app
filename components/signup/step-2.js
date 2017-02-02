@@ -37,6 +37,7 @@ class Step2 extends Component {
             AsyncStorage.setItem("city", this.state.city);
             AsyncStorage.setItem("state", this.state.stateabbr);
             AsyncStorage.setItem("zip", this.state.zip);
+
             this.props.replaceRoute(route);
          } catch(err) {
             console.log(err);
@@ -94,17 +95,17 @@ class Step2 extends Component {
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
                                     <Icon name="ios-home-outline" style={{color: '#000'}} />
-                                    <Input placeholder="" placeholderTextColor="#878787" style={{color: '#000'}}
+                                    <Input placeholder="123 Main Street" placeholderTextColor="#878787" style={{color: '#000'}}
                                     onChangeText={(street1) => this.setState({street1})} value={this.state.street1} />
                                 </InputGroup>
                             </CardItem>
                             <CardItem header>
-                                <Text>Street Address 2 (optional)</Text>
+                                <Text>Street Address 2</Text>
                             </CardItem>
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
                                     <Icon name="ios-home-outline" style={{color: '#000'}} />
-                                    <Input placeholder="" placeholderTextColor="#878787" style={{color: '#000'}}
+                                    <Input placeholder="(Optional)" placeholderTextColor="#878787" style={{color: '#000'}}
                                     onChangeText={(street2) => this.setState({street2})} value={this.state.street2} />
                                 </InputGroup>
                             </CardItem>
@@ -114,7 +115,7 @@ class Step2 extends Component {
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
                                     <Icon name="ios-home-outline" style={{color: '#000'}} />
-                                    <Input placeholder="" placeholderTextColor="#878787" style={{color: '#000'}}
+                                    <Input placeholder="City Name" placeholderTextColor="#878787" style={{color: '#000'}}
                                     onChangeText={(city) => this.setState({city})} value={this.state.city} />
                                 </InputGroup>
                             </CardItem>
@@ -124,7 +125,7 @@ class Step2 extends Component {
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
                                     <Icon name="ios-home-outline" style={{color: '#000'}} />
-                                    <Input placeholder="" placeholderTextColor="#878787" style={{color: '#000'}}
+                                    <Input placeholder="TX" placeholderTextColor="#878787" style={{color: '#000'}}
                                     onChangeText={(stateabbr) => this.setState({stateabbr})} value={this.state.stateabbr} />
                                 </InputGroup>
                             </CardItem>
@@ -134,7 +135,7 @@ class Step2 extends Component {
                             <CardItem>
                                 <InputGroup style={{borderColor: '#d5d5d5'}}>
                                     <Icon name="ios-home-outline" style={{color: '#000'}} />
-                                    <Input placeholder="" placeholderTextColor="#878787" style={{color: '#000'}}
+                                    <Input placeholder="Zip Code" placeholderTextColor="#878787" style={{color: '#000'}}
                                     onChangeText={(zip) => this.setState({zip})} value={this.state.zip} />
                                 </InputGroup>
                             </CardItem>
