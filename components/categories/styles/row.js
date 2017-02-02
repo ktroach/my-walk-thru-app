@@ -31,6 +31,25 @@ module.exports = StyleSheet.create({
       fontWeight: '400',
       color: '#ddd'
    },
+    labelLg: {
+       fontSize: 18,
+       fontWeight: '700',
+       paddingHorizontal: 5,
+       paddingVertical: 5,
+       textAlign: 'left',
+    },
+     labelMd: {
+        fontSize: 14,
+        fontWeight: '400',
+        paddingHorizontal: 5,
+        paddingVertical: 5
+     },
+     labelSm: {
+        fontSize: 12,
+        fontWeight: '200',
+        paddingHorizontal: 5,
+        paddingVertical: 5
+     },
    // date: {
    //    textAlign: 'right',
    //    marginTop: -35,

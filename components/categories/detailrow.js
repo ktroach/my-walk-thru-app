@@ -3,12 +3,10 @@ import React, {
 } from 'react';
 import {
    StyleSheet,
-   Text,
    TextInput,
    View,
    TouchableHighlight,
    Alert,
-   Button,
    Clipboard,
    Image,
    Share,
@@ -31,7 +29,6 @@ import Exponent, {
 import Config from '../../config'
 import styles from './styles/details';
 import rowStyles from './styles/row';
-// import AttributeMap from '../../attributemap';
 import Toolbar from '../toolbar'
 import shortid from 'shortid';
 import { SegmentedControls } from 'react-native-radio-buttons';
@@ -44,6 +41,11 @@ import moment from 'moment';
 import Lightbox from 'react-native-lightbox';
 import RNAssetThumbnail from  'react-native-asset-thumbnail';
 import PhotoBrowser from 'react-native-photo-browser';
+
+import { Container, Header, Title, Content, Text, Button, List, ListItem, Card, CardItem } from 'native-base';
+import { openDrawer } from '../../actions/drawer';
+import { popRoute } from '../../actions/route';
+import { pushNewRoute, replaceRoute } from '../../actions/route';
 
 class DetailRow extends React.Component {
    constructor(props, context) {
@@ -125,54 +127,38 @@ class DetailRow extends React.Component {
              flexDirection: 'column',
              justifyContent: 'center',
             }}>
-             <View style={{backgroundColor: 'white'}}>
-                <Text style={rowStyles.labelLg}>
-                   {this.state.item.name}
-                </Text>
-             </View>
-             <View style={{backgroundColor: 'white'}}>
-                {this.renderSegmentControl(this.state.item)}
-             </View>
-             <View style={{backgroundColor: 'white'}}>
-                { this._maybeRenderComments() }
-             </View>
-             <View style={{backgroundColor: 'white'}}>
-                <Text style={{color:'#333'}}>
-                   <Icon name='ios-camera' size={20} color='#333'  />
-                   <Text> Photos</Text>
-                </Text>
-                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
 
-                   <View>
-                      <TouchableHighlight
-                          onPress={this._takePhoto.bind(this)}>
-                          <Text style={{backgroundColor: '#ad241f', color: '#fff', padding: 5,      borderWidth: 1,
-                                borderColor: '#333'}}>Take Photo</Text>
-                      </TouchableHighlight>
-                   </View>
-
-                   <View>
-                      <TouchableHighlight
-                          onPress={this._pickImage.bind(this)}>
-                          <Text style={{backgroundColor: '#ad241f', color: '#fff', padding: 5,      borderWidth: 1,
-                                borderColor: '#333'}}>Pick Photo</Text>
-                      </TouchableHighlight>
-                   </View>
-
-
-                </View>
-                <View>
-
-                {/** Photo Browser **/}
-                  { this._maybeRenderPhotos() }
+            <Header>
+                <Title>{this.state.item.name}</Title>
+            </Header>
+            <Content padder style={{backgroundColor: 'transparent'}} >
+                <Card transparent foregroundColor="#000">
+                    <CardItem header>
+                       <Text>Actions</Text>
+                    </CardItem>
+                    <CardItem>
+                       {this.renderSegmentControl(this.state.item)}
+                    </CardItem>
+                </Card>
+            </Content>
+            <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}} onPress={() => this.replaceRoute('categories')}>
+                Comments and Photos
+            </Button>
 
 
 
-                </View>
-             </View>
+
          </View>
       </View>
      );
+   }
+
+   onActionSelected(position) {
+      if (position === 0) {
+         console.log(position);
+      } else if (position === 1) {
+         console.log(position);
+      }
    }
 
    _onPhotoSelectionChanged(){
@@ -223,46 +209,46 @@ class DetailRow extends React.Component {
 // {"where": {"and": [{"rank": "999"},{"images.image":{ "neq": "" }}, {"active":{ "eq": "true"}}]}}
 
 
-   _maybeRenderPhotos() {
-      console.log('>>> ENTERED _maybeRenderPhotos...');
-      if (this.state.item.images) {
-         let photos = this.state.item.images;
-         let date = new Date();
-         let modified = this.state.item.modified;
-         // moment().format('MMMM Do YYYY, h:mm:ss a');
-         let formattedDate = moment(modified).format('YYYYMMDD h:mm:ss a');
-         if (photos && photos.length>0){
-            for (var i = 0; i < photos.length; i++) {
-               let uri = photos[i].image;
-               console.log('>>> uri:', uri);
-               if (uri && uri.length>0){
-                  return (
-                     <View style={{flex: 1, flexDirection: 'row'}}>
-
-                     <Image
-
-                        source={{uri}}
-                        style={{width:75,height:75, borderWidth:1, borderColor:'#333'}}
-                        >
-                        <Text style={{color:'#333',fontSize:6}}>{formattedDate}</Text>
-                     </Image>
-
-
-                     </View>
-
-                  );
-               }
-            }
-         } else {
-            // nothing to render
-            return (<View></View>);
-
-         }
-      } else {
-         // nothing to render
-         return (<View></View>);
-      }
-   }
+   // _maybeRenderPhotos() {
+   //    console.log('>>> ENTERED _maybeRenderPhotos...');
+   //    if (this.state.item.images) {
+   //       let photos = this.state.item.images;
+   //       let date = new Date();
+   //       let modified = this.state.item.modified;
+   //       // moment().format('MMMM Do YYYY, h:mm:ss a');
+   //       let formattedDate = moment(modified).format('YYYYMMDD h:mm:ss a');
+   //       if (photos && photos.length>0){
+   //          for (var i = 0; i < photos.length; i++) {
+   //             let uri = photos[i].image;
+   //             console.log('>>> uri:', uri);
+   //             if (uri && uri.length>0){
+   //                return (
+   //                   <View style={{flex: 1, flexDirection: 'row'}}>
+   //
+   //                   <Image
+   //
+   //                      source={{uri}}
+   //                      style={{width:75,height:75, borderWidth:1, borderColor:'#333'}}
+   //                      >
+   //                      <Text style={{color:'#333',fontSize:6}}>{formattedDate}</Text>
+   //                   </Image>
+   //
+   //
+   //                   </View>
+   //
+   //                );
+   //             }
+   //          }
+   //       } else {
+   //          // nothing to render
+   //          return (<View></View>);
+   //
+   //       }
+   //    } else {
+   //       // nothing to render
+   //       return (<View></View>);
+   //    }
+   // }
 
    fetchWalkthroughItem() {
       let itemId = this.props.itemId;
@@ -347,7 +333,8 @@ class DetailRow extends React.Component {
    checkAction(data) {
       if (data.selectedOption === 'Needs Attention') {
          // console.log('Taking Photo...');
-         this._takePhoto();
+         // this._takePhoto();
+
       }
    }
 
@@ -410,10 +397,8 @@ class DetailRow extends React.Component {
             selectedIndex={selectedIndex}
             extractText={(option) => option.label}
             optionContainerStyle={{ flex: 1 }}
-            selectedTint= {'white'}
-            backTint= {'#ccc'}
             optionStyle= {{
-              fontSize: 12,
+              fontSize: 16,
               fontWeight: 'bold',
             }}
             containerStyle= {{
@@ -442,195 +427,195 @@ class DetailRow extends React.Component {
        return this.renderWalkthroughItem();
    }
 
-   _maybeRenderUploadingOverlay = () => {
-     if (this.state.uploading) {
-       return (
-         <View style={
-            [StyleSheet.absoluteFill,
-            {backgroundColor: 'rgba(0,0,0,0.4)',
-            alignItems: 'center',
-            justifyContent: 'center'
-         }]
-         }>
-           <ActivityIndicator
-             color="#fff"
-             animating
-             size="large"
-           />
-         </View>
-       );
-     }
-   }
-
-   _maybeRenderImage = () => {
-     let { image } = this.state;
-     if (!image) {
-       return;
-     }
-     return (
-       <View style={{
-         marginTop: 30,
-         width: 250,
-         borderRadius: 3,
-         elevation: 2,
-         shadowColor: 'rgba(0,0,0,1)',
-         shadowOpacity: 0.2,
-         shadowOffset: {width: 4, height: 4},
-         shadowRadius: 5,
-       }}>
-         <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
-           <Image
-             source={{uri: image}}
-             style={{width: 50, height: 50}}
-           />
-         </View>
-         <Text
-           onPress={this._copyToClipboard}
-           onLongPress={this._share}
-           style={{paddingVertical: 10, paddingHorizontal: 10}}>
-           {image}
-         </Text>
-       </View>
-     );
-   }
-
-   _share = () => {
-     Share.share({
-       message: this.state.image,
-       title: 'Check out this photo',
-       url: this.state.image,
-     });
-   }
-
-   _copyToClipboard = () => {
-     Clipboard.setString(this.state.image);
-     alert('Copied image URL to clipboard');
-   }
-
-   _takePhoto = async () => {
-      // console.log('>>> ENTERED _takePhoto');
-
-     let pickerResult = await ImagePicker.launchCameraAsync({
-       allowsEditing: true,
-       aspect: [4,3]
-     });
-
-     this._handleImagePicked(pickerResult);
-   }
-
-   _pickImage = async () => {
-      // console.log('>>> ENTERED _pickImage');
-
-     let pickerResult = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true,
-       aspect: [4,3]
-      });
-
-      this._handleImagePicked(pickerResult);
-   }
-
-   _handleImagePicked = async (pickerResult) => {
-
-      // console.log('>>> ENTERED _handleImagePicked');
-
-      // console.log('pickerResult.uri: ', pickerResult.uri);
-
-      let uploadResponse, uploadResult;
-
-      try {
-
-      //   console.log('>>> set state -> uploading: true');
-
-       this.setState({uploading: true});
-
-       if (!pickerResult.cancelled) {
-         // uploadResponse = this.uploadImageAsync(pickerResult.uri);
-         uploadResponse = await this.uploadImageAsync(pickerResult.uri);
-         uploadResult = await uploadResponse.json();
-
-         // console.log('>>> uploadResponse: ', uploadResponse);
-
-         // uploadResult =  uploadResponse.json();
-
-         // console.log('>>> uploadResult: ', uploadResult);
-
-         let filename = uploadResult.result.files.photo[0].name;
-
-         // console.log('>>> filename: ', filename);
-
-         // let location = Config.IMAGE_UPLOADER_PHOTOS_API +
-
-         let location = `https://pros-estimates.herokuapp.com:443/api/Containers/images/download/${filename}`;
-
-         // console.log('>>> set state -> image:location: ', location);
-
-         this.setState({image: location});
-
-         let newimages = [];
-         let item = this.state.item;
-         let images = item.images;
-         if (!images) newimages = [];
-         if (images) newimages = images;
-         newimages.push({image: location});
-
-         let data = {images: newimages};
-         this.patchItem(item.id, data, false);
-
-       }
-     } catch(e) {
-
-       console.log('Failed to upload image');
-
-       console.log({uploadResponse});
-       console.log({uploadResult});
-       console.log({e});
-
-       alert('Failed to upload image');
-       alert(e.message);
-     } finally {
-
-        console.log('>>> set state -> uploading: false');
-        this.setState({uploading: false});
-     }
-  }
-
-  async uploadImageAsync(uri) {
-
-   //   console.log('>>> ENTERED uploadImageAsync...');
-   //   console.log('uri:', uri);
-
-      let apiUrl = 'https://pros-estimates.herokuapp.com:443/api/Containers/images/upload';
-
-      let uriParts = uri.split('.');
-      let fileType = 'png'; //uri[uri.length - 1];
-
-      let formData = new FormData();
-
-      let filename = shortid.generate();
-
-      // console.log('>>> filename: ', filename);
-
-      formData.append('photo', {
-        uri,
-        name: `${filename}.${fileType}`,
-        type: `image/${fileType}`,
-      });
-
-      // console.log('>>> formData image name: ', `${filename}.${fileType}`);
-
-      let options = {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'multipart/form-data',
-        },
-      };
-
-      // console.log('>>> POST options: ', options);
-
-      return fetch(apiUrl, options);
-    }
+  //  _maybeRenderUploadingOverlay = () => {
+  //    if (this.state.uploading) {
+  //      return (
+  //        <View style={
+  //           [StyleSheet.absoluteFill,
+  //           {backgroundColor: 'rgba(0,0,0,0.4)',
+  //           alignItems: 'center',
+  //           justifyContent: 'center'
+  //        }]
+  //        }>
+  //          <ActivityIndicator
+  //            color="#fff"
+  //            animating
+  //            size="large"
+  //          />
+  //        </View>
+  //      );
+  //    }
+  //  }
+  //
+  //  _maybeRenderImage = () => {
+  //    let { image } = this.state;
+  //    if (!image) {
+  //      return;
+  //    }
+  //    return (
+  //      <View style={{
+  //        marginTop: 30,
+  //        width: 250,
+  //        borderRadius: 3,
+  //        elevation: 2,
+  //        shadowColor: 'rgba(0,0,0,1)',
+  //        shadowOpacity: 0.2,
+  //        shadowOffset: {width: 4, height: 4},
+  //        shadowRadius: 5,
+  //      }}>
+  //        <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
+  //          <Image
+  //            source={{uri: image}}
+  //            style={{width: 50, height: 50}}
+  //          />
+  //        </View>
+  //        <Text
+  //          onPress={this._copyToClipboard}
+  //          onLongPress={this._share}
+  //          style={{paddingVertical: 10, paddingHorizontal: 10}}>
+  //          {image}
+  //        </Text>
+  //      </View>
+  //    );
+  //  }
+  //
+  //  _share = () => {
+  //    Share.share({
+  //      message: this.state.image,
+  //      title: 'Check out this photo',
+  //      url: this.state.image,
+  //    });
+  //  }
+  //
+  //  _copyToClipboard = () => {
+  //    Clipboard.setString(this.state.image);
+  //    alert('Copied image URL to clipboard');
+  //  }
+  //
+  //  _takePhoto = async () => {
+  //     // console.log('>>> ENTERED _takePhoto');
+  //
+  //    let pickerResult = await ImagePicker.launchCameraAsync({
+  //      allowsEditing: true,
+  //      aspect: [4,3]
+  //    });
+  //
+  //    this._handleImagePicked(pickerResult);
+  //  }
+  //
+  //  _pickImage = async () => {
+  //     // console.log('>>> ENTERED _pickImage');
+  //
+  //    let pickerResult = await ImagePicker.launchImageLibraryAsync({
+  //       allowsEditing: true,
+  //      aspect: [4,3]
+  //     });
+  //
+  //     this._handleImagePicked(pickerResult);
+  //  }
+  //
+  //  _handleImagePicked = async (pickerResult) => {
+  //
+  //     // console.log('>>> ENTERED _handleImagePicked');
+  //
+  //     // console.log('pickerResult.uri: ', pickerResult.uri);
+  //
+  //     let uploadResponse, uploadResult;
+  //
+  //     try {
+  //
+  //     //   console.log('>>> set state -> uploading: true');
+  //
+  //      this.setState({uploading: true});
+  //
+  //      if (!pickerResult.cancelled) {
+  //        // uploadResponse = this.uploadImageAsync(pickerResult.uri);
+  //        uploadResponse = await this.uploadImageAsync(pickerResult.uri);
+  //        uploadResult = await uploadResponse.json();
+  //
+  //        // console.log('>>> uploadResponse: ', uploadResponse);
+  //
+  //        // uploadResult =  uploadResponse.json();
+  //
+  //        // console.log('>>> uploadResult: ', uploadResult);
+  //
+  //        let filename = uploadResult.result.files.photo[0].name;
+  //
+  //        // console.log('>>> filename: ', filename);
+  //
+  //        // let location = Config.IMAGE_UPLOADER_PHOTOS_API +
+  //
+  //        let location = `https://pros-estimates.herokuapp.com:443/api/Containers/images/download/${filename}`;
+  //
+  //        // console.log('>>> set state -> image:location: ', location);
+  //
+  //        this.setState({image: location});
+  //
+  //        let newimages = [];
+  //        let item = this.state.item;
+  //        let images = item.images;
+  //        if (!images) newimages = [];
+  //        if (images) newimages = images;
+  //        newimages.push({image: location});
+  //
+  //        let data = {images: newimages};
+  //        this.patchItem(item.id, data, false);
+  //
+  //      }
+  //    } catch(e) {
+  //
+  //      console.log('Failed to upload image');
+  //
+  //      console.log({uploadResponse});
+  //      console.log({uploadResult});
+  //      console.log({e});
+  //
+  //      alert('Failed to upload image');
+  //      alert(e.message);
+  //    } finally {
+  //
+  //       console.log('>>> set state -> uploading: false');
+  //       this.setState({uploading: false});
+  //    }
+  // }
+  //
+  // async uploadImageAsync(uri) {
+  //
+  //  //   console.log('>>> ENTERED uploadImageAsync...');
+  //  //   console.log('uri:', uri);
+  //
+  //     let apiUrl = 'https://pros-estimates.herokuapp.com:443/api/Containers/images/upload';
+  //
+  //     let uriParts = uri.split('.');
+  //     let fileType = 'png'; //uri[uri.length - 1];
+  //
+  //     let formData = new FormData();
+  //
+  //     let filename = shortid.generate();
+  //
+  //     // console.log('>>> filename: ', filename);
+  //
+  //     formData.append('photo', {
+  //       uri,
+  //       name: `${filename}.${fileType}`,
+  //       type: `image/${fileType}`,
+  //     });
+  //
+  //     // console.log('>>> formData image name: ', `${filename}.${fileType}`);
+  //
+  //     let options = {
+  //       method: 'POST',
+  //       body: formData,
+  //       headers: {
+  //         'Accept': 'application/json',
+  //         'Content-Type': 'multipart/form-data',
+  //       },
+  //     };
+  //
+  //     // console.log('>>> POST options: ', options);
+  //
+  //     return fetch(apiUrl, options);
+  //   }
 
    renderLoadingView() {
       return (

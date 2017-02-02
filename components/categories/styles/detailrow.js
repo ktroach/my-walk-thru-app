@@ -11,7 +11,7 @@ module.exports = StyleSheet.create({
       flex: 1,
       width: null,
       height: null,
-   },   
+   },
    //  container: {
    //      flex: 1,
    //      justifyContent: 'flex-start',
@@ -88,7 +88,7 @@ module.exports = StyleSheet.create({
     },
     headerText: {
         fontWeight: 'bold',
-        fontSize: 16,
+        fontSize: 20,
         color: 'black'
     },
     sectionHeader: {

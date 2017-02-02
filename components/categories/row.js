@@ -92,9 +92,6 @@ class CategoryRow extends React.Component {
                        <ListItem style={{borderBottomWidth: 0}}>
                            <ProgressViewIOS style={styles.progressView} progressTintColor="orange" progress={this.getProgress(0.6)}/>
                        </ListItem>
-                       <ListItem>
-                           <Text style={{ color: '#333' }}>{this.props.category.id}</Text>
-                       </ListItem>
                   </List>
                </CardItem>
             </TouchableOpacity>

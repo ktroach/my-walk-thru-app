@@ -119,12 +119,13 @@ class CategoryDetails extends React.Component {
           <Container theme={theme} style={{backgroundColor: '#333'}}>
               <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                    <Header>
-                   <Button transparent onPress={() => this.replaceRoute('categories')}>
-                       <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
-                   </Button>
+                      <Button onPress={() => this.replaceRoute('categories')}>
+                          <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
+                      </Button>
+
                        <Title>{this.state.toolbarTitle}</Title>
 
-                       <Button transparent onPress={this.props.openDrawer} >
+                       <Button onPress={this.props.openDrawer} >
                            <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
                        </Button>
                    </Header>
@@ -133,12 +134,11 @@ class CategoryDetails extends React.Component {
                    <View style={[styles.subHeaderBar]}>
                       <View style={{flex: 1,justifyContent: 'space-between',flexDirection: 'row', padding: 10}}>
                          <View>
-                             <Switch onValueChange={(value) => this.toggleAllObserved(value)}
-                                onTintColor="#00ff00"
-                                thumbTintColor="#0000ff"
-                                tintColor="#C8C7CC"
-                                value={this.state.allObservedSwitchIsOn} />
-                             <Text style={{color:'#333', fontSize:10, fontWeight:'500', textAlign: 'center', paddingTop: 3}}>
+                             <Switch
+                               onValueChange={(value) => this.setState({allObservedSwitchIsOn: value})}
+                               value={this.state.allObservedSwitchIsOn} />
+
+                             <Text style={{color:'#fff', fontSize:12, fontWeight:'500', textAlign: 'center', paddingTop: 3}}>
                              All Observed</Text>
                          </View>
                       </View>
@@ -154,45 +154,45 @@ class CategoryDetails extends React.Component {
    }
 
 
-   xrenderWalkthrough() {
-      return (
-        <View style={styles.container}>
-           <Toolbar
-               title={this.state.toolbarTitle}
-               style={styles.toolbar}
-               titleColor={'#fff'}
-               actions={[
-                   {title: 'Back', iconName: 'md-arrow-back', iconColor: '#fff', show: 'false'},
-                   {title: 'Prev', iconName: 'md-arrow-dropleft-circle', iconColor: '#fff', show: 'always'},
-                   {title: 'Next', iconName: 'md-arrow-dropright-circle', iconColor: '#fff', show: 'always'},
-                   {title: 'Refresh', iconName: 'md-refresh', iconColor: '#fff', show: 'always'},
-                   {title: 'Add Item', iconName: 'md-add', iconColor: '#fff', show: 'always'},
-               ]}
-               onActionSelected={this.onActionSelected.bind(this)} />
-
-            <View style={[styles.subHeaderBar]}>
-                <View style={{flex: 1,justifyContent: 'space-between',flexDirection: 'row', padding: 10}}>
-                   <View>
-                       <Switch onValueChange={(value) => this.toggleAllObserved(value)}
-                          onTintColor="#00ff00"
-                          thumbTintColor="#0000ff"
-                          tintColor="#C8C7CC"
-                          value={this.state.allObservedSwitchIsOn} />
-                       <Text style={{color:'#333', fontSize:10, fontWeight:'500', textAlign: 'center', paddingTop: 3}}>
-                       All Observed</Text>
-                   </View>
-                </View>
-            </View>
-
-            {
-             this.renderListView()
-            }
-
-            <StatusBar barStyle="default" />
-
-        </View>
-      );
-   }
+   // xrenderWalkthrough() {
+   //    return (
+   //      <View style={styles.container}>
+   //         <Toolbar
+   //             title={this.state.toolbarTitle}
+   //             style={styles.toolbar}
+   //             titleColor={'#fff'}
+   //             actions={[
+   //                 {title: 'Back', iconName: 'md-arrow-back', iconColor: '#fff', show: 'false'},
+   //                 {title: 'Prev', iconName: 'md-arrow-dropleft-circle', iconColor: '#fff', show: 'always'},
+   //                 {title: 'Next', iconName: 'md-arrow-dropright-circle', iconColor: '#fff', show: 'always'},
+   //                 {title: 'Refresh', iconName: 'md-refresh', iconColor: '#fff', show: 'always'},
+   //                 {title: 'Add Item', iconName: 'md-add', iconColor: '#fff', show: 'always'},
+   //             ]}
+   //             onActionSelected={this.onActionSelected.bind(this)} />
+   //
+   //          <View style={[styles.subHeaderBar]}>
+   //              <View style={{flex: 1,justifyContent: 'space-between',flexDirection: 'row', padding: 10}}>
+   //                 <View>
+   //                     <Switch onValueChange={(value) => this.toggleAllObserved(value)}
+   //                        onTintColor="#00ff00"
+   //                        thumbTintColor="#0000ff"
+   //                        tintColor="#C8C7CC"
+   //                        value={this.state.allObservedSwitchIsOn} />
+   //                     <Text style={{color:'#333', fontSize:10, fontWeight:'500', textAlign: 'center', paddingTop: 3}}>
+   //                     All Observed</Text>
+   //                 </View>
+   //              </View>
+   //          </View>
+   //
+   //          {
+   //           this.renderListView()
+   //          }
+   //
+   //          <StatusBar barStyle="default" />
+   //
+   //      </View>
+   //    );
+   // }
 
    fetchWalkthroughItems(categoryId) {
       let query = Config.PRICING_ITEMS_API + '?filter={"where": {"rank": 999, "divisionid": "'+categoryId+'"}}';
@@ -216,28 +216,28 @@ class CategoryDetails extends React.Component {
             subcategories: responseData
          });
 
-         let subCategoryStates = {};
-         //subCategoryStates["prop"] = value;
-         //var value = subCategoryStates[key];
-         // key will be item.id
-
-         let allobserved = false;
-         let items = responseData;
-         items.forEach(function(item){
-           let value = '';
-           let key = item.id;
-           if (item.selectedOption) value = item.selectedOption;
-           subCategoryStates[key] = value;
-           allobserved = item.allObservedSwitchIsOn;
-         });
-
-         this.setState({
-            allObservedSwitchIsOn: allobserved
-         });
-
-         this.setState({
-            subCategoryStates: subCategoryStates
-         });
+         // let subCategoryStates = {};
+         // //subCategoryStates["prop"] = value;
+         // //var value = subCategoryStates[key];
+         // // key will be item.id
+         //
+         // let allobserved = false;
+         // let items = responseData;
+         // items.forEach(function(item){
+         //   let value = '';
+         //   let key = item.id;
+         //   if (item.selectedOption) value = item.selectedOption;
+         //   subCategoryStates[key] = value;
+         //   allobserved = item.allObservedSwitchIsOn;
+         // });
+         //
+         // this.setState({
+         //    allObservedSwitchIsOn: allobserved
+         // });
+         //
+         // this.setState({
+         //    subCategoryStates: subCategoryStates
+         // });
       }).done();
    }
 
@@ -271,15 +271,15 @@ class CategoryDetails extends React.Component {
       // this.setState(stateCopy);
    }
 
-   toggleAllObserved(value) {
-      // if (value) {
-      //    this.handleAllObserved('on',value);
-      // } else {
-      //    this.handleAllObserved('off',value);
-      // }
-      //
-      // this.props.onCancel();
-   }
+   // toggleAllObserved(value) {
+   //    if (value) {
+   //       this.handleAllObserved('on',value);
+   //    } else {
+   //       this.handleAllObserved('off',value);
+   //    }
+   //    //
+   //    // this.props.onCancel();
+   // }
 
    onRefresh = () => {
      try {
