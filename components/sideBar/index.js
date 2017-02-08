@@ -4,7 +4,8 @@ import React, { Component } from 'react';
 
 import {
    AsyncStorage,
-   Image
+   Image,
+   ActivityIndicator,
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -12,13 +13,14 @@ import { connect } from 'react-redux';
 import { closeDrawer } from '../../actions/drawer';
 import { replaceOrPushRoute } from '../../actions/route';
 
-import { Text, Icon, List, ListItem, Content, Thumbnail, Badge, View } from 'native-base';
+import {Container, Text, Icon, List, ListItem, Content, Thumbnail, Badge, View } from 'native-base';
 
 import styles from './style';
 
 class SideBar extends Component {
    state = {
      username: '',
+     loaded: false
    }
 
     navigateTo(route) {
@@ -32,34 +34,59 @@ class SideBar extends Component {
 
     // if we have the username stored on the device then yes they signed up before
     haveTheySignedUp () {
-      AsyncStorage.getItem("username")
-      .then( (username) =>
-            {
-              return this.setState({username:username})
-            }
-      )
-      .done();
+      try {
+         AsyncStorage.getItem("username")
+         .then( (username) =>
+               {
+                  this.setState({loaded: true});
+                  return this.setState({username:username})
+               }
+         )
+         .done();
+      } catch(err){}
    }
 
     render(){
-      if (this.state.username && this.state.username.length>0) {
-         return (
-            this.renderSignedUp()
-         );
+      if (this.state.loaded){
+         if (this.state.username && this.state.username.length>0) {
+            return (
+               this.renderSignedUp()
+            );
+         } else {
+            return (
+               this.renderNotSignedUp()
+            );
+         }
       } else {
          return (
-            this.renderNotSignedUp()
+            this.renderLoadingView()
          );
       }
+    }
+
+    renderLoadingView() {
+      return (
+         <Content style={styles.sidebar} >
+             <Image source={require('../../assets/images/slide_properties.jpg')} style={styles.container} >
+                 <ActivityIndicator
+                    animating={!this.state.loaded}
+                    style={[styles.activityIndicator, {height: 80}]}
+                    size="large"
+                />
+             </Image>
+         </Content>
+      );
     }
 
     // they are signed up to use the app so display the good stuff
     renderSignedUp(){
         return (
             <Content style={styles.sidebar} >
-               <Image source={require('../../assets/images/slide_properties.jpg')}>
-                   <Thumbnail size={500} style={{marginLeft: 17, marginTop: 27, marginBottom: 15, resizeMode: 'contain'}} circular source={require('../../assets/images/mwtlogo.png')} />
-                   <List>
+               <Image source={require('../../assets/images/slide_properties.jpg')} style={{resizeMode: 'cover', opacity: 0.8}}>
+                   <Thumbnail size={500} style={{resizeMode: 'contain', marginTop: 7}} source={require('../../assets/images/logo.png')} />
+                   <Image source={require('../../assets/images/pros-logo.png')}  style={{marginLeft: 55, marginTop: -100, opacity: 1.0}} />
+
+                   <List style={{paddingTop: 50}}>
                         <ListItem button onPress={() => this.navigateTo('home')} iconLeft style={styles.links} >
                           <Icon style={styles.sidebarIcon} name='ios-home' />
                           <Text style={styles.text}>Home</Text>
@@ -77,11 +104,13 @@ class SideBar extends Component {
     // they need to sign up first so dont display the good stuff . tough luck sukers
     renderNotSignedUp(){
         return (
-            <Content style={styles.sidebar} >
-               <Image source={require('../../assets/images/slide_properties.jpg')}>
-                   <Thumbnail size={500} style={{marginLeft: 17, marginTop: 27, marginBottom: 15, resizeMode: 'contain'}} circular source={require('../../assets/images/mwtlogo.png')} />
-                   <List>
-                         <ListItem button onPress={() => this.navigateTo('signup-step6')} iconLeft style={styles.links} >
+           <Content style={styles.sidebar} >
+             <Image source={require('../../assets/images/slide_properties.jpg')} style={{resizeMode: 'cover', opacity: 0.8}}>
+                  <Thumbnail size={500} style={{resizeMode: 'contain', marginTop: 7}} source={require('../../assets/images/logo.png')} />
+                  <Image source={require('../../assets/images/pros-logo.png')}  style={{marginLeft: 55, marginTop: -100, opacity: 1.0}} />
+
+                  <List style={{paddingTop: 50}}>
+                         <ListItem button onPress={() => this.navigateTo('signup-step0')} iconLeft style={styles.links} >
                              <Icon style={styles.sidebarIcon} name='ios-person' />
                              <Text style={styles.text}>Sign Up</Text>
                          </ListItem>

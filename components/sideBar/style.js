@@ -4,7 +4,8 @@ var React = require('react-native');
 
 var { StyleSheet, Platform } = React;
 
-var fontSizeBase = 15;
+var fontSizeBase = 16;
+// var largeFont = fontSizeBase * 2.0;
 var largeFont = fontSizeBase * 1.8;
 
 // #232323
@@ -26,8 +27,8 @@ module.exports = StyleSheet.create({
         backgroundColor: 'transparent',
     },
     text: {
-        backgroundColor: 'transparent',
-        color: '#ecebeb',
+        backgroundColor: 'transparent', //'transparent',
+        color: '#fff', //'#ecebeb',
         fontWeight: '600',
         fontSize: largeFont,
         lineHeight: largeFont,
