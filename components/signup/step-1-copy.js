@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { AsyncStorage, Image, View } from 'react-native';
+import { AsyncStorage, Image, View, Linking } from 'react-native';
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -19,6 +19,9 @@ import ExNavigator from '@exponent/react-native-navigator';
 import { GiftedForm, GiftedFormManager } from 'react-native-gifted-form';
 import {withNavigation} from "@exponent/ex-navigation/src/ExNavigationComponents";
 
+const homePlace = {description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } }};
+const workPlace = {description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } }};
+
 @withNavigation
 class Step1Copy extends Component {
 
@@ -29,7 +32,6 @@ class Step1Copy extends Component {
            username: '',
            validForm: false,
            form: {
-             fullName: 'Marco Polo',
              tos: false,
            }
       };
@@ -87,15 +89,35 @@ class Step1Copy extends Component {
         <ExNavigator
           initialRoute={this.getRoute()}
           style={{ flex: 1 }}
-          sceneStyle={{ paddingTop: 64 }}
+          titleStyle={{
+            fontSize: 14,
+            color: '#fff'
+          }}
+          sceneStyle={{
+            paddingTop: 64,
+            overflow: 'visible',
+            shadowColor: '#333',
+            shadowOpacity: 0.5,
+            shadowRadius: 6
+          }}
+          navigationBarStyle={{ backgroundColor: '#333', height: 64, borderBottomColor: 'transparent' }}
         />
       );
     }
 
     getRoute() {
       return {
+        getTitle() {
+          return 'TENANT SIGN UP';
+        },
+        TOSPressed() {
+           Linking.openURL('http://www.mywalkthru.com/tos');
+        },
         renderScene(navigator) {
           return (
+      <Container theme={theme} style={{backgroundColor: '#333'}} >
+          <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
+            <Content padder style={{backgroundColor: 'transparent'}} >
             <GiftedForm
               formName='signupForm' // GiftedForm instances that use the same name will also share the same states
 
@@ -147,14 +169,7 @@ class Step1Copy extends Component {
                     validator: 'isEmail',
                   }]
                 },
-                bio: {
-                  title: 'Biography',
-                  validate: [{
-                    validator: 'isLength',
-                    arguments: [0, 512],
-                    message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
-                  }]
-                },
+
                 gender: {
                   title: 'Gender',
                   validate: [{
@@ -177,7 +192,7 @@ class Step1Copy extends Component {
 
                 image={require('../../assets/icons/user.png')}
 
-                placeholder='Marco Polo'
+                placeholder='Full Name'
                 clearButtonMode='while-editing'
               />
 
@@ -187,7 +202,7 @@ class Step1Copy extends Component {
                 title='Username'
                 image={require('../../assets/icons/contact_card.png')}
 
-                placeholder='MarcoPolo'
+                placeholder='User Name'
                 clearButtonMode='while-editing'
 
                 onTextInputFocus={(currentText = '') => {
@@ -201,22 +216,12 @@ class Step1Copy extends Component {
                 }}
               />
 
-              <GiftedForm.TextInputWidget
-                name='password' // mandatory
-                title='Password'
 
-                placeholder='******'
-
-
-                clearButtonMode='while-editing'
-                secureTextEntry={true}
-                image={require('../../assets/icons/lock.png')}
-              />
 
               <GiftedForm.TextInputWidget
                 name='emailAddress' // mandatory
                 title='Email address'
-                placeholder='example@nomads.ly'
+                placeholder='youremail@someemail.com'
 
                 keyboardType='email-address'
 
@@ -224,6 +229,37 @@ class Step1Copy extends Component {
 
                 image={require('../../assets/icons/email.png')}
               />
+
+
+              <GiftedForm.SeparatorWidget />
+              <GiftedForm.ModalWidget
+                title='Country'
+                displayValue='country'
+                image={require('../../assets/icons/passport.png')}
+                scrollEnabled={false}
+
+              >
+                <GiftedForm.SelectCountryWidget
+                  code='alpha2'
+                  name='country'
+                  title='Country'
+                  autoFocus={true}
+                />
+              </GiftedForm.ModalWidget>
+              <GiftedForm.ModalWidget
+                title='State/Province'
+                displayValue='stateprovince'
+                image={require('../../assets/icons/passport.png')}
+              >
+                <GiftedForm.SeparatorWidget />
+                <GiftedForm.SelectWidget name='stateprovince' title='State/Province' multiple={false}>
+                  <GiftedForm.OptionWidget title='California' value='CA'/>
+                  <GiftedForm.OptionWidget title='Florida' value='FL'/>
+                  <GiftedForm.OptionWidget title='Georgia' value='GA'/>
+                  <GiftedForm.OptionWidget title='Texas' value='TX'/>
+                </GiftedForm.SelectWidget>
+              </GiftedForm.ModalWidget>
+
 
               <GiftedForm.SeparatorWidget />
 
@@ -258,40 +294,55 @@ class Step1Copy extends Component {
                 />
               </GiftedForm.ModalWidget>
 
-              <GiftedForm.ModalWidget
-                title='Country'
-                displayValue='country'
-                image={require('../../assets/icons/passport.png')}
-                scrollEnabled={false}
 
+
+              <GiftedForm.GooglePlacesWidget
+              placeholder='City'
+              minLength={2}
+              autoFocus={false}
+              fetchDetails={true}
+              onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+                console.log(data);
+                console.log(details);
+              }}
+              getDefaultValue={() => {
+                return ''; // text input default value
+              }}
+              query={{
+                // available options: https://developers.google.com/places/web-service/autocomplete
+                key: 'AIzaSyCB7oaGvrfE-lN-mS85Re53TDGN_UcNxtE',
+                language: 'en', // language of the results
+                types: '(cities)', // default: 'geocode'
+              }}
+              styles={{
+                description: {
+                  fontWeight: 'bold',
+                },
+                predefinedPlacesDescription: {
+                  color: '#1faadb',
+                },
+              }}
+
+                 currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
+                 currentLocationLabel="Current location"
+                 nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+                 GoogleReverseGeocodingQuery={{
+                   // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
+                 }}
+                 GooglePlacesSearchQuery={{
+                   // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
+                   rankby: 'distance',
+                   types: 'food',
+                 }}
+
+
+                 filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+
+                 predefinedPlaces={[homePlace, workPlace]}
+
+                 predefinedPlacesAlwaysVisible={true}
               >
-                <GiftedForm.SelectCountryWidget
-                  code='alpha2'
-                  name='country'
-                  title='Country'
-                  autoFocus={true}
-                />
-              </GiftedForm.ModalWidget>
-
-
-              <GiftedForm.ModalWidget
-                title='Biography'
-                displayValue='bio'
-
-                image={require('../../assets/icons/book.png')}
-
-                scrollEnabled={true} // true by default
-              >
-                <GiftedForm.SeparatorWidget/>
-                <GiftedForm.TextAreaWidget
-                  name='bio'
-
-                  autoFocus={true}
-
-                  placeholder='Something interesting about yourself'
-                />
-              </GiftedForm.ModalWidget>
-
+              </GiftedForm.GooglePlacesWidget>
 
 
               <GiftedForm.SubmitWidget
@@ -328,6 +379,9 @@ class Step1Copy extends Component {
               <GiftedForm.HiddenWidget name='tos' value={true} />
 
             </GiftedForm>
+            </Content>
+          </Image>
+      </Container>
           );
         }
       }
