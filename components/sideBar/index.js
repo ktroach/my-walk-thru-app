@@ -84,7 +84,6 @@ class SideBar extends Component {
             <Content style={styles.sidebar} >
                <Image source={require('../../assets/images/slide_properties.jpg')} style={{resizeMode: 'cover', opacity: 0.8}}>
                    <Thumbnail size={500} style={{resizeMode: 'contain', marginTop: 7}} source={require('../../assets/images/logo.png')} />
-                   <Image source={require('../../assets/images/pros-logo.png')}  style={{marginLeft: 55, marginTop: -100, opacity: 1.0}} />
 
                    <List style={{paddingTop: 50}}>
                         <ListItem button onPress={() => this.navigateTo('home')} iconLeft style={styles.links} >
@@ -107,7 +106,6 @@ class SideBar extends Component {
            <Content style={styles.sidebar} >
              <Image source={require('../../assets/images/slide_properties.jpg')} style={{resizeMode: 'cover', opacity: 0.8}}>
                   <Thumbnail size={500} style={{resizeMode: 'contain', marginTop: 7}} source={require('../../assets/images/logo.png')} />
-                  <Image source={require('../../assets/images/pros-logo.png')}  style={{marginLeft: 55, marginTop: -100, opacity: 1.0}} />
 
                   <List style={{paddingTop: 50}}>
                          <ListItem button onPress={() => this.navigateTo('signup-step0')} iconLeft style={styles.links} >

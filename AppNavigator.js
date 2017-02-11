@@ -26,6 +26,7 @@ import Step3 from './components/signup/step-3';
 import Step4 from './components/signup/step-4';
 import Step5 from './components/signup/step-5';
 import Step6 from './components/signup/step-6';
+import Step1Copy from './components/signup/step-1-copy';
 
 // Walkthru Categories
 import TopCategories from './components/categories/top';
@@ -169,7 +170,7 @@ class AppNavigator extends Component {
             case 'signup-step0':
                return <Step0 navigator={navigator} />;
             case 'signup-step1':
-               return <Step1 navigator={navigator} />;
+               return <Step1Copy navigator={navigator} />;
             case 'signup-step2':
                return <Step2 navigator={navigator} />;
             case 'signup-step3':

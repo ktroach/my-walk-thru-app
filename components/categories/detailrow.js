@@ -38,9 +38,9 @@ import {
 import { Ionicons } from '@exponent/vector-icons';
 const Icon = Ionicons;
 import moment from 'moment';
-import Lightbox from 'react-native-lightbox';
-import RNAssetThumbnail from  'react-native-asset-thumbnail';
-import PhotoBrowser from 'react-native-photo-browser';
+// import Lightbox from 'react-native-lightbox';
+// import RNAssetThumbnail from  'react-native-asset-thumbnail';
+// import PhotoBrowser from 'react-native-photo-browser';
 
 import { Container, Header, Title, Content, Text, Button, List, ListItem, Card, CardItem } from 'native-base';
 import { openDrawer } from '../../actions/drawer';
