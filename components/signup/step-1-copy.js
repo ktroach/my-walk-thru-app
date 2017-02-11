@@ -19,8 +19,8 @@ import ExNavigator from '@exponent/react-native-navigator';
 import { GiftedForm, GiftedFormManager } from 'react-native-gifted-form';
 import {withNavigation} from "@exponent/ex-navigation/src/ExNavigationComponents";
 
-const homePlace = {description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } }};
-const workPlace = {description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } }};
+// const homePlace = {description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } }};
+// const workPlace = {description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } }};
 
 @withNavigation
 class Step1Copy extends Component {
@@ -188,14 +188,13 @@ class Step1Copy extends Component {
               <GiftedForm.SeparatorWidget />
               <GiftedForm.TextInputWidget
                 name='fullName' // mandatory
-                title='Full name'
+                title='Your Name'
 
                 image={require('../../assets/icons/user.png')}
 
                 placeholder='Full Name'
                 clearButtonMode='while-editing'
               />
-
 
               <GiftedForm.TextInputWidget
                 name='username'
@@ -220,8 +219,8 @@ class Step1Copy extends Component {
 
               <GiftedForm.TextInputWidget
                 name='emailAddress' // mandatory
-                title='Email address'
-                placeholder='youremail@someemail.com'
+                title='Your Email'
+                placeholder='user@domain.com'
 
                 keyboardType='email-address'
 
@@ -230,6 +229,21 @@ class Step1Copy extends Component {
                 image={require('../../assets/icons/email.png')}
               />
 
+              <GiftedForm.TextInputWidget
+                name='tenantPhone' // mandatory
+                title='Your Phone #'
+                image={require('../../assets/icons/user.png')}
+                placeholder='(555) 555-5555'
+                clearButtonMode='while-editing'
+              />
+
+              <GiftedForm.SeparatorWidget />
+              <GiftedForm.TextInputWidget
+                name='tenantIncome' // mandatory
+                image={require('../../assets/icons/user.png')}
+                placeholder='Annual Income'
+                clearButtonMode='while-editing'
+              />
 
               <GiftedForm.SeparatorWidget />
               <GiftedForm.ModalWidget
@@ -260,68 +274,33 @@ class Step1Copy extends Component {
                 </GiftedForm.SelectWidget>
               </GiftedForm.ModalWidget>
 
-
-              <GiftedForm.SeparatorWidget />
-
-              <GiftedForm.ModalWidget
-                title='Gender'
-                displayValue='gender'
-                image={require('../../assets/icons/gender.png')}
-              >
-                <GiftedForm.SeparatorWidget />
-
-                <GiftedForm.SelectWidget name='gender' title='Gender' multiple={false}>
-                  <GiftedForm.OptionWidget image={require('../../assets/icons/female.png')} title='Female' value='F'/>
-                  <GiftedForm.OptionWidget image={require('../../assets/icons/male.png')} title='Male' value='M'/>
-                </GiftedForm.SelectWidget>
-              </GiftedForm.ModalWidget>
-
-              <GiftedForm.ModalWidget
-                title='Birthday'
-                displayValue='birthday'
-                image={require('../../assets/icons/birthday.png')}
-
-                scrollEnabled={false}
-              >
-                <GiftedForm.SeparatorWidget/>
-                <GiftedForm.DatePickerIOSWidget
-                  name='birthday'
-                  mode='date'
-
-                  getDefaultDate={() => {
-                    return new Date(((new Date()).getFullYear() - 18)+'');
-                  }}
-                />
-              </GiftedForm.ModalWidget>
-
-
-
               <GiftedForm.GooglePlacesWidget
-              placeholder='City'
-              minLength={2}
-              autoFocus={false}
-              fetchDetails={true}
-              onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-                console.log(data);
-                console.log(details);
-              }}
-              getDefaultValue={() => {
-                return ''; // text input default value
-              }}
-              query={{
-                // available options: https://developers.google.com/places/web-service/autocomplete
-                key: 'AIzaSyCB7oaGvrfE-lN-mS85Re53TDGN_UcNxtE',
-                language: 'en', // language of the results
-                types: '(cities)', // default: 'geocode'
-              }}
-              styles={{
-                description: {
-                  fontWeight: 'bold',
-                },
-                predefinedPlacesDescription: {
-                  color: '#1faadb',
-                },
-              }}
+                  placeholder='City'
+                  keyboardShouldPersistTaps={true}
+                  minLength={2}
+                  autoFocus={false}
+                  fetchDetails={true}
+                  onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+                    console.log(data);
+                    console.log(details);
+                  }}
+                  getDefaultValue={() => {
+                    return ''; // text input default value
+                  }}
+                  query={{
+                    // available options: https://developers.google.com/places/web-service/autocomplete
+                    key: 'AIzaSyCB7oaGvrfE-lN-mS85Re53TDGN_UcNxtE',
+                    language: 'en', // language of the results
+                    types: '(cities)', // default: 'geocode'
+                  }}
+                  styles={{
+                    description: {
+                      fontWeight: 'bold',
+                    },
+                    predefinedPlacesDescription: {
+                      color: '#1faadb',
+                    },
+                  }}
 
                  currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
                  currentLocationLabel="Current location"
@@ -332,18 +311,44 @@ class Step1Copy extends Component {
                  GooglePlacesSearchQuery={{
                    // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
                    rankby: 'distance',
-                   types: 'food',
+                   types: 'school',
                  }}
 
-
                  filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-
-                 predefinedPlaces={[homePlace, workPlace]}
-
-                 predefinedPlacesAlwaysVisible={true}
               >
               </GiftedForm.GooglePlacesWidget>
 
+              <GiftedForm.SeparatorWidget />
+
+              <GiftedForm.TextInputWidget
+                name='propertyManagementCompany' // mandatory
+                title=''
+                image={require('../../assets/icons/user.png')}
+                placeholder='Property Management Company'
+                clearButtonMode='while-editing'
+              />
+              <GiftedForm.TextInputWidget
+                name='propertyManagerName' // mandatory
+                title=''
+                image={require('../../assets/icons/user.png')}
+                placeholder='Property Manager Name'
+                clearButtonMode='while-editing'
+              />
+              <GiftedForm.TextInputWidget
+                name='propertyManagerEmail' // mandatory
+                title=''
+                placeholder='Property Manager Email'
+                keyboardType='email-address'
+                clearButtonMode='while-editing'
+                image={require('../../assets/icons/email.png')}
+              />
+              <GiftedForm.TextInputWidget
+                name='propertyManagerPhone' // mandatory
+                title=''
+                image={require('../../assets/icons/user.png')}
+                placeholder='Property Manager Phone'
+                clearButtonMode='while-editing'
+              />
 
               <GiftedForm.SubmitWidget
                 title='Sign up'
