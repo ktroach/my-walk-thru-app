@@ -123,7 +123,7 @@ class Step0 extends Component {
 
                     </Content>
 
-                    <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}}    onPress={() => this.replaceRoute('signup-step1')}>
+                    <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}}  onPress={() => this.replaceRoute('signup-step1')}>
                         GET STARTED!
                     </Button>
                 </Image>

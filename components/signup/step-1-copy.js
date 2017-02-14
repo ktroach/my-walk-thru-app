@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { AsyncStorage, Image, View, Linking } from 'react-native';
+import { AsyncStorage, Image, View, Linking, MapView } from 'react-native';
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -33,8 +33,13 @@ class Step1Copy extends Component {
            validForm: false,
            form: {
              tos: false,
-           }
+           },
+           loaded: false
       };
+   }
+
+   componentDidMount() {
+     this.setState({loaded: true});
    }
 
    handleValueChange(values) {
@@ -106,21 +111,51 @@ class Step1Copy extends Component {
     }
 
     getRoute() {
+      // this.setState({loaded: true});
       return {
+        // componentDidMount() {
+          // this.setState({loaded: true});
+        // },
+        getInitialState() {
+          return {
+            loaded: false,
+          }
+        },
+        handleValueChange(values) {
+          console.log('handleValueChange', values)
+          // this.setState({ form: values })
+        },
         getTitle() {
           return 'TENANT SIGN UP';
         },
+        formatUsPhone(phone) {
+            let phoneFormatted = phone;
+            if (!phone || phone === 'undefined') return phone;
+            var phoneTest = new RegExp(/^((\+1)|1)? ?\(?(\d{3})\)?[ .-]?(\d{3})[ .-]?(\d{4})( ?(ext\.? ?|x)(\d*))?$/);
+            phone = phone.trim();
+            var results = phoneTest.exec(phone);
+            console.log(results);
+            if (results !== null && results.length > 8) {
+              phoneFormatted = "(" + results[3] + ") " + results[4] + "-" + results[5] + (typeof results[8] !== "undefined" ? " x" + results[8] : "");
+            }
+            return phoneFormatted;
+        },
+        formatUsCurrency(amount) {
+          return amount;
+        },
         TOSPressed() {
-           Linking.openURL('http://www.mywalkthru.com/tos');
+          // if(this.state.loaded){
+          //   Linking.openURL('http://www.mywalkthru.com/tos');
+          // }
         },
         renderScene(navigator) {
           return (
-      <Container theme={theme} style={{backgroundColor: '#333'}} >
-          <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
+            <Container theme={theme} style={{backgroundColor: '#333'}} >
+            <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
             <Content padder style={{backgroundColor: 'transparent'}} >
             <GiftedForm
               formName='signupForm' // GiftedForm instances that use the same name will also share the same states
-
+              onValueChange={this.handleValueChange.bind(this)}
               openModal={(route) => {
                 navigator.push(route); // The ModalWidget will be opened using this method. Tested with ExNavigator
               }}
@@ -152,14 +187,6 @@ class Step1Copy extends Component {
                     message: '{TITLE} can contains only alphanumeric characters'
                   }]
                 },
-                password: {
-                  title: 'Password',
-                  validate: [{
-                    validator: 'isLength',
-                    arguments: [6, 16],
-                    message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
-                  }]
-                },
                 emailAddress: {
                   title: 'Email address',
                   validate: [{
@@ -169,19 +196,6 @@ class Step1Copy extends Component {
                     validator: 'isEmail',
                   }]
                 },
-
-                gender: {
-                  title: 'Gender',
-                  validate: [{
-                    validator: (...args) => {
-                      if (args[0] === undefined) {
-                        return false;
-                      }
-                      return true;
-                    },
-                    message: '{TITLE} is required',
-                  }]
-                },
               }}
             >
 
@@ -189,9 +203,7 @@ class Step1Copy extends Component {
               <GiftedForm.TextInputWidget
                 name='fullName' // mandatory
                 title='Your Name'
-
                 image={require('../../assets/icons/user.png')}
-
                 placeholder='Full Name'
                 clearButtonMode='while-editing'
               />
@@ -199,11 +211,9 @@ class Step1Copy extends Component {
               <GiftedForm.TextInputWidget
                 name='username'
                 title='Username'
-                image={require('../../assets/icons/contact_card.png')}
-
+                image={require('../../assets/icons/user.png')}
                 placeholder='User Name'
                 clearButtonMode='while-editing'
-
                 onTextInputFocus={(currentText = '') => {
                   if (!currentText) {
                     let fullName = GiftedFormManager.getValue('signupForm', 'fullName');
@@ -215,146 +225,238 @@ class Step1Copy extends Component {
                 }}
               />
 
-
-
               <GiftedForm.TextInputWidget
                 name='emailAddress' // mandatory
                 title='Your Email'
                 placeholder='user@domain.com'
-
                 keyboardType='email-address'
-
                 clearButtonMode='while-editing'
-
                 image={require('../../assets/icons/email.png')}
               />
 
               <GiftedForm.TextInputWidget
-                name='tenantPhone' // mandatory
+                name='tenantPhone' // optional
                 title='Your Phone #'
                 image={require('../../assets/icons/user.png')}
                 placeholder='(555) 555-5555'
+                autoCapitalize="none"
+                autoCorrect={false}
+                onTextInputBlur={(currentText) => this.formatUsPhone(currentText)}
+                keyboardType='phone-pad'
                 clearButtonMode='while-editing'
+                dataDetectorTypes="phoneNumber"
               />
 
               <GiftedForm.SeparatorWidget />
-              <GiftedForm.TextInputWidget
-                name='tenantIncome' // mandatory
-                image={require('../../assets/icons/user.png')}
-                placeholder='Annual Income'
-                clearButtonMode='while-editing'
-              />
 
-              <GiftedForm.SeparatorWidget />
               <GiftedForm.ModalWidget
-                title='Country'
-                displayValue='country'
-                image={require('../../assets/icons/passport.png')}
+                title='Move-in Date'
+                displayValue='moveindate'
                 scrollEnabled={false}
-
+                image={require('../../assets/icons/passport.png')}
               >
-                <GiftedForm.SelectCountryWidget
-                  code='alpha2'
-                  name='country'
-                  title='Country'
-                  autoFocus={true}
+                <GiftedForm.SeparatorWidget/>
+                <GiftedForm.DatePickerIOSWidget
+                  name='moveindate'
+                  mode='date'
+                  getDefaultDate={() => {
+                    return new Date();
+                  }}
                 />
               </GiftedForm.ModalWidget>
-              <GiftedForm.ModalWidget
-                title='State/Province'
-                displayValue='stateprovince'
-                image={require('../../assets/icons/passport.png')}
-              >
-                <GiftedForm.SeparatorWidget />
-                <GiftedForm.SelectWidget name='stateprovince' title='State/Province' multiple={false}>
-                  <GiftedForm.OptionWidget title='California' value='CA'/>
-                  <GiftedForm.OptionWidget title='Florida' value='FL'/>
-                  <GiftedForm.OptionWidget title='Georgia' value='GA'/>
-                  <GiftedForm.OptionWidget title='Texas' value='TX'/>
-                </GiftedForm.SelectWidget>
-              </GiftedForm.ModalWidget>
-
-              <GiftedForm.GooglePlacesWidget
-                  placeholder='City'
-                  keyboardShouldPersistTaps={true}
-                  minLength={2}
-                  autoFocus={false}
-                  fetchDetails={true}
-                  onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-                    console.log(data);
-                    console.log(details);
-                  }}
-                  getDefaultValue={() => {
-                    return ''; // text input default value
-                  }}
-                  query={{
-                    // available options: https://developers.google.com/places/web-service/autocomplete
-                    key: 'AIzaSyCB7oaGvrfE-lN-mS85Re53TDGN_UcNxtE',
-                    language: 'en', // language of the results
-                    types: '(cities)', // default: 'geocode'
-                  }}
-                  styles={{
-                    description: {
-                      fontWeight: 'bold',
-                    },
-                    predefinedPlacesDescription: {
-                      color: '#1faadb',
-                    },
-                  }}
-
-                 currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
-                 currentLocationLabel="Current location"
-                 nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
-                 GoogleReverseGeocodingQuery={{
-                   // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
-                 }}
-                 GooglePlacesSearchQuery={{
-                   // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
-                   rankby: 'distance',
-                   types: 'school',
-                 }}
-
-                 filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-              >
-              </GiftedForm.GooglePlacesWidget>
 
               <GiftedForm.SeparatorWidget />
 
-              <GiftedForm.TextInputWidget
-                name='propertyManagementCompany' // mandatory
-                title=''
-                image={require('../../assets/icons/user.png')}
-                placeholder='Property Management Company'
-                clearButtonMode='while-editing'
-              />
-              <GiftedForm.TextInputWidget
-                name='propertyManagerName' // mandatory
-                title=''
-                image={require('../../assets/icons/user.png')}
-                placeholder='Property Manager Name'
-                clearButtonMode='while-editing'
-              />
-              <GiftedForm.TextInputWidget
-                name='propertyManagerEmail' // mandatory
-                title=''
-                placeholder='Property Manager Email'
-                keyboardType='email-address'
-                clearButtonMode='while-editing'
-                image={require('../../assets/icons/email.png')}
-              />
-              <GiftedForm.TextInputWidget
-                name='propertyManagerPhone' // mandatory
-                title=''
-                image={require('../../assets/icons/user.png')}
-                placeholder='Property Manager Phone'
-                clearButtonMode='while-editing'
-              />
+              <GiftedForm.ModalWidget
+                title='Annual Income'
+                displayValue='annualIncome'
+                scrollEnabled={false}
+                image={require('../../assets/icons/book.png')}
+              >
+                <GiftedForm.SeparatorWidget/>
+                <GiftedForm.TextInputWidget
+                  name='tenantIncome' // optional
+                  keyboardType='decimal-pad'
+                  placeholder='0.00'
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  onTextInputBlur={(currentText) => this.formatUsCurrency(currentText)}
+                  clearButtonMode='while-editing'
+                />
+              </GiftedForm.ModalWidget>
+
+
+              <GiftedForm.SeparatorWidget />
+              <GiftedForm.ModalWidget
+                title='Property Address'
+                displayValue='propertyAddress'
+                scrollEnabled={false}
+                image={require('../../assets/icons/contact_card.png')}
+              >
+                <GiftedForm.SeparatorWidget/>
+                <GiftedForm.TextInputWidget
+                  name='street1' // optional
+                  title='Street1'
+                  keyboardType="numbers-and-punctuation"
+                  placeholder='Street Address 1'
+                  clearButtonMode='while-editing'
+                  dataDetectorTypes="address"
+                  image={require('../../assets/icons/contact_card.png')}
+                />
+                <GiftedForm.TextInputWidget
+                  name='street2' // optional
+                  title='Street2'
+                  keyboardType="numbers-and-punctuation"
+                  placeholder='Street Address 2'
+                  clearButtonMode='while-editing'
+                  dataDetectorTypes="address"
+                  image={require('../../assets/icons/contact_card.png')}
+                />
+                <GiftedForm.TextInputWidget
+                  name='cityName' // optional
+                  title='City'
+                  keyboardType="default"
+                  placeholder=''
+                  clearButtonMode='while-editing'
+                  image={require('../../assets/icons/contact_card.png')}
+                />
+
+                <GiftedForm.ModalWidget
+                  title='State'
+                  displayValue='stateName'
+                  image={require('../../assets/icons/contact_card.png')}
+                >
+                  <GiftedForm.SeparatorWidget />
+                  <GiftedForm.SelectWidget name='stateName' title='State' multiple={false}>
+                    <GiftedForm.OptionWidget title='Arizona' value='AZ'/>
+                    <GiftedForm.OptionWidget title='District of Columbia' value='DC'/>
+                    <GiftedForm.OptionWidget title='Georgia' value='GA'/>
+                    <GiftedForm.OptionWidget title='Florida' value='FL'/>
+                    <GiftedForm.OptionWidget title='Texas' value='TX'/>
+                    <GiftedForm.OptionWidget title='Virginia' value='VA'/>
+                  </GiftedForm.SelectWidget>
+                </GiftedForm.ModalWidget>
+
+                <GiftedForm.TextInputWidget
+                  name='zipCode' // optional
+                  title='Zip Code'
+                  keyboardType="numeric"
+                  placeholder=''
+                  clearButtonMode='while-editing'
+                  image={require('../../assets/icons/contact_card.png')}
+                  onTextInputFocus={(currentText = '') => {
+                    if (!currentText) {
+                      let propertyLocation = GiftedFormManager.getValue('signupForm', 'propertyLocation');
+                      if (propertyLocation) {
+                        return propertyLocation;
+                      }
+                    }
+                    return currentText;
+                  }}
+                />
+
+                <GiftedForm.SeparatorWidget/>
+                <GiftedForm.GooglePlacesWidget
+                    name='locationSearch' // optional
+                    title='Location Search'
+                    displayValue='locationSearch'
+                    placeholder='Places nearby...'
+                    keyboardShouldPersistTaps={true}
+                    minLength={2}
+                    autoFocus={false}
+                    fetchDetails={true}
+                    onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+                      console.log(data);
+                      console.log(details);
+                    }}
+                    getDefaultValue={() => {
+                      return ''; // text input default value
+                    }}
+                    query={{
+                      // available options: https://developers.google.com/places/web-service/autocomplete
+                      key: 'AIzaSyCB7oaGvrfE-lN-mS85Re53TDGN_UcNxtE',
+                      language: 'en', // language of the results
+                      types: '(cities)', // default: 'geocode'
+                    }}
+                    styles={{
+                      description: {
+                        fontWeight: 'bold',
+                      },
+                      predefinedPlacesDescription: {
+                        color: '#1faadb',
+                      },
+                    }}
+
+                   currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
+                   currentLocationLabel="Current location"
+                   nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+                   GoogleReverseGeocodingQuery={{
+                     // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
+                   }}
+                   GooglePlacesSearchQuery={{
+                     // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
+                     rankby: 'distance',
+                     types: 'store',
+                   }}
+
+                   filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+                >
+                    <MapView
+                      style={{height: 200, margin: 40}}
+                      showsUserLocation={true}
+                    />
+                </GiftedForm.GooglePlacesWidget>
+
+
+              </GiftedForm.ModalWidget>
+
+              <GiftedForm.SeparatorWidget />
+
+              <GiftedForm.ModalWidget
+                title='Property Manager'
+                displayValue='propertyManagerInfo'
+                scrollEnabled={false}
+                image={require('../../assets/icons/contact_card.png')}
+              >
+                <GiftedForm.TextInputWidget
+                  name='propertyManagementCompany' // mandatory
+                  title='Company'
+                  image={require('../../assets/icons/contact_card.png')}
+                  placeholder='Property Management Company'
+                  clearButtonMode='while-editing'
+                />
+                <GiftedForm.TextInputWidget
+                  name='propertyManagerName' // mandatory
+                  title='Name'
+                  image={require('../../assets/icons/user.png')}
+                  placeholder='Property Manager Name'
+                  clearButtonMode='while-editing'
+                />
+                <GiftedForm.TextInputWidget
+                  name='propertyManagerEmail' // mandatory
+                  title='Email'
+                  placeholder='Property Manager Email'
+                  keyboardType='email-address'
+                  clearButtonMode='while-editing'
+                  image={require('../../assets/icons/email.png')}
+                />
+                <GiftedForm.TextInputWidget
+                  name='propertyManagerPhone' // mandatory
+                  title='Phone'
+                  image={require('../../assets/icons/user.png')}
+                  placeholder='Property Manager Phone'
+                  clearButtonMode='while-editing'
+                />
+
+              </GiftedForm.ModalWidget>
+
 
               <GiftedForm.SubmitWidget
                 title='Sign up'
                 widgetStyles={{
                   submitButton: {
-                    backgroundColor: '#000',
+                    backgroundColor: '#ad241f',
+                    borderRadius:12,
                   }
                 }}
                 onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
@@ -379,14 +481,15 @@ class Step1Copy extends Component {
 
               <GiftedForm.NoticeWidget
                 title='By signing up, you agree to the Terms of Service and Privacy Policy.'
+                onPress={this.TOSPressed()}
               />
 
               <GiftedForm.HiddenWidget name='tos' value={true} />
 
             </GiftedForm>
             </Content>
-          </Image>
-      </Container>
+            </Image>
+            </Container>
           );
         }
       }
