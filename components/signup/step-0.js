@@ -100,7 +100,7 @@ class Step0 extends Component {
 
                        <View style={welcomeStyle.welcomeContainer}>
                          <Image
-                          source={require('../../assets/images/mwt-full-logo.png')}
+                          source={require('../../assets/images/logo.png')}
                           style={welcomeStyle.welcomeImage}
                          />
                        </View>

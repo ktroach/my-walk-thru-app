@@ -141,6 +141,16 @@ class Step1Copy extends Component {
             return phoneFormatted;
         },
         formatUsCurrency(amount) {
+          if(!amount || amount === 'undefined') return amount;
+          try {
+             var currencyFormatter = new Intl.NumberFormat('en-US',
+                                  { style: 'currency', currency: 'USD',
+                                    minimumFractionDigits: 2 });
+             var formattedAmount = currencyFormatter.format(amount);
+          } catch(ex){
+            console.warn(ex);
+          }
+          if (formattedAmount) return formattedAmount;
           return amount;
         },
         TOSPressed() {
@@ -269,19 +279,31 @@ class Step1Copy extends Component {
 
               <GiftedForm.ModalWidget
                 title='Annual Income'
-                displayValue='annualIncome'
+                displayValue='tenantIncome'
                 scrollEnabled={false}
                 image={require('../../assets/icons/book.png')}
               >
                 <GiftedForm.SeparatorWidget/>
                 <GiftedForm.TextInputWidget
                   name='tenantIncome' // optional
-                  keyboardType='decimal-pad'
-                  placeholder='0.00'
+                  keyboardType='numeric'
+                  placeholder='$0,000.00'
                   autoCapitalize="none"
                   autoCorrect={false}
                   onTextInputBlur={(currentText) => this.formatUsCurrency(currentText)}
                   clearButtonMode='while-editing'
+                />
+                <GiftedForm.TextInputWidget
+                  name='currentEmployer' // optional
+                  title='Employer'
+                  autoCorrect={false}
+                  placeholder='Current Employer'
+                  clearButtonMode='while-editing'
+                  image={require('../../assets/icons/contact_card.png')}
+                />
+                <GiftedForm.SeparatorWidget/>
+                <GiftedForm.OptionWidget
+                  title='Are you interested in owning a home?'
                 />
               </GiftedForm.ModalWidget>
 
