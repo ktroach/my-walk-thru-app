@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 
 import {
+  AsyncStorage,
   Image,
   Linking,
   Platform,
@@ -32,9 +33,27 @@ class Step0 extends Component {
       this.state = {
            email: '',
            fullName: '',
-           scroll: false
+           scroll: false,
+           signUpDate: ''
       };
    }
+
+   componentDidMount(){
+     this.haveTheySignedUp();
+   }
+
+   // if we have the signUpDate stored on the device then yes they signed up before
+   haveTheySignedUp () {
+     try {
+        AsyncStorage.getItem("signUpDate")
+        .then( (signUpDate) =>
+              {
+                 return this.setState({signUpDate: signUpDate})
+              }
+        )
+        .done();
+     } catch(err){}
+  }
 
    replaceRoute(route) {
       this.props.replaceRoute(route);
@@ -49,35 +68,35 @@ class Step0 extends Component {
     }
 
     _renderWelcomeText() {
-
         return (
           <Text style={welcomeStyle.welcomeText}>
             Your property manager has made good documentation about the condition of your home and it is important for you to do the same.
           </Text>
-
         );
-
     }
-
-    _renderGetStartedOrLoginButton() {
-      const getStartedButton = (
-          <TouchableOpacity style={welcomeStyle.getStartedContainer} onPress={this._handleGetStartedPressed}>
-            <View style={welcomeStyle.getStartedButton}>
-                 <Text style={welcomeStyle.getStartedButtonText}>
-                      Get Started
-                 </Text>
-            </View>
-          </TouchableOpacity>
-     );
-     return (
-        <View>
-          {getStartedButton}
-        </View>
-     );
-   }
 
     _handleGetStartedPressed() {
        Linking.openURL('http://www.onsightpros.com/');
+    }
+
+    _renderButton(){
+      if (this.state.signUpDate && this.state.signUpDate.length>0) {
+        return (
+          <Button rounded block
+            style={{marginBottom: 20, backgroundColor: '#ad241f'}}
+            onPress={() => this.replaceRoute('home')}>
+              CONTINUE
+          </Button>
+        );
+      } else {
+        return (
+          <Button rounded block
+            style={{marginBottom: 20, backgroundColor: '#ad241f'}}
+            onPress={() => this.replaceRoute('signup-step1')}>
+              GET STARTED!
+          </Button>
+        );
+      }
     }
 
     render() {
@@ -123,9 +142,8 @@ class Step0 extends Component {
 
                     </Content>
 
-                    <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}}  onPress={() => this.replaceRoute('signup-step1')}>
-                        GET STARTED!
-                    </Button>
+                    {this._renderButton()}
+
                 </Image>
             </Container>
         )

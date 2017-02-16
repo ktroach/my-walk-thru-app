@@ -20,7 +20,8 @@ import styles from './style';
 class SideBar extends Component {
    state = {
      username: '',
-     loaded: false
+     loaded: false,
+     signUpDate: ''
    }
 
     navigateTo(route) {
@@ -32,14 +33,14 @@ class SideBar extends Component {
       this.haveTheySignedUp();
     }
 
-    // if we have the username stored on the device then yes they signed up before
+    // if we have the signUpDate stored on the device then yes they signed up before
     haveTheySignedUp () {
       try {
-         AsyncStorage.getItem("username")
-         .then( (username) =>
+         AsyncStorage.getItem("signUpDate")
+         .then( (signUpDate) =>
                {
                   this.setState({loaded: true});
-                  return this.setState({username:username})
+                  return this.setState({signUpDate: signUpDate})
                }
          )
          .done();
@@ -48,7 +49,7 @@ class SideBar extends Component {
 
     render(){
       if (this.state.loaded){
-         if (this.state.username && this.state.username.length>0) {
+         if (this.state.signUpDate && this.state.signUpDate.length>0) {
             return (
                this.renderSignedUp()
             );
