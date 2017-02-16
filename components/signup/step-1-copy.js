@@ -94,7 +94,7 @@ class Step1Copy extends Component {
       let someState = this.state;
       return (
         <ExNavigator
-          initialRoute={this.getRoute(someState)}
+          initialRoute={this.getRoute(someState, this.props)}
           style={{ flex: 1 }}
           titleStyle={{
             fontSize: 14,
@@ -112,9 +112,11 @@ class Step1Copy extends Component {
       );
     }
 
-    getRoute(someState) {
+    getRoute(someState, someProps) {
       // this.setState({loaded: true});
       var someState = someState;
+      var props = someProps;
+      console.log('>>> props:', props);
       return {
         getSomeState(key){
           //return this.someState;
@@ -124,6 +126,9 @@ class Step1Copy extends Component {
         },
         setSomeState(key, val){
           if (key==='leaseBeginDate') return someState.setState({"leaseBeginDate": val});
+        },
+        replaceRoute(route) {
+           props.replaceRoute(route);
         },
         onDateChange(date){
           console.log('entered onDateChange:', date);
@@ -320,33 +325,7 @@ class Step1Copy extends Component {
                 clearButtonMode='while-editing'
                 dataDetectorTypes="phoneNumber"
               />
-              <GiftedForm.ModalWidget
-                title='What is your yearly income?'
-                displayValue='tenantIncome'
-                scrollEnabled={false}
-                image={require('../../assets/icons/user.png')}
-              >
-                <GiftedForm.SeparatorWidget/>
-                <GiftedForm.TextInputWidget
-                  title='Income'
-                  name='tenantIncome' // optional
-                  keyboardType='numeric'
-                  placeholder='$0,000.00/year'
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  onTextInputBlur={(currentText) => this.formatUsCurrency(currentText)}
-                  clearButtonMode='while-editing'
-                  image={require('../../assets/icons/user.png')}
-                />
-                <GiftedForm.TextInputWidget
-                  name='currentEmployer' // optional
-                  title='Employer'
-                  autoCorrect={false}
-                  placeholder='Current Employer Name'
-                  clearButtonMode='while-editing'
-                  image={require('../../assets/icons/user.png')}
-                />
-              </GiftedForm.ModalWidget>
+
               <GiftedForm.SeparatorWidget />
 
               <GiftedForm.ModalWidget
@@ -610,13 +589,22 @@ class Step1Copy extends Component {
                   if (isValid === true) {
 
                     console.log('values:',values);
-                    if(!values.fullName) {
-                      alert('Full Name is required');
-                      postSubmit(['An error occurred, please try again']);
-                      return;
-                    }
+                    // if(!values.fullName) {
+                    //   alert('Full Name is required');
+                    //   postSubmit(['An error occurred, please try again']);
+                    //   return;
+                    // }
 
-                    alert('Thank you for Signing Up!');
+                    var signUpDate = moment().format();
+                    AsyncStorage.setItem("signUpDate", signUpDate)
+                    .then( () =>
+                        {
+                            alert('Thank you for Signing Up ('+signUpDate+')');
+                            this.replaceRoute('home');
+                        }
+                    )
+                    .done( );
+
 
                     // prepare object
                     // values.gender = values.gender[0];
