@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { AsyncStorage, Image, View, Linking, MapView } from 'react-native';
+import { AsyncStorage, Image, View, Linking, MapView, DatePickerIOS } from 'react-native';
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -34,7 +34,8 @@ class Step1Copy extends Component {
            form: {
              tos: false,
            },
-           loaded: false
+           loaded: false,
+           leaseBeginDate: new Date(),
       };
    }
 
@@ -90,9 +91,10 @@ class Step1Copy extends Component {
     }
 
     render() {
+      let someState = this.state;
       return (
         <ExNavigator
-          initialRoute={this.getRoute()}
+          initialRoute={this.getRoute(someState)}
           style={{ flex: 1 }}
           titleStyle={{
             fontSize: 14,
@@ -110,23 +112,60 @@ class Step1Copy extends Component {
       );
     }
 
-    getRoute() {
+    getRoute(someState) {
       // this.setState({loaded: true});
+      var someState = someState;
       return {
+        getSomeState(key){
+          //return this.someState;
+          // alert('someState key: ' + key);
+          console.log('>>> entered getSomeState:', key);
+          if (key==='leaseBeginDate') return someState.leaseBeginDate;
+        },
+        setSomeState(key, val){
+          if (key==='leaseBeginDate') return someState.setState({"leaseBeginDate": val});
+        },
+        onDateChange(date){
+          console.log('entered onDateChange:', date);
+          console.log('>>> someState: ', someState);
+          someState.leaseBeginDate = date;
+          console.log('>>> someState: ', someState);
+          // return someState.leaseBeginDate;
+          // someState.setState({"leaseBeginDate": date});
+
+          //this.setSomeState("leaseBeginDate", date);
+          // this.something.date = date;
+          //this.setState({date: date});
+        },
+        // getDefaultProps() {
+        //   return {
+        //      date: new Date()
+        //   }
+        // },
+        //
+        // getInitialState() {
+        //   return {
+        //     loaded: false,
+        //     date: this.props.date,
+        //   }
+        // },
         // componentDidMount() {
           // this.setState({loaded: true});
         // },
-        getInitialState() {
-          return {
-            loaded: false,
-          }
-        },
+        // getInitialState() {
+        //   return {
+        //     loaded: false,
+        //   }
+        // },
         handleValueChange(values) {
           console.log('handleValueChange', values)
           // this.setState({ form: values })
         },
         getTitle() {
           return 'TENANT SIGN UP';
+        },
+        formatDateField(dateValue){
+          return dateValue;
         },
         formatUsPhone(phone) {
             let phoneFormatted = phone;
@@ -145,7 +184,7 @@ class Step1Copy extends Component {
           try {
              var currencyFormatter = new Intl.NumberFormat('en-US',
                                   { style: 'currency', currency: 'USD',
-                                    minimumFractionDigits: 2 });
+                                    minimumFractionDigits: 0 });
              var formattedAmount = currencyFormatter.format(amount);
           } catch(ex){
             console.warn(ex);
@@ -158,6 +197,7 @@ class Step1Copy extends Component {
           //   Linking.openURL('http://www.mywalkthru.com/tos');
           // }
         },
+
         renderScene(navigator) {
           return (
             <Container theme={theme} style={{backgroundColor: '#333'}} >
@@ -194,7 +234,7 @@ class Step1Copy extends Component {
                   },{
                     validator: 'matches',
                     arguments: /^[a-zA-Z0-9]*$/,
-                    message: '{TITLE} can contains only alphanumeric characters'
+                    message: '{TITLE} can contain only alphanumeric characters'
                   }]
                 },
                 emailAddress: {
@@ -204,6 +244,26 @@ class Step1Copy extends Component {
                     arguments: [6, 255],
                   },{
                     validator: 'isEmail',
+                  }]
+                },
+                tenantPhone: {
+                  title: 'Phone',
+                  validate: [{
+                    validator: 'isLength',
+                    arguments: [1, 14],
+                    message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+                  },{
+                    validator: 'matches',
+                    arguments: /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/,
+                    message: ' Enter complete {TITLE} number'
+                  }]
+                },
+                leaseBeginDate: {
+                  title: 'Lease Start Date',
+                  validate: [{
+                    validator: 'isLength',
+                    arguments: [1, 10],
+                    message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
                   }]
                 },
               }}
@@ -221,6 +281,8 @@ class Step1Copy extends Component {
               <GiftedForm.TextInputWidget
                 name='username'
                 title='Username'
+                autoCapitalize="none"
+                autoCorrect={false}
                 image={require('../../assets/icons/user.png')}
                 placeholder='User Name'
                 clearButtonMode='while-editing'
@@ -238,6 +300,8 @@ class Step1Copy extends Component {
               <GiftedForm.TextInputWidget
                 name='emailAddress' // mandatory
                 title='Your Email'
+                autoCapitalize="none"
+                autoCorrect={false}
                 placeholder='user@domain.com'
                 keyboardType='email-address'
                 clearButtonMode='while-editing'
@@ -256,71 +320,171 @@ class Step1Copy extends Component {
                 clearButtonMode='while-editing'
                 dataDetectorTypes="phoneNumber"
               />
-
-              <GiftedForm.SeparatorWidget />
-
               <GiftedForm.ModalWidget
-                title='Move-in Date'
-                displayValue='moveindate'
-                scrollEnabled={false}
-                image={require('../../assets/icons/passport.png')}
-              >
-                <GiftedForm.SeparatorWidget/>
-                <GiftedForm.DatePickerIOSWidget
-                  name='moveindate'
-                  mode='date'
-                  getDefaultDate={() => {
-                    return new Date();
-                  }}
-                />
-              </GiftedForm.ModalWidget>
-
-              <GiftedForm.SeparatorWidget />
-
-              <GiftedForm.ModalWidget
-                title='Annual Income'
+                title='What is your yearly income?'
                 displayValue='tenantIncome'
                 scrollEnabled={false}
-                image={require('../../assets/icons/book.png')}
+                image={require('../../assets/icons/user.png')}
               >
                 <GiftedForm.SeparatorWidget/>
                 <GiftedForm.TextInputWidget
+                  title='Income'
                   name='tenantIncome' // optional
                   keyboardType='numeric'
-                  placeholder='$0,000.00'
+                  placeholder='$0,000.00/year'
                   autoCapitalize="none"
                   autoCorrect={false}
                   onTextInputBlur={(currentText) => this.formatUsCurrency(currentText)}
                   clearButtonMode='while-editing'
+                  image={require('../../assets/icons/user.png')}
                 />
                 <GiftedForm.TextInputWidget
                   name='currentEmployer' // optional
                   title='Employer'
                   autoCorrect={false}
-                  placeholder='Current Employer'
+                  placeholder='Current Employer Name'
                   clearButtonMode='while-editing'
-                  image={require('../../assets/icons/contact_card.png')}
-                />
-                <GiftedForm.SeparatorWidget/>
-                <GiftedForm.OptionWidget
-                  title='Are you interested in owning a home?'
+                  image={require('../../assets/icons/user.png')}
                 />
               </GiftedForm.ModalWidget>
+              <GiftedForm.SeparatorWidget />
 
+              <GiftedForm.ModalWidget
+                title='Lease Details'
+                displayValue='moveindate'
+                scrollEnabled={false}
+                image={require('../../assets/icons/contact_card.png')}
+              >
+
+
+              <GiftedForm.ModalWidget
+                  title='What is the primary reason you are leasing?'
+                  displayValue='leaseReason'
+                  image={require('../../assets/icons/contact_card.png')}
+              >
+                  <GiftedForm.SelectWidget name='leaseReason' title='Primary Reason' multiple={false}>
+                    <GiftedForm.OptionWidget title='First time Lease' value='First time Lease'/>
+                    <GiftedForm.OptionWidget title='Renewing Lease' value='Renewing Lease'/>
+                  </GiftedForm.SelectWidget>
+              </GiftedForm.ModalWidget>
+              <GiftedForm.SeparatorWidget/>
+
+              <GiftedForm.TextInputWidget
+                name='leaseBeginDate' // optional
+                title='Lease Begins?'
+                image={require('../../assets/icons/book.png')}
+                placeholder='Lease Begin Date'
+                autoCapitalize="none"
+                autoCorrect={false}
+                onTextInputBlur={(currentText) => this.formatDateField(currentText)}
+                keyboardType='default'
+                clearButtonMode='while-editing'
+              />
+
+              <GiftedForm.ModalWidget
+                  title='How long is your lease?'
+                  displayValue='leaseDuration'
+                  image={require('../../assets/icons/contact_card.png')}
+              >
+                  <GiftedForm.SelectWidget name='leaseDuration' title='Lease Length' multiple={false}>
+                    <GiftedForm.OptionWidget title='6 Months' value='6'/>
+                    <GiftedForm.OptionWidget title='1 Year' value='12'/>
+                    <GiftedForm.OptionWidget title='2 Years' value='24'/>
+                  </GiftedForm.SelectWidget>
+              </GiftedForm.ModalWidget>
+              <GiftedForm.SeparatorWidget/>
+
+                {/*
+                  <GiftedForm.SeparatorWidget/>
+                  <DatePickerIOS
+                    date={this.getSomeState("leaseBeginDate")}
+                    mode="date"
+                    onDateChange={this.onDateChange}
+                  />
+
+                  <GiftedForm.DatePickerIOSWidget
+                    name='moveindate'
+                    mode='date'
+                    getDefaultDate={() => {
+                      return new Date();
+                    }}
+                  />
+                  */}
+
+              </GiftedForm.ModalWidget>
 
               <GiftedForm.SeparatorWidget />
               <GiftedForm.ModalWidget
-                title='Property Address'
+                title='Property Details'
                 displayValue='propertyAddress'
                 scrollEnabled={false}
                 image={require('../../assets/icons/contact_card.png')}
               >
+                <GiftedForm.ModalWidget
+                    title='Property Type'
+                    displayValue='propertyType'
+                    image={require('../../assets/icons/contact_card.png')}
+                >
+                    <GiftedForm.SelectWidget name='propertyType' title='Property Type' multiple={false}>
+                      <GiftedForm.OptionWidget title='House' value='House'/>
+                      <GiftedForm.OptionWidget title='Apartment' value='Apartment'/>
+                      <GiftedForm.OptionWidget title='Condo' value='Condo'/>
+                      <GiftedForm.OptionWidget title='Duplex' value='Duplex'/>
+                      <GiftedForm.OptionWidget title='Townhouse' value='Townhouse'/>
+                    </GiftedForm.SelectWidget>
+                </GiftedForm.ModalWidget>
                 <GiftedForm.SeparatorWidget/>
+
+                <GiftedForm.ModalWidget
+                    title='# of Bedrooms'
+                    displayValue='numberOfBedRooms'
+                    image={require('../../assets/icons/contact_card.png')}
+                >
+                    <GiftedForm.SelectWidget name='numberOfBedRooms' title='# of Bedrooms' multiple={false}>
+                      <GiftedForm.OptionWidget title='1' value='1'/>
+                      <GiftedForm.OptionWidget title='2' value='2'/>
+                      <GiftedForm.OptionWidget title='3' value='3'/>
+                      <GiftedForm.OptionWidget title='4' value='4'/>
+                      <GiftedForm.OptionWidget title='5' value='5'/>
+                      <GiftedForm.OptionWidget title='6' value='6'/>
+                      <GiftedForm.OptionWidget title='7' value='7'/>
+                      <GiftedForm.OptionWidget title='8' value='8'/>
+                      <GiftedForm.OptionWidget title='9' value='9'/>
+                      <GiftedForm.OptionWidget title='10' value='10'/>
+                      <GiftedForm.OptionWidget title='11' value='11'/>
+                      <GiftedForm.OptionWidget title='12' value='12'/>
+                      <GiftedForm.OptionWidget title='13' value='13'/>
+                      <GiftedForm.OptionWidget title='14' value='14'/>
+                      <GiftedForm.OptionWidget title='15' value='15'/>
+                      <GiftedForm.OptionWidget title='16' value='16'/>
+                    </GiftedForm.SelectWidget>
+                </GiftedForm.ModalWidget>
+                <GiftedForm.SeparatorWidget/>
+
+                <GiftedForm.ModalWidget
+                    title='# of Bathrooms'
+                    displayValue='numberOfBathRooms'
+                    image={require('../../assets/icons/contact_card.png')}
+                >
+                    <GiftedForm.SelectWidget name='numberOfBathRooms' title='# of Bathrooms' multiple={false}>
+                      <GiftedForm.OptionWidget title='1' value='1'/>
+                      <GiftedForm.OptionWidget title='2' value='2'/>
+                      <GiftedForm.OptionWidget title='3' value='3'/>
+                      <GiftedForm.OptionWidget title='4' value='4'/>
+                      <GiftedForm.OptionWidget title='5' value='5'/>
+                      <GiftedForm.OptionWidget title='6' value='6'/>
+                      <GiftedForm.OptionWidget title='7' value='7'/>
+                      <GiftedForm.OptionWidget title='8' value='8'/>
+                    </GiftedForm.SelectWidget>
+                </GiftedForm.ModalWidget>
+                <GiftedForm.SeparatorWidget/>
+
                 <GiftedForm.TextInputWidget
                   name='street1' // optional
                   title='Street1'
-                  keyboardType="numbers-and-punctuation"
-                  placeholder='Street Address 1'
+                  autoCapitalize="words"
+                  kkeyboardType="default"
+                  placeholder=''
                   clearButtonMode='while-editing'
                   dataDetectorTypes="address"
                   image={require('../../assets/icons/contact_card.png')}
@@ -328,8 +492,9 @@ class Step1Copy extends Component {
                 <GiftedForm.TextInputWidget
                   name='street2' // optional
                   title='Street2'
-                  keyboardType="numbers-and-punctuation"
-                  placeholder='Street Address 2'
+                  autoCapitalize="words"
+                  keyboardType="default"
+                  placeholder=''
                   clearButtonMode='while-editing'
                   dataDetectorTypes="address"
                   image={require('../../assets/icons/contact_card.png')}
@@ -348,7 +513,6 @@ class Step1Copy extends Component {
                   displayValue='stateName'
                   image={require('../../assets/icons/contact_card.png')}
                 >
-                  <GiftedForm.SeparatorWidget />
                   <GiftedForm.SelectWidget name='stateName' title='State' multiple={false}>
                     <GiftedForm.OptionWidget title='Arizona' value='AZ'/>
                     <GiftedForm.OptionWidget title='District of Columbia' value='DC'/>
@@ -366,72 +530,15 @@ class Step1Copy extends Component {
                   placeholder=''
                   clearButtonMode='while-editing'
                   image={require('../../assets/icons/contact_card.png')}
-                  onTextInputFocus={(currentText = '') => {
-                    if (!currentText) {
-                      let propertyLocation = GiftedFormManager.getValue('signupForm', 'propertyLocation');
-                      if (propertyLocation) {
-                        return propertyLocation;
-                      }
-                    }
-                    return currentText;
-                  }}
                 />
 
-                <GiftedForm.SeparatorWidget/>
-                <GiftedForm.GooglePlacesWidget
-                    name='locationSearch' // optional
-                    title='Location Search'
-                    displayValue='locationSearch'
-                    placeholder='Places nearby...'
-                    keyboardShouldPersistTaps={true}
-                    minLength={2}
-                    autoFocus={false}
-                    fetchDetails={true}
-                    onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-                      console.log(data);
-                      console.log(details);
-                    }}
-                    getDefaultValue={() => {
-                      return ''; // text input default value
-                    }}
-                    query={{
-                      // available options: https://developers.google.com/places/web-service/autocomplete
-                      key: 'AIzaSyCB7oaGvrfE-lN-mS85Re53TDGN_UcNxtE',
-                      language: 'en', // language of the results
-                      types: '(cities)', // default: 'geocode'
-                    }}
-                    styles={{
-                      description: {
-                        fontWeight: 'bold',
-                      },
-                      predefinedPlacesDescription: {
-                        color: '#1faadb',
-                      },
-                    }}
-
-                   currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
-                   currentLocationLabel="Current location"
-                   nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
-                   GoogleReverseGeocodingQuery={{
-                     // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
-                   }}
-                   GooglePlacesSearchQuery={{
-                     // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
-                     rankby: 'distance',
-                     types: 'store',
-                   }}
-
-                   filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-                >
-                    <MapView
-                      style={{height: 200, margin: 40}}
-                      showsUserLocation={true}
-                    />
-                </GiftedForm.GooglePlacesWidget>
-
-
+              <GiftedForm.SeparatorWidget/>
+                <MapView
+                  style={{height: 300, margin: 10}}
+                  showsUserLocation={true}
+                  followUserLocation={true}
+                />
               </GiftedForm.ModalWidget>
-
               <GiftedForm.SeparatorWidget />
 
               <GiftedForm.ModalWidget
@@ -440,24 +547,41 @@ class Step1Copy extends Component {
                 scrollEnabled={false}
                 image={require('../../assets/icons/contact_card.png')}
               >
+                <GiftedForm.ModalWidget
+                    title='Landlord Type'
+                    displayValue='landlordType'
+                    image={require('../../assets/icons/contact_card.png')}
+                >
+                    <GiftedForm.SelectWidget name='landlordType' title='Landlord Type' multiple={false}>
+                      <GiftedForm.OptionWidget title='Individual' value='Individual'/>
+                      <GiftedForm.OptionWidget title='Corporation/Organization' value='CorpOrg'/>
+                    </GiftedForm.SelectWidget>
+                </GiftedForm.ModalWidget>
+
+                <GiftedForm.SeparatorWidget/>
+
                 <GiftedForm.TextInputWidget
                   name='propertyManagementCompany' // mandatory
                   title='Company'
+                  autoCapitalize="words"
                   image={require('../../assets/icons/contact_card.png')}
-                  placeholder='Property Management Company'
+                  placeholder="Landlord's Company Name"
                   clearButtonMode='while-editing'
                 />
                 <GiftedForm.TextInputWidget
                   name='propertyManagerName' // mandatory
                   title='Name'
+                  autoCapitalize="words"
                   image={require('../../assets/icons/user.png')}
-                  placeholder='Property Manager Name'
+                  placeholder="Landlord's Name"
                   clearButtonMode='while-editing'
                 />
                 <GiftedForm.TextInputWidget
                   name='propertyManagerEmail' // mandatory
                   title='Email'
-                  placeholder='Property Manager Email'
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  placeholder="Landlord's Email"
                   keyboardType='email-address'
                   clearButtonMode='while-editing'
                   image={require('../../assets/icons/email.png')}
@@ -466,11 +590,12 @@ class Step1Copy extends Component {
                   name='propertyManagerPhone' // mandatory
                   title='Phone'
                   image={require('../../assets/icons/user.png')}
-                  placeholder='Property Manager Phone'
+                  placeholder="Landlord's Phone"
                   clearButtonMode='while-editing'
                 />
-
               </GiftedForm.ModalWidget>
+
+
 
 
               <GiftedForm.SubmitWidget
@@ -483,6 +608,16 @@ class Step1Copy extends Component {
                 }}
                 onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {
                   if (isValid === true) {
+
+                    console.log('values:',values);
+                    if(!values.fullName) {
+                      alert('Full Name is required');
+                      postSubmit(['An error occurred, please try again']);
+                      return;
+                    }
+
+                    alert('Thank you for Signing Up!');
+
                     // prepare object
                     // values.gender = values.gender[0];
                     // values.birthday = moment(values.birthday).format('YYYY-MM-DD');
@@ -495,7 +630,7 @@ class Step1Copy extends Component {
                     */
 
                     // postSubmit();
-                    postSubmit(['An error occurred, please try again']);
+                    // postSubmit(['An error occurred, please try again']);
                   }
                 }}
 
