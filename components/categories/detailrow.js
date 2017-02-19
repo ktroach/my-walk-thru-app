@@ -2,6 +2,7 @@ import React, {
   PropTypes
 } from 'react';
 import {
+   AsyncStorage,
    StyleSheet,
    TextInput,
    View,
@@ -43,8 +44,12 @@ import moment from 'moment';
 // import PhotoBrowser from 'react-native-photo-browser';
 
 import { Container, Header, Title, Content, Text, Button, List, ListItem, Card, CardItem } from 'native-base';
+
+import { connect } from 'react-redux'
 import { openDrawer } from '../../actions/drawer';
 import { popRoute } from '../../actions/route';
+
+import { replaceOrPushRoute } from '../../actions/route';
 import { pushNewRoute, replaceRoute } from '../../actions/route';
 
 class DetailRow extends React.Component {
@@ -71,53 +76,61 @@ class DetailRow extends React.Component {
       this.fetchWalkthroughItem();
    }
 
-   _maybeRenderComments = () => {
-      let commentstext = this.state.comments;
-      if (this.state.item && this.state.item.comments) {
-         if (this.state.item.comments.length>0){
-            commentstext = this.state.item.comments;
-         }
-      }
-     return (
-       <View style={{
-         marginTop: 30,
-         borderRadius: 3,
-         elevation: 2,
-         shadowColor: 'rgba(0,0,0,1)',
-         shadowOpacity: 0.2,
-         shadowOffset: {width: 4, height: 4},
-         shadowRadius: 5,
-       }}>
-       <Text style={{color:'#333'}}>
-          <Icon name='ios-chatboxes-outline' size={20} color='#333'  />
-          <Text> Comments</Text>
-       </Text>
-         <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
-           <TextInput
-             style={{height: 100, textAlign: 'left'}}
-             multiline={true}
-             autoCapitalize="none"
-             placeholder="Enter your comments..."
-             autoCorrect={true}
-             onBlur={() => this.updateText()}
-             onChangeText={(comments) => this.setState({comments})}
-             value={commentstext}
-           />
-         </View>
-       </View>
-     );
+   replaceRoute(route) {
+       this.props.replaceRoute(route);
    }
+
+   popRoute() {
+       this.props.popRoute();
+   }
+
+  //  _maybeRenderComments = () => {
+  //     let commentstext = this.state.comments;
+  //     if (this.state.item && this.state.item.comments) {
+  //        if (this.state.item.comments.length>0){
+  //           commentstext = this.state.item.comments;
+  //        }
+  //     }
+  //    return (
+  //      <View style={{
+  //        marginTop: 30,
+  //        borderRadius: 3,
+  //        elevation: 2,
+  //        shadowColor: 'rgba(0,0,0,1)',
+  //        shadowOpacity: 0.2,
+  //        shadowOffset: {width: 4, height: 4},
+  //        shadowRadius: 5,
+  //      }}>
+  //      <Text style={{color:'#333'}}>
+  //         <Icon name='ios-chatboxes-outline' size={20} color='#333'  />
+  //         <Text> Comments</Text>
+  //      </Text>
+  //        <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
+  //          <TextInput
+  //            style={{height: 100, textAlign: 'left'}}
+  //            multiline={true}
+  //            autoCapitalize="none"
+  //            placeholder="Enter your comments..."
+  //            autoCorrect={true}
+  //            onBlur={() => this.updateText()}
+  //            onChangeText={(comments) => this.setState({comments})}
+  //            value={commentstext}
+  //          />
+  //        </View>
+  //      </View>
+  //    );
+  //  }
 
    // value={this.state.text}
 
-   updateText(text) {
-      let itemId = this.state.item.id;
-      let comments = this.state.comments; //.split(' ').map((word) => word && '🍕').join(' ');
-      if (!comments || comments.length===0) return;
-      // alert(comments);
-      let data = {comments: comments};
-      this.patchItem(itemId, data, false);
-   }
+  //  updateText(text) {
+  //     let itemId = this.state.item.id;
+  //     let comments = this.state.comments; //.split(' ').map((word) => word && '🍕').join(' ');
+  //     if (!comments || comments.length===0) return;
+  //     // alert(comments);
+  //     let data = {comments: comments};
+  //     this.patchItem(itemId, data, false);
+  //  }
 
    renderWalkthroughItem() {
      return (
@@ -126,10 +139,12 @@ class DetailRow extends React.Component {
              flex: 1,
              flexDirection: 'column',
              justifyContent: 'center',
+             borderWidth: 1,
+             borderColor: 'white'
             }}>
 
-            <Header>
-                <Title>{this.state.item.name}</Title>
+            <Header style={{backgroundColor: 'transparent'}}>
+                <Title style={{fontSize: 18, color: '#fff'}}>{this.state.item.name}</Title>
             </Header>
             <Content padder style={{backgroundColor: 'transparent'}} >
                 <Card transparent foregroundColor="#000">
@@ -141,16 +156,21 @@ class DetailRow extends React.Component {
                     </CardItem>
                 </Card>
             </Content>
-            <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}} onPress={() => this.replaceRoute('categories')}>
+            <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}} onPress={() => this.navigateTo('commentsAndPhotos')}>
                 Comments and Photos
             </Button>
-
-
-
-
          </View>
       </View>
      );
+   }
+
+  //  openCommentsAndPhotos(){
+  //    this.replaceRoute('commentsAndPhotos');
+  //  }
+
+   navigateTo(route) {
+     AsyncStorage.setItem("subItemId", this.props.itemId);
+     this.props.replaceOrPushRoute(route);
    }
 
    onActionSelected(position) {
@@ -254,7 +274,7 @@ class DetailRow extends React.Component {
       let itemId = this.props.itemId;
 
       if (!itemId) {
-         console.log('Invalid key');
+         console.log('Invalid itemId');
          return;
       }
 
@@ -332,6 +352,7 @@ class DetailRow extends React.Component {
 
    checkAction(data) {
       if (data.selectedOption === 'Needs Attention') {
+        this.navigateTo('commentsAndPhotos');
          // console.log('Taking Photo...');
          // this._takePhoto();
 
@@ -687,4 +708,19 @@ class DetailRow extends React.Component {
 
 }  // end class
 
-export default DetailRow;
+const mapStateToProps = (state, ownProps) => ({
+  id: ownProps.id
+})
+
+function bindAction(dispatch) {
+    return {
+        openDrawer: ()=>dispatch(openDrawer()),
+        popRoute: () => dispatch(popRoute()),
+        replaceRoute:(route)=>dispatch(replaceRoute(route)),
+        replaceOrPushRoute:(route)=>dispatch(replaceOrPushRoute(route)),
+    }
+}
+
+export default connect(null, bindAction)(DetailRow);
+
+// export default DetailRow;

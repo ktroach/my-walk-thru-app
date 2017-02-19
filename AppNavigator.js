@@ -31,6 +31,7 @@ import Step1Copy from './components/signup/step-1-copy';
 // Walkthru Categories
 import TopCategories from './components/categories/top';
 import SubCategories from './components/categories/details';
+import CommentsAndPhotos from './components/categories/commentsAndPhotos';
 
 // StatusBar
 import { statusBarColor } from './themes/base-theme';
@@ -185,6 +186,8 @@ class AppNavigator extends Component {
                return <TopCategories navigator={navigator} />;
             case 'subcategories':
                return <SubCategories navigator={navigator} />;
+            case 'commentsAndPhotos':
+              return <CommentsAndPhotos navigator={navigator} />;
             default :
                return <Home navigator={navigator} />;
         }

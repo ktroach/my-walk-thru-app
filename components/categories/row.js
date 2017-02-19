@@ -90,7 +90,7 @@ class CategoryRow extends React.Component {
                <CardItem style={styles.cardItem}   onPress={() => this.navigateTo('subcategories')}>
                   <List>
                        <ListItem style={{borderBottomWidth: 0}}>
-                           <ProgressViewIOS style={styles.progressView} progressTintColor="orange" progress={this.getProgress(0.6)}/>
+                           <ProgressViewIOS style={styles.progressView} progressTintColor="green" progress={this.getProgress(1.0)}/>
                        </ListItem>
                   </List>
                </CardItem>

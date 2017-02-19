@@ -126,7 +126,7 @@ class CategoryDetails extends React.Component {
                        <Title>{this.state.toolbarTitle}</Title>
 
                        <Button onPress={this.props.openDrawer} >
-                           <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
+                           <Icon name='ios-add-outline' style={{fontSize: 30, lineHeight: 32}} />
                        </Button>
                    </Header>
 
