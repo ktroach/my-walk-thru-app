@@ -1,7 +1,13 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { AsyncStorage, Image, View, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { AsyncStorage, Image, View, TouchableWithoutFeedback, ScrollView, TouchableOpacity } from 'react-native';
+import Exponent, {
+  Constants,
+  ImagePicker,
+  registerRootComponent,
+} from 'exponent';
+
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -22,6 +28,8 @@ import Config from '../../config'
 
 import PhotoBrowser from 'react-native-photo-browser';
 
+// import Camera from 'react-native-camera';
+
 class CommentsAndPhotos extends Component {
    constructor(props) {
       super(props);
@@ -34,7 +42,7 @@ class CommentsAndPhotos extends Component {
          image: null,
          uploading: false,
          images: [],
-         thumbnails: [],
+         thumbnails: []
       };
    }
 
@@ -212,7 +220,7 @@ class CommentsAndPhotos extends Component {
 
                         <Title>Comments And Photos</Title>
 
-                        <Button transparent onPress={this.props.openDrawer}>
+                        <Button transparent onPress={this._takePhoto}>
                             <Icon name='ios-camera' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
                     </Header>
@@ -226,18 +234,77 @@ class CommentsAndPhotos extends Component {
                                  <Textarea placeholder="Enter your comments" style={{color: '#333', height: 200, overflow: 'scroll'}} value={this.state.comments}>
                                  </Textarea>
                             </CardItem>
+
+                            <CardItem>
+                                 <Button rounded block style={{backgroundColor: '#ad241f'}} onPress={() => this._takePhoto()}>
+                                     <Text>Take Pictures</Text>
+                                 </Button>
+                            </CardItem>
+
+                            <CardItem>
+                              {this._maybeRenderImage()}
+                            </CardItem>
+
                             <CardItem>
                               {this._maybeRenderPhotos()}
                            </CardItem>
                         </Card>
                     </Content>
-
-                    <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}} onPress={() => this.maybeProceed()}>
-                        Next
-                    </Button>
                 </Image>
             </Container>
         )
+    }
+
+    _takePhoto = async () => {
+      let pickerResult = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [4,3]
+      });
+
+      console.log('pickerResult:', pickerResult);
+
+      this._handleImagePicked(pickerResult);
+    }
+
+    _handleImagePicked = async (pickerResult) => {
+      let uploadResponse, uploadResult;
+
+      try {
+        this.setState({uploading: true});
+
+        if (!pickerResult.cancelled) {
+          uploadResponse = await uploadImageAsync(pickerResult.uri);
+          uploadResult = await uploadResponse.json();
+          // this.setState({image: uploadResult.location});
+
+          let res = JSON.stringify(uploadResult);
+
+          console.log('>>> uploadResult: ', res);
+          this.setState({comments: res});
+
+          // let filename = uploadResult.result.files.photo[0].name;
+          // let location = `https://pros-s3-image-uploader.herokuapp.com/api/CloudStoreImages/images/download/${filename}`;
+          //
+          // this.setState({image: location});
+          //
+          // let newimages = [];
+          // let item = this.state.item;
+          // let images = item.images;
+          // if (!images) newimages = [];
+          // if (images) newimages = images;
+          // newimages.push({image: location});
+          //
+          // let data = {images: newimages};
+          // this.patchItem(item.id, data, false);
+        }
+      } catch(e) {
+        console.log({uploadResponse});
+        console.log({uploadResult});
+        console.log({e});
+        alert('Failed to upload image');
+      } finally {
+        this.setState({uploading: false});
+      }
     }
 
     _maybeRenderPhotos() {
@@ -263,7 +330,69 @@ class CommentsAndPhotos extends Component {
     _onPhotoActionButton(){
        console.log('>>> ENTERED _onPhotoActionButton...');
     }
+
+    _maybeRenderImage = () => {
+      let { image } = this.state;
+      if (!image) {
+        return;
+      }
+
+      return (
+        <View style={{
+          marginTop: 30,
+          width: 250,
+          borderRadius: 3,
+          elevation: 2,
+          shadowColor: 'rgba(0,0,0,1)',
+          shadowOpacity: 0.2,
+          shadowOffset: {width: 4, height: 4},
+          shadowRadius: 5,
+        }}>
+          <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
+            <Image
+              source={{uri: image}}
+              style={{width: 250, height: 250}}
+            />
+          </View>
+
+          <Text
+            style={{paddingVertical: 10, paddingHorizontal: 10}}>
+            {image}
+          </Text>
+        </View>
+      );
+    }
+
 }
+
+async function uploadImageAsync(uri) {
+
+  let apiUrl = 'https://pros-s3-image-uploader.herokuapp.com/api/CloudStoreImages/images/upload';
+
+  let uriParts = uri.split('.');
+  let fileType = uri[uri.length - 1];
+
+  let formData = new FormData();
+  formData.append('fileUpload=', uri);
+
+  // formData.append('photo', {
+  //   uri,
+  //   name: `photo.${fileType}`,
+  //   type: `image/${fileType}`,
+  // });
+
+  let options = {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+
+  return fetch(apiUrl, options);
+}
+
 
 function bindActions(dispatch){
     return {

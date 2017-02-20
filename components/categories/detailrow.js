@@ -157,7 +157,7 @@ class DetailRow extends React.Component {
                 </Card>
             </Content>
             <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}} onPress={() => this.navigateTo('commentsAndPhotos')}>
-                Comments and Photos
+                <Text>Add Comments and Photos</Text>
             </Button>
          </View>
       </View>

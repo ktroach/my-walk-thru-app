@@ -85,7 +85,7 @@ class Step0 extends Component {
           <Button rounded block
             style={{marginBottom: 20, backgroundColor: '#ad241f'}}
             onPress={() => this.replaceRoute('home')}>
-              CONTINUE
+              <Text>CONTINUE</Text>
           </Button>
         );
       } else {
@@ -93,7 +93,7 @@ class Step0 extends Component {
           <Button rounded block
             style={{marginBottom: 20, backgroundColor: '#ad241f'}}
             onPress={() => this.replaceRoute('signup-step1')}>
-              GET STARTED!
+              <Text>GET STARTED!</Text>
           </Button>
         );
       }
