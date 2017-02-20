@@ -8,8 +8,8 @@ module.exports = {
     backgroundColor: '#fff',
   },
   welcomeText: {
-     paddingTop: 20,
-    marginBottom: 20,
+     paddingTop: 10,
+    marginBottom: 10,
    //  color: 'rgba(0,0,0,0.4)',
     fontSize: 20,
     textAlign: 'center',
@@ -25,11 +25,11 @@ module.exports = {
   },
   welcomeContainer: {
     alignItems: 'center',
-    marginTop: 5,
-    marginBottom: 20,
+    marginTop: 20,
+    // marginBottom: 10,
   },
   welcomeImage: {
-    marginTop: 3,
+    marginTop: 5,
   },
   getStartedContainer: {
     alignItems: 'center',
@@ -48,9 +48,9 @@ module.exports = {
   },
   appTitleText: {
     fontSize: 24,
-   //  color: 'rgba(96,100,109, 1)',
-    lineHeight: 23,
-    marginTop: 4,
+  //  //  color: 'rgba(96,100,109, 1)',
+  //   lineHeight: 23,
+    marginTop: 32,
     paddingBottom: 10,
     fontWeight: '800',
     textAlign: 'center',

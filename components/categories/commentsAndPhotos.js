@@ -18,6 +18,8 @@ import { pushNewRoute, replaceRoute } from '../../actions/route';
 import { Container, Header, Title, Content, Text, Button, Icon, List, ListItem, Card, CardItem, InputGroup, Input, Textarea } from 'native-base';
 
 import moment from 'moment';
+import shortid from 'shortid';
+//let id = shortid.generate();
 
 import theme from '../../themes/form-theme';
 import styles from './styles';
@@ -28,7 +30,7 @@ import Config from '../../config'
 
 import PhotoBrowser from 'react-native-photo-browser';
 
-// import Camera from 'react-native-camera';
+import { RNS3 } from 'react-native-aws3';
 
 class CommentsAndPhotos extends Component {
    constructor(props) {
@@ -70,6 +72,10 @@ class CommentsAndPhotos extends Component {
      fetch(query).then((response) => response.json()).then((responseData) => {
         let item = responseData[0];
 
+        this.setState({
+           comments: item.comments
+        });
+
         let thumbnails = [];
         let photolist = [];
         if (item.images) {
@@ -86,7 +92,7 @@ class CommentsAndPhotos extends Component {
                  let photo = {
                    thumb: '', // thumbnail version of the photo to be displayed in grid view. actual photo is used if thumb is not provided
                    photo: imageItem.image, // a remote photo or local media url
-                   caption: formattedDate, // photo caption to be displayed
+                   caption: 'Taken: ' + formattedDate, // photo caption to be displayed
                    selected: false, // set the photo selected initially(default is false)
                  };
 
@@ -218,7 +224,7 @@ class CommentsAndPhotos extends Component {
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
-                        <Title>Comments And Photos</Title>
+                        <Title>{this.state.item.name}</Title>
 
                         <Button transparent onPress={this._takePhoto}>
                             <Icon name='ios-camera' style={{fontSize: 30, lineHeight: 32}} />
@@ -266,6 +272,15 @@ class CommentsAndPhotos extends Component {
       this._handleImagePicked(pickerResult);
     }
 
+    _getUserId = async () => {
+      AsyncStorage.getItem("userId")
+      .then( (userId) =>
+        {
+          return userId
+        }
+      ).done( );
+    }
+
     _handleImagePicked = async (pickerResult) => {
       let uploadResponse, uploadResult;
 
@@ -273,38 +288,113 @@ class CommentsAndPhotos extends Component {
         this.setState({uploading: true});
 
         if (!pickerResult.cancelled) {
-          uploadResponse = await uploadImageAsync(pickerResult.uri);
-          uploadResult = await uploadResponse.json();
-          // this.setState({image: uploadResult.location});
 
-          let res = JSON.stringify(uploadResult);
+          let fileName = shortid.generate();
+          let fileType = 'jpg';
 
-          console.log('>>> uploadResult: ', res);
-          this.setState({comments: res});
+          //  let userId = await this._getUserId();
 
-          // let filename = uploadResult.result.files.photo[0].name;
-          // let location = `https://pros-s3-image-uploader.herokuapp.com/api/CloudStoreImages/images/download/${filename}`;
-          //
-          // this.setState({image: location});
-          //
-          // let newimages = [];
-          // let item = this.state.item;
-          // let images = item.images;
-          // if (!images) newimages = [];
-          // if (images) newimages = images;
-          // newimages.push({image: location});
-          //
-          // let data = {images: newimages};
-          // this.patchItem(item.id, data, false);
+          // if (userId) {
+          //   // we should always have the userId available
+          //   fileName = userId + '-' + shortid.generate();
+          // } else {
+          //   // in the unlikely event that the userId is not avaiable, we can proceed with uploading the
+          //   // image with a unique filename
+          //   fileName = shortid.generate();
+          // }
+
+          // name: fileName,
+          // type: 'image/jpeg'
+
+          const file = {
+            uri: pickerResult.uri,
+            name: `${fileName}.${fileType}`,
+            type: `image/${fileType}`
+          };
+
+          const options = {
+            keyPrefix: 'photos/',
+            bucket: 'mywalkthru-pm-files',
+            region: 'us-west-2',
+            accessKey: 'AKIAIRVLMXELYRQ5GYFA',
+            secretKey: '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',
+            successActionStatus: 201
+          };
+
+          RNS3.put(file, options).then(response => {
+            // let res = JSON.stringify(response);
+            if (response.status !== 201) {
+              // this.setState({comments: res});
+              // return;
+              throw new Error('Failed to upload image to S3', response);
+            }
+
+            if (!response.body){
+              throw new Error('Failed to upload image to S3', response);
+            }
+
+            // let body = JSON.stringify(response.body);
+            // this.setState({comments: body});
+
+            let location = response.body.postResponse.location;
+
+            // alert(location);
+
+            this.setState({image: location});
+
+            let newimages = [];
+            let item = this.state.item;
+            let images = item.images;
+            if (images) newimages = images;
+            newimages.push({image: location});
+
+            let data = {comments: this.state.comments, images: newimages};
+
+            // this.setState({comments: JSON.stringify(data)});
+
+            // alert('item.id: '+item.id);
+
+            this.patchItem(item.id, data, false);
+          });
         }
       } catch(e) {
         console.log({uploadResponse});
         console.log({uploadResult});
         console.log({e});
+        let errorMessage = JSON.stringify(e) + ' : ' + e.message;
+        this.setState({comments: errorMessage});
         alert('Failed to upload image');
       } finally {
         this.setState({uploading: false});
       }
+    }
+
+    patchItem(id, data, doCheck) {
+       if (!id) {
+          alert('Invalid parameter: id');
+          return;
+       }
+       if (!data) {
+          alert('Invalid parameter: data');
+          return;
+       }
+       let url = Config.PRICING_ITEMS_API + '/' + id;
+       fetch(url, {
+         method: 'PATCH',
+         headers: {
+           'Accept': 'application/json',
+           'Content-Type': 'application/json',
+         },
+         body: JSON.stringify(data)
+       }).then((response) => response.json()).then((responseData) => {
+          console.log('responseData: ', responseData);
+          // alert(responseData);
+          // if (doCheck) this.checkAction(responseData);
+          //COMMENT!
+          this.setState({comments: JSON.stringify(responseData)});
+       }).catch((error) => {
+          console.error(error);
+       }).done();
     }
 
     _maybeRenderPhotos() {

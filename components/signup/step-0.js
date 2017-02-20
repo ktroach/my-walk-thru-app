@@ -105,17 +105,24 @@ class Step0 extends Component {
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
                         <Button transparent onPress={() => this.replaceRoute('signup-step0')}>
-                            <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
+                            <Icon name='ios-arrow-back' style={{fontSize: 30}} />
                         </Button>
 
                         <Title>WELCOME TO YOUR NEW HOME!</Title>
 
                         <Button transparent onPress={this.props.openDrawer}>
-                            <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
+                            <Icon name='ios-menu' style={{fontSize: 30}} />
                         </Button>
                     </Header>
 
                     <Content padder style={{backgroundColor: 'transparent'}} >
+
+                      {/*
+                        <Text style={welcomeStyle.appTitleText}>
+                           WELCOME TO
+                        </Text>                        
+                        */}
+
 
                        <View style={welcomeStyle.welcomeContainer}>
                          <Image
@@ -123,10 +130,6 @@ class Step0 extends Component {
                           style={welcomeStyle.welcomeImage}
                          />
                        </View>
-
-                       <Text style={welcomeStyle.appTitleText}>
-                          WELCOME TO MY WALK THRU
-                       </Text>
 
                        <View style={welcomeStyle.getStartedContainer}>
                          {this._renderWelcomeText()}

@@ -118,7 +118,7 @@ class Step6 extends Component {
           {
                this.setState({sms_alerts:sms_alerts})
                console.log(">>> FINISHED: step-6 mapStorageToState");
-               this.onCreateUser();this.onCreateUser();
+               this.onCreateUser();
                return cb(null, 'done');
           }
       )

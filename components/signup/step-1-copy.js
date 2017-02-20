@@ -15,6 +15,8 @@ import theme from '../../themes/form-theme';
 import styles from './styles';
 
 import moment from 'moment';
+import shortid from 'shortid';
+
 import ExNavigator from '@exponent/react-native-navigator';
 import { GiftedForm, GiftedFormManager } from 'react-native-gifted-form';
 import {withNavigation} from "@exponent/ex-navigation/src/ExNavigationComponents";
@@ -574,9 +576,6 @@ class Step1Copy extends Component {
                 />
               </GiftedForm.ModalWidget>
 
-
-
-
               <GiftedForm.SubmitWidget
                 title='Sign up'
                 widgetStyles={{
@@ -595,10 +594,12 @@ class Step1Copy extends Component {
                     //   return;
                     // }
 
-                    var signUpDate = moment().format();
+                    let userId = shortid.generate();
+                    let signUpDate = moment().format();
                     AsyncStorage.setItem("signUpDate", signUpDate)
                     .then( () =>
                         {
+                            AsyncStorage.setItem("userId", userId);
                             alert('Thank you for Signing Up ('+signUpDate+')');
                             this.replaceRoute('home');
                         }
