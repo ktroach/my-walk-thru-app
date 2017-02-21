@@ -38,7 +38,6 @@ class CommentsAndPhotos extends Component {
          subItemId: '',
          item: {},
          comments: '',
-         commentsCreatedOn: '',
          media: [],
          image: null,
          uploading: false,
@@ -87,6 +86,84 @@ class CommentsAndPhotos extends Component {
      AsyncStorage.getItem("userId")
      .then( (userId) =>
            {
+
+                  //  let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"and": [{"userId": "' + userId + '"}]}}';
+
+                  let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"and": [{"userId": "' + userId + '"}, {"PropertyItemId": "' + templateItemId + '"}]}}';
+                 //  "PropertyItemId": template.id,
+
+                 //let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"userId": "' + this.state.userId + '"}}';
+                  console.log('query: ', query);
+
+                  fetch(query).then((response) => response.json()).then((responseData) => {
+
+                      console.log('>>> responseData:', responseData);
+
+                     let item = responseData[0];
+                     console.log('>>> item:', item);
+
+                     if (item) {
+                       let thumbnails = [];
+                       let media = [];
+                       if (item.images) {
+                          let images = item.images;
+                          images.forEach(function(imageItem){
+                             if (imageItem.image) {
+                                thumbnails.push(imageItem.image);
+
+                               // moment().format('MMMM Do YYYY, h:mm:ss a');
+                               let createdOn = item.created;
+                               if (!createdOn) createdOn = new Date().now;
+                               let formattedDate = moment(createdOn).format('YYYYMMDD h:mm:ss a');
+
+                               let photoUrl = '';
+                               // if(photoUrl.indexOf('mywalkthru')){
+                               //   photoUrl = imageItem.image;
+                               // } else {
+                               //   photoUrl = 'https://s3-us-west-2.amazonaws.com/mywalkthru-pm-files/photos/photo.jpg';
+                               // }
+
+                               photoUrl = imageItem.image;
+
+                               //  let photoUrl = imageItem.image;
+                               // let photoUrl = 'https://s3-us-west-2.amazonaws.com/mywalkthru-pm-files/photos/SyV-uCOKe.jpg';
+
+                               let photo = {
+                                thumb: '', // thumbnail version of the photo to be displayed in grid view. actual photo is used if thumb is not provided
+                                photo: photoUrl, // a remote photo or local media url
+                                caption: 'Taken: ' + formattedDate, // photo caption to be displayed
+                                selected: false, // set the photo selected initially(default is false)
+                               };
+
+                               media.push(photo);
+
+                             }
+                          })
+                       }
+
+                       this.setState({
+                          media: media
+                       });
+
+                       this.setState({
+                         item: item,
+                         loaded: true,
+                         images: item.images,
+                         comments: item.comments,
+                         thumbnails: thumbnails
+                       });
+
+                     } else {
+                       // item does not exist
+                       this.setState({
+                         loaded: true
+                       });
+
+                     }
+                  }).done();
+
+
+
              this.setState({"userId": userId})
              return AsyncStorage.getItem("photoUri")
            }
@@ -106,80 +183,84 @@ class CommentsAndPhotos extends Component {
          }
      )
      .done( );
-
-     let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"and": [{"userId": "' + this.state.userId + '"}, {"PropertyItemId":{ "eq":"' + templateItemId + '"}}, {"active":{ "eq": "true"}}]}}';
-    //  "PropertyItemId": template.id,
-
-    //let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"userId": "' + this.state.userId + '"}}';
-
-     fetch(query).then((response) => response.json()).then((responseData) => {
-        let item = responseData[0];
-        console.log('>>> item:', item);
-
-        if (item) {
-          let thumbnails = [];
-          let media = [];
-          if (item.images) {
-             let images = item.images;
-             images.forEach(function(imageItem){
-                if (imageItem.image) {
-                   thumbnails.push(imageItem.image);
-
-                  // moment().format('MMMM Do YYYY, h:mm:ss a');
-                  let createdOn = item.created;
-                  if (!createdOn) createdOn = new Date().now;
-                  let formattedDate = moment(createdOn).format('YYYYMMDD h:mm:ss a');
-
-                  let photoUrl = '';
-                  // if(photoUrl.indexOf('mywalkthru')){
-                  //   photoUrl = imageItem.image;
-                  // } else {
-                  //   photoUrl = 'https://s3-us-west-2.amazonaws.com/mywalkthru-pm-files/photos/photo.jpg';
-                  // }
-
-                  photoUrl = imageItem.image;
-
-                  //  let photoUrl = imageItem.image;
-                  // let photoUrl = 'https://s3-us-west-2.amazonaws.com/mywalkthru-pm-files/photos/SyV-uCOKe.jpg';
-
-                  let photo = {
-                   thumb: '', // thumbnail version of the photo to be displayed in grid view. actual photo is used if thumb is not provided
-                   photo: photoUrl, // a remote photo or local media url
-                   caption: 'Taken: ' + formattedDate, // photo caption to be displayed
-                   selected: false, // set the photo selected initially(default is false)
-                  };
-
-                  media.push(photo);
-
-                }
-             })
-          }
-
-          this.setState({
-             media: media
-          });
-
-          this.setState({
-            item: item,
-            loaded: true,
-            images: item.images,
-            comments: item.comments,
-            thumbnails: thumbnails
-          });
-
-        } else {
-          // item does not exist 
-          this.setState({
-            loaded: true
-          });
-
-        }
-     }).done();
+//
+// let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"and": [{"userId": "' + this.state.userId + '"}]}}';
+//
+// console.log('query: ', query);
+//
+//      //let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"and": [{"userId": "' + this.state.userId + '"}, {"PropertyItemId": "' + templateItemId + '"}]}}';
+//     //  "PropertyItemId": template.id,
+//
+//     //let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"userId": "' + this.state.userId + '"}}';
+//
+//      fetch(query).then((response) => response.json()).then((responseData) => {
+//
+// console.log('>>> responseData:', responseData);
+//
+//         let item = responseData[0];
+//         console.log('>>> item:', item);
+//
+//         if (item) {
+//           let thumbnails = [];
+//           let media = [];
+//           if (item.images) {
+//              let images = item.images;
+//              images.forEach(function(imageItem){
+//                 if (imageItem.image) {
+//                    thumbnails.push(imageItem.image);
+//
+//                   // moment().format('MMMM Do YYYY, h:mm:ss a');
+//                   let createdOn = item.created;
+//                   if (!createdOn) createdOn = new Date().now;
+//                   let formattedDate = moment(createdOn).format('YYYYMMDD h:mm:ss a');
+//
+//                   let photoUrl = '';
+//                   // if(photoUrl.indexOf('mywalkthru')){
+//                   //   photoUrl = imageItem.image;
+//                   // } else {
+//                   //   photoUrl = 'https://s3-us-west-2.amazonaws.com/mywalkthru-pm-files/photos/photo.jpg';
+//                   // }
+//
+//                   photoUrl = imageItem.image;
+//
+//                   //  let photoUrl = imageItem.image;
+//                   // let photoUrl = 'https://s3-us-west-2.amazonaws.com/mywalkthru-pm-files/photos/SyV-uCOKe.jpg';
+//
+//                   let photo = {
+//                    thumb: '', // thumbnail version of the photo to be displayed in grid view. actual photo is used if thumb is not provided
+//                    photo: photoUrl, // a remote photo or local media url
+//                    caption: 'Taken: ' + formattedDate, // photo caption to be displayed
+//                    selected: false, // set the photo selected initially(default is false)
+//                   };
+//
+//                   media.push(photo);
+//
+//                 }
+//              })
+//           }
+//
+//           this.setState({
+//              media: media
+//           });
+//
+//           this.setState({
+//             item: item,
+//             loaded: true,
+//             images: item.images,
+//             comments: item.comments,
+//             thumbnails: thumbnails
+//           });
+//
+//         } else {
+//           // item does not exist
+//           this.setState({
+//             loaded: true
+//           });
+//
+//         }
+//      }).done();
    }
 
-    mapStorageToState(cb) {
-      console.log(">>> ENTERED: commentsAndPhotos mapStorageToState");
-    }
 
     replaceRoute(route) {
       this.props.replaceRoute(route);
@@ -201,84 +282,26 @@ class CommentsAndPhotos extends Component {
       return moment().format('MMM DD YYYY h:mm:ss a');
     }
 
-    onSaveCommentsAndPhotos() {
-       console.log('>>> ENTERED : onSaveCommentsAndPhotos...');
-
-       if (!this.state.comments || this.state.comments === '') {
-          alert('Please enter your comments for this area');
-          return;
-       }
-
-       var now = new Date();
-       var url = Config.USERS_API + '/';
-
-       // your going to POST a new item to the SUB API endpoint
-       // you need to copy the data from the current selected Sub
-       // append the user id and comments to the copied sub json
-       // then POST that json to the SUBs
-
-
-
-      //  var data = JSON.stringify({
-      //    "username": this.state.username,
-      //    "usertype": "Tenant",
-      //    "email": this.state.email,
-      //    "password": "p@ss1word",
-      //    "status": "active",
-      //    "created": now,
-      //    "street1": this.state.street1,
-      //    "street2": this.state.street2,
-      //    "city": this.state.city,
-      //    "stateabbr": this.state.stateabbr,
-      //    "zip": this.state.zip,
-      //    "pm_companyname": this.state.pm_companyname,
-      //    "pm_contactname": this.state.pm_contactname,
-      //    "pm_email": this.state.pm_email,
-      //    "pm_phone": this.state.pm_phone,
-      //    "tenant_phone": this.state.tenant_phone,
-      //    "preferred_contact": this.state.preferred_contact,
-      //    "sms_alerts": this.state.sms_alerts,
-      //    "commentsCreatedOn": this.state.commentsCreatedOn
-      //  });
-
-      // console.log('data: ', data);
-
-      //  if (!this.state.updating) {
-      //     //  POST (Create) a new record containing the sub data, the userid, and the comments, and photos[]
-      //     fetch(url, {
-      //          method: 'post',
-      //          headers: {
-      //            "Content-type": "application/json; charset=UTF-8"
-      //          },
-      //        body: data
-      //     }).then((response) => response.json()).then((responseData) => {
-      //        this.setState({"updating": true});
-      //        console.log('RESPONSEDATA: ', responseData);
-      //        alert('Comments Saved')
-      //        //this.replaceRoute('home', {email: this.state.email, username: this.state.username});
-      //     }).done();
-      //  }
-       console.log('<<< Finished onSaveCommentsAndPhotos');
-     }
-
      updateComments(value){
        this.setState({comments: value});
      }
 
-     saveCommentsAndPhotos(){
+     saveCommentsAndPhotos(route){
         console.log('<<< ENTERED saveCommentsAndPhotos');
-
-        let commentsCreatedOn = "";
-        commentsCreatedOn = moment().format();
-        this.setState({"commentsCreatedOn": commentsCreatedOn});
-
-        // this.replaceRoute('home', {email: this.state.email, username: this.state.username});
-
+        let item = this.state.item;
+        let modified = new Date();
+        if (item){
+          let data = {comments: this.state.comments, modified: modified};
+          this.persistData(item.id, data, route);
+        } else {
+          let data = {comments: this.state.comments, images: this.state.images, modified: modified};
+          this.persistData('', data, route);
+        }
         console.log('<<< FINISHED saveCommentsAndPhotos');
      }
 
-    maybeProceed() {
-        this.saveCommentsAndPhotos();
+    maybeProceed(route) {
+        this.saveCommentsAndPhotos(route);
     }
 
     render() {
@@ -286,7 +309,7 @@ class CommentsAndPhotos extends Component {
             <Container theme={theme} style={{backgroundColor: '#333'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
-                        <Button onPress={() => this.replaceRoute('subcategories')}>
+                        <Button onPress={() => this.maybeProceed('subcategories')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
@@ -332,54 +355,24 @@ class CommentsAndPhotos extends Component {
     }
 
     _takePhoto = async () => {
-
       alert('Use the Zoom gesture on your camera to take a close up picture.  Pinch gesture to Zoom in closer.');
-
       let pickerResult = await ImagePicker.launchCameraAsync({
         allowsEditing: true,
         aspect: [4,3]
       });
-
       console.log('pickerResult:', pickerResult);
-
       this._handleImagePicked(pickerResult);
     }
 
-    // _getUserId = async () => {
-    //   AsyncStorage.getItem("userId")
-    //   .then( (userId) =>
-    //     {
-    //       return userId
-    //     }
-    //   ).done( );
-    // }
-
     _handleImagePicked = async (pickerResult) => {
       let uploadResponse, uploadResult;
-
       try {
         this.setState({uploading: true});
-
         if (!pickerResult.cancelled) {
-
           let userId = 'unknown';
           if (this.state.userId) userId = this.state.userId;
           let fileName = shortid.generate();
           let fileType = 'jpg';
-
-          //  let userId = await this._getUserId();
-
-          // if (userId) {
-          //   // we should always have the userId available
-          //   fileName = userId + '-' + shortid.generate();
-          // } else {
-          //   // in the unlikely event that the userId is not avaiable, we can proceed with uploading the
-          //   // image with a unique filename
-          //   fileName = shortid.generate();
-          // }
-
-          // name: fileName,
-          // type: 'image/jpeg'
 
           const file = {
             uri: pickerResult.uri,
@@ -426,13 +419,12 @@ class CommentsAndPhotos extends Component {
             let data = {comments: this.state.comments, images: newimages};
 
             // this.setState({comments: JSON.stringify(data)});
-
             // alert('item.id: '+item.id);
 
             if (item){
-              this.persistData(item.id, data);
+              this.persistData(item.id, data, null);
             } else {
-              this.persistData('', data);
+              this.persistData('', data, null);
             }
 
           });
@@ -449,7 +441,7 @@ class CommentsAndPhotos extends Component {
       }
     }
 
-    persistData(id, data) {
+    persistData(id, data, route) {
         if (!data) {
           alert('Invalid parameter: data');
           return;
@@ -459,9 +451,7 @@ class CommentsAndPhotos extends Component {
         if (!id) {
           // POST data
           url = Config.PROPERTY_ITEMS_API + '/';
-
           let template = this.state.templateItem;
-
           if (template){
             let postData = {
               "name": template.name,
@@ -488,6 +478,9 @@ class CommentsAndPhotos extends Component {
               body: JSON.stringify(postData)
             }).then((response) => response.json()).then((responseData) => {
                console.log('responseData: ', responseData);
+               if (route) {
+                 this.replaceRoute(route);
+               }
                //this.setState({comments: JSON.stringify(responseData)});
             }).catch((error) => {
                console.error(error);
@@ -509,6 +502,9 @@ class CommentsAndPhotos extends Component {
             body: JSON.stringify(data)
           }).then((response) => response.json()).then((responseData) => {
              console.log('responseData: ', responseData);
+             if (route) {
+               this.replaceRoute(route);
+             }
              //this.setState({comments: JSON.stringify(responseData)});
           }).catch((error) => {
              console.error(error);
