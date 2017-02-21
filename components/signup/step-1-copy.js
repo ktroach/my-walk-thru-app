@@ -14,6 +14,8 @@ import { Container, Header, Title, Content, Text, Button, Icon, List, ListItem, 
 import theme from '../../themes/form-theme';
 import styles from './styles';
 
+import Config from '../../config';
+
 import moment from 'moment';
 import shortid from 'shortid';
 
@@ -588,23 +590,130 @@ class Step1Copy extends Component {
                   if (isValid === true) {
 
                     console.log('values:',values);
-                    // if(!values.fullName) {
-                    //   alert('Full Name is required');
-                    //   postSubmit(['An error occurred, please try again']);
-                    //   return;
-                    // }
+                    if(!values.fullName) {
+                      alert('Full Name is required');
+                      postSubmit(['An error occurred, please try again']);
+                      return;
+                    }
+                    if(!values.username) {
+                      alert('username is required');
+                      postSubmit(['An error occurred, please try again']);
+                      return;
+                    }
+                    if(!values.emailAddress) {
+                      alert('emailAddress is required');
+                      postSubmit(['An error occurred, please try again']);
+                      return;
+                    }
+                    if(!values.leaseBeginDate) {
+                      alert('leaseBeginDate is required');
+                      postSubmit(['An error occurred, please try again']);
+                      return;
+                    }
+                    if(!values.street1) {
+                      alert('street1 is required');
+                      postSubmit(['An error occurred, please try again']);
+                      return;
+                    }
+                    if(!values.cityName) {
+                      alert('cityName is required');
+                      postSubmit(['An error occurred, please try again']);
+                      return;
+                    }
+                    if(!values.stateName) {
+                      alert('stateName is required');
+                      postSubmit(['An error occurred, please try again']);
+                      return;
+                    }
+                    if(!values.zipCode) {
+                      alert('zipCode is required');
+                      postSubmit(['An error occurred, please try again']);
+                      return;
+                    }
+                    if(!values.propertyManagerName) {
+                      alert('propertyManagerName is required');
+                      postSubmit(['An error occurred, please try again']);
+                      return;
+                    }
+                    if(!values.propertyManagerEmail) {
+                      alert('propertyManagerEmail is required');
+                      postSubmit(['An error occurred, please try again']);
+                      return;
+                    }
 
                     let userId = shortid.generate();
                     let signUpDate = moment().format();
-                    AsyncStorage.setItem("signUpDate", signUpDate)
-                    .then( () =>
-                        {
-                            AsyncStorage.setItem("userId", userId);
-                            alert('Thank you for Signing Up ('+signUpDate+')');
-                            this.replaceRoute('home');
+                    var now = new Date();
+                    var url = Config.USERS_API + '/';
+
+                    var data = JSON.stringify({
+                      "userId": userId,
+                      "fullName": values.fullName,
+                      "username": values.username,
+                      "usertype": "Tenant",
+                      "email": values.emailAddress,
+                      "password": "p@ss1word",
+                      "tenant_phone": values.tenantPhone,
+                      "preferred_contact": "sms",
+                      "sms_alerts": "true",
+                      "status": "active",
+                      "propertyType": values.propertyType,
+                      "numberOfBedRooms": values.numberOfBedRooms,
+                      "numberOfBathRooms": values.numberOfBathRooms,
+                      "leaseReason": values.leaseReason,
+                      "leaseBeginDate": values.leaseBeginDate,
+                      "leaseDuration": values.leaseDuration,
+                      "street1": values.street1,
+                      "street2": values.street2,
+                      "cityName": values.cityName,
+                      "stateName": values.stateName,
+                      "zip": values.zipCode,
+                      "landlordType": values.landlordType,
+                      "propertyManagementCompany": values.propertyManagementCompany,
+                      "propertyManagerName": values.propertyManagerName,
+                      "propertyManagerEmail": values.propertyManagerEmail,
+                      "propertyManagerPhone": values.propertyManagerPhone,
+                      "termsAcceptedOn": signUpDate,
+                      "created": now
+                    });
+
+                    console.log('data: ', data);
+
+                    fetch(url, {
+                         method: 'post',
+                         headers: {
+                           "Content-type": "application/json; charset=UTF-8"
+                         },
+                       body: data
+                    }).then((response) => response.json()).then((responseData) => {
+                       console.log('RESPONSEDATA: ', responseData);
+
+                        if (!responseData) {
+                           alert('Sorry, there was a problem signing up.');
+                        } else {
+                          AsyncStorage.setItem("signUpDate", signUpDate)
+                          .then( () =>
+                              {
+                                  AsyncStorage.setItem("userId", userId);
+                                  alert('Thank you for Signing Up ('+signUpDate+')');
+                                  this.replaceRoute('home');
+                              }
+                          )
+                          .done( );
                         }
-                    )
-                    .done( );
+
+                    }).done();
+
+                    // was uncommented before adding the POST save stuff
+                    // AsyncStorage.setItem("signUpDate", signUpDate)
+                    // .then( () =>
+                    //     {
+                    //         AsyncStorage.setItem("userId", userId);
+                    //         alert('Thank you for Signing Up ('+signUpDate+')');
+                    //         this.replaceRoute('home');
+                    //     }
+                    // )
+                    // .done( );
 
 
                     // prepare object

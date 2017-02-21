@@ -28,10 +28,15 @@ import styles from './styles/row';
 class CategoryRow extends React.Component {
 
    state = {
-       progress: 0
+       progress: 0,
+       progressColor: 'red'
    }
 
     componentDidMount() {
+      this.fetchProgressSummary();
+    }
+
+    fetchProgressSummary(){
       this.updateProgress();
     }
 
@@ -90,7 +95,7 @@ class CategoryRow extends React.Component {
                <CardItem style={styles.cardItem}   onPress={() => this.navigateTo('subcategories')}>
                   <List>
                        <ListItem style={{borderBottomWidth: 0}}>
-                           <ProgressViewIOS style={styles.progressView} progressTintColor="green" progress={this.getProgress(1.0)}/>
+                           <ProgressViewIOS style={styles.progressView} progressTintColor={this.state.progressColor} progress={this.getProgress(1.0)}/>
                        </ListItem>
                   </List>
                </CardItem>
