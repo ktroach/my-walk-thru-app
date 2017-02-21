@@ -163,7 +163,7 @@ class CommentsAndPhotos extends Component {
              AsyncStorage.setItem("photoUri", "")
              .then( () =>
                  {
-                     alert('Describe what you just took a photo of in the Comments');
+                     //alert('Describe what you just took a photo of in the Comments');
                  }
              )
              .done( );
@@ -266,7 +266,7 @@ class CommentsAndPhotos extends Component {
     }
 
     _takePhoto = async () => {
-      alert('Use the Zoom gesture on your camera to take a close up picture.  Pinch gesture to Zoom in closer.');
+    //  alert('Use the Zoom gesture on your camera to take a close up picture.  Pinch gesture to Zoom in closer.');
       let pickerResult = await ImagePicker.launchCameraAsync({
         allowsEditing: true,
         aspect: [4,3]
