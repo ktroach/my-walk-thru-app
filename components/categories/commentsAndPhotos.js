@@ -40,7 +40,7 @@ class CommentsAndPhotos extends Component {
          item: {},
          comments: '',
          commentsCreatedOn: '',
-         photolist: [],
+         media: [],
          image: null,
          uploading: false,
          images: [],
@@ -77,7 +77,7 @@ class CommentsAndPhotos extends Component {
         });
 
         let thumbnails = [];
-        let photolist = [];
+        let media = [];
         if (item.images) {
            let images = item.images;
            images.forEach(function(imageItem){
@@ -96,14 +96,14 @@ class CommentsAndPhotos extends Component {
                    selected: false, // set the photo selected initially(default is false)
                  };
 
-                 photolist.push(photo);
+                 media.push(photo);
 
               }
            })
         }
 
         this.setState({
-           photolist: photolist
+           media: media
         });
 
         this.setState({
@@ -397,18 +397,25 @@ class CommentsAndPhotos extends Component {
        }).done();
     }
 
+    // <PhotoBrowser
+    //   mediaList={this.state.media}
+    //   useCircleProgress={true}
+    //   initialIndex={0}
+    //   displayNavArrows={true}
+    //   displaySelectionButtons={false}
+    //   displayActionButton={false}
+    //   startOnGrid={true}
+    //   enableGrid={true}
+    //   onSelectionChanged={this._onPhotoSelectionChanged}
+    //   onActionButton={this._onPhotoActionButton}
+    // />
+
     _maybeRenderPhotos() {
        return(
           <PhotoBrowser
-            mediaList={this.state.photolist}
-            initialIndex={0}
-            displayNavArrows={false}
-            displaySelectionButtons={false}
-            displayActionButton={true}
-            startOnGrid={true}
+            mediaList={this.state.media}
+            useCircleProgress={true}
             enableGrid={true}
-            onSelectionChanged={this._onPhotoSelectionChanged}
-            onActionButton={this._onPhotoActionButton}
           />
        );
     }

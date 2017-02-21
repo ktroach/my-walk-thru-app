@@ -228,6 +228,9 @@ class DetailRow extends React.Component {
 //
 // {"where": {"and": [{"rank": "999"},{"images.image":{ "neq": "" }}, {"active":{ "eq": "true"}}]}}
 
+// {"where": {"and": [{"rank": "999"}, {"active":{ "eq": "true"}}]}}
+// "divisionid": "583bb445f1328800127f6207"  -- Front Exterior
+// {"where": {"and": [{"rank": "999"},{"divisionid":{ "eq": "583bb445f1328800127f6207" }}, {"active":{ "eq": "true"}}]}}
 
    // _maybeRenderPhotos() {
    //    console.log('>>> ENTERED _maybeRenderPhotos...');

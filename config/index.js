@@ -1,5 +1,6 @@
 const API_BASE_URL = 'https://teamwerxxapi.herokuapp.com/api/v1/';
 const IMAGE_UPLOADER_BASE = 'https://pros-s3-image-uploader.herokuapp.com:443/api/CloudStoreImages';
+const MWT_API_BASE_URL = 'https://mywalkthruapi.herokuapp.com/api/v1/';
 
 export default {
    API_BASE_URL,
@@ -26,6 +27,8 @@ export default {
    PRICING_ITEMS_API_URL: API_BASE_URL+'/teams?filter={"where": {"rank": "999"}}',
    PRICING_ITEMS_API: API_BASE_URL+'/teams',
    IMAGE_UPLOADER_PHOTOS_API: IMAGE_UPLOADER_BASE+'/upload/',
-   USERS_API: API_BASE_URL+'/users',
+   USERS_API: MWT_API_BASE_URL+'/users',
+   PROPERTY_CATEGORIES_API: MWT_API_BASE_URL+'/PropertyCategories',
+   PROPERTY_ITEMS_API: MWT_API_BASE_URL+'/PropertyItems'
 
 };
