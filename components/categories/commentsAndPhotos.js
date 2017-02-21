@@ -82,91 +82,79 @@ class CommentsAndPhotos extends Component {
    fetchWalkthroughItem(templateItemId){
      console.log('>>> ENTERED commentsAndPhotos::fetchWalkthroughItem');
      console.log('>>> templateItemId:', templateItemId);
-
      AsyncStorage.getItem("userId")
      .then( (userId) =>
            {
+              let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"and": [{"userId": "' + userId + '"}, {"PropertyItemId": "' + templateItemId + '"}]}}';
+              // console.log('query: ', query);
 
-                  //  let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"and": [{"userId": "' + userId + '"}]}}';
+              fetch(query).then((response) => response.json()).then((responseData) => {
+                  // console.log('>>> responseData:', responseData);
+                 let item = responseData[0];
+                //  console.log('>>> item:', item);
+                 if (item) {
+                   let thumbnails = [];
+                   let media = [];
+                   if (item.images) {
+                      let images = item.images;
+                      images.forEach(function(imageItem){
+                         if (imageItem.image) {
+                            thumbnails.push(imageItem.image);
 
-                  let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"and": [{"userId": "' + userId + '"}, {"PropertyItemId": "' + templateItemId + '"}]}}';
-                 //  "PropertyItemId": template.id,
+                           // moment().format('MMMM Do YYYY, h:mm:ss a');
+                           let createdOn = item.created;
+                           if (!createdOn) createdOn = new Date().now;
+                           let formattedDate = moment(createdOn).format('YYYYMMDD h:mm:ss a');
 
-                 //let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"userId": "' + this.state.userId + '"}}';
-                  console.log('query: ', query);
+                           let photoUrl = '';
+                           // if(photoUrl.indexOf('mywalkthru')){
+                           //   photoUrl = imageItem.image;
+                           // } else {
+                           //   photoUrl = 'https://s3-us-west-2.amazonaws.com/mywalkthru-pm-files/photos/photo.jpg';
+                           // }
 
-                  fetch(query).then((response) => response.json()).then((responseData) => {
+                           photoUrl = imageItem.image;
 
-                      console.log('>>> responseData:', responseData);
+                           //  let photoUrl = imageItem.image;
+                           // let photoUrl = 'https://s3-us-west-2.amazonaws.com/mywalkthru-pm-files/photos/SyV-uCOKe.jpg';
 
-                     let item = responseData[0];
-                     console.log('>>> item:', item);
+                           let photo = {
+                            thumb: '', // thumbnail version of the photo to be displayed in grid view. actual photo is used if thumb is not provided
+                            photo: photoUrl, // a remote photo or local media url
+                            caption: 'Taken: ' + formattedDate, // photo caption to be displayed
+                            selected: false, // set the photo selected initially(default is false)
+                           };
 
-                     if (item) {
-                       let thumbnails = [];
-                       let media = [];
-                       if (item.images) {
-                          let images = item.images;
-                          images.forEach(function(imageItem){
-                             if (imageItem.image) {
-                                thumbnails.push(imageItem.image);
+                           media.push(photo);
 
-                               // moment().format('MMMM Do YYYY, h:mm:ss a');
-                               let createdOn = item.created;
-                               if (!createdOn) createdOn = new Date().now;
-                               let formattedDate = moment(createdOn).format('YYYYMMDD h:mm:ss a');
+                         }
+                      })
+                   }
 
-                               let photoUrl = '';
-                               // if(photoUrl.indexOf('mywalkthru')){
-                               //   photoUrl = imageItem.image;
-                               // } else {
-                               //   photoUrl = 'https://s3-us-west-2.amazonaws.com/mywalkthru-pm-files/photos/photo.jpg';
-                               // }
+                   this.setState({
+                      media: media
+                   });
 
-                               photoUrl = imageItem.image;
+                   this.setState({
+                     item: item,
+                     loaded: true,
+                     images: item.images,
+                     comments: item.comments,
+                     thumbnails: thumbnails
+                   });
 
-                               //  let photoUrl = imageItem.image;
-                               // let photoUrl = 'https://s3-us-west-2.amazonaws.com/mywalkthru-pm-files/photos/SyV-uCOKe.jpg';
+                 } else {
+                   // item does not exist
+                   this.setState({
+                     loaded: true
+                   });
 
-                               let photo = {
-                                thumb: '', // thumbnail version of the photo to be displayed in grid view. actual photo is used if thumb is not provided
-                                photo: photoUrl, // a remote photo or local media url
-                                caption: 'Taken: ' + formattedDate, // photo caption to be displayed
-                                selected: false, // set the photo selected initially(default is false)
-                               };
+                 }
+              }).done();
 
-                               media.push(photo);
-
-                             }
-                          })
-                       }
-
-                       this.setState({
-                          media: media
-                       });
-
-                       this.setState({
-                         item: item,
-                         loaded: true,
-                         images: item.images,
-                         comments: item.comments,
-                         thumbnails: thumbnails
-                       });
-
-                     } else {
-                       // item does not exist
-                       this.setState({
-                         loaded: true
-                       });
-
-                     }
-                  }).done();
-
-
-
-             this.setState({"userId": userId})
-             return AsyncStorage.getItem("photoUri")
-           }
+           this.setState({"userId": userId})
+           return AsyncStorage.getItem("photoUri")
+         }
      )
      .then( (photoUri) =>
          {
@@ -183,84 +171,7 @@ class CommentsAndPhotos extends Component {
          }
      )
      .done( );
-//
-// let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"and": [{"userId": "' + this.state.userId + '"}]}}';
-//
-// console.log('query: ', query);
-//
-//      //let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"and": [{"userId": "' + this.state.userId + '"}, {"PropertyItemId": "' + templateItemId + '"}]}}';
-//     //  "PropertyItemId": template.id,
-//
-//     //let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"userId": "' + this.state.userId + '"}}';
-//
-//      fetch(query).then((response) => response.json()).then((responseData) => {
-//
-// console.log('>>> responseData:', responseData);
-//
-//         let item = responseData[0];
-//         console.log('>>> item:', item);
-//
-//         if (item) {
-//           let thumbnails = [];
-//           let media = [];
-//           if (item.images) {
-//              let images = item.images;
-//              images.forEach(function(imageItem){
-//                 if (imageItem.image) {
-//                    thumbnails.push(imageItem.image);
-//
-//                   // moment().format('MMMM Do YYYY, h:mm:ss a');
-//                   let createdOn = item.created;
-//                   if (!createdOn) createdOn = new Date().now;
-//                   let formattedDate = moment(createdOn).format('YYYYMMDD h:mm:ss a');
-//
-//                   let photoUrl = '';
-//                   // if(photoUrl.indexOf('mywalkthru')){
-//                   //   photoUrl = imageItem.image;
-//                   // } else {
-//                   //   photoUrl = 'https://s3-us-west-2.amazonaws.com/mywalkthru-pm-files/photos/photo.jpg';
-//                   // }
-//
-//                   photoUrl = imageItem.image;
-//
-//                   //  let photoUrl = imageItem.image;
-//                   // let photoUrl = 'https://s3-us-west-2.amazonaws.com/mywalkthru-pm-files/photos/SyV-uCOKe.jpg';
-//
-//                   let photo = {
-//                    thumb: '', // thumbnail version of the photo to be displayed in grid view. actual photo is used if thumb is not provided
-//                    photo: photoUrl, // a remote photo or local media url
-//                    caption: 'Taken: ' + formattedDate, // photo caption to be displayed
-//                    selected: false, // set the photo selected initially(default is false)
-//                   };
-//
-//                   media.push(photo);
-//
-//                 }
-//              })
-//           }
-//
-//           this.setState({
-//              media: media
-//           });
-//
-//           this.setState({
-//             item: item,
-//             loaded: true,
-//             images: item.images,
-//             comments: item.comments,
-//             thumbnails: thumbnails
-//           });
-//
-//         } else {
-//           // item does not exist
-//           this.setState({
-//             loaded: true
-//           });
-//
-//         }
-//      }).done();
    }
-
 
     replaceRoute(route) {
       this.props.replaceRoute(route);
