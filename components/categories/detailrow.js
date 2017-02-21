@@ -73,6 +73,12 @@ class DetailRow extends React.Component {
    }
 
    componentDidMount() {
+     AsyncStorage.setItem("photoUri", "")
+     .then( () =>
+         {
+         }
+     )
+     .done( );
       this.fetchWalkthroughItem();
    }
 
@@ -157,7 +163,7 @@ class DetailRow extends React.Component {
                 </Card>
             </Content>
             <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}} onPress={() => this.navigateTo('commentsAndPhotos')}>
-                <Text>Add Comments and Photos</Text>
+                <Text style={{fontSize: 16, fontWeight: '500', color: '#fff'}}>Comments and Photos</Text>
             </Button>
          </View>
       </View>
@@ -169,8 +175,36 @@ class DetailRow extends React.Component {
   //  }
 
    navigateTo(route) {
-     AsyncStorage.setItem("subItemId", this.props.itemId);
-     this.props.replaceOrPushRoute(route);
+    //  AsyncStorage.setItem("subItemId", this.props.itemId);
+    //  this.props.replaceOrPushRoute(route);
+
+     AsyncStorage.setItem("subItemId", this.props.itemId)
+     .then( () =>
+         {
+             this.props.replaceOrPushRoute(route);
+         }
+     )
+     .done( );
+
+   }
+
+   _takePhoto = async () => {
+     let pickerResult = await ImagePicker.launchCameraAsync({
+       allowsEditing: true,
+       aspect: [4,3]
+     });
+
+     console.log('pickerResult:', pickerResult);
+
+     AsyncStorage.setItem("photoUri", pickerResult.uri)
+     .then( () =>
+         {
+             this.navigateTo('commentsAndPhotos');
+         }
+     )
+     .done( );
+
+     //this._handleImagePicked(pickerResult);
    }
 
    onActionSelected(position) {
@@ -355,9 +389,10 @@ class DetailRow extends React.Component {
 
    checkAction(data) {
       if (data.selectedOption === 'Needs Attention') {
-        this.navigateTo('commentsAndPhotos');
-         // console.log('Taking Photo...');
-         // this._takePhoto();
+
+        //this.navigateTo('commentsAndPhotos');
+         console.log('Taking Photo...');
+         this._takePhoto();
 
       }
    }

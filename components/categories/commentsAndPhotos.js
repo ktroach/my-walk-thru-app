@@ -19,7 +19,6 @@ import { Container, Header, Title, Content, Text, Button, Icon, List, ListItem, 
 
 import moment from 'moment';
 import shortid from 'shortid';
-//let id = shortid.generate();
 
 import theme from '../../themes/form-theme';
 import styles from './styles';
@@ -44,7 +43,9 @@ class CommentsAndPhotos extends Component {
          image: null,
          uploading: false,
          images: [],
-         thumbnails: []
+         thumbnails: [],
+         photoUri: '',
+         templateId: ''
       };
    }
 
@@ -52,20 +53,32 @@ class CommentsAndPhotos extends Component {
       var subItemId = '';
       AsyncStorage.getItem("subItemId").then((subItemId) => {
           this.setState({"subItemId": subItemId});
-         if (subItemId) {
-           this.fetchWalkthroughItem(subItemId);
-         }
+          if (subItemId) {
+            this.fetchWalkthroughItem(subItemId);
+          }
       }).then(res => {});
    }
 
    fetchWalkthroughItem(itemId){
-
      console.log('>>> ENTERED commentsAndPhotos::fetchWalkthroughItem')
 
      if (!itemId) {
         console.log('Invalid itemId');
         return;
      }
+
+     AsyncStorage.getItem("photoUri").then((photoUri) => {
+         this.setState({"photoUri": photoUri});
+         if (photoUri && photoUri.length > 0){
+           AsyncStorage.setItem("photoUri", "")
+           .then( () =>
+               {
+                   alert('Describe what you just took a photo of in the Comments');
+               }
+           )
+           .done( );
+         }
+     }).then(res => {});
 
      let query = Config.PRICING_ITEMS_API + '?filter={"where": {"id": "' + itemId + '"}}';
 
@@ -84,19 +97,31 @@ class CommentsAndPhotos extends Component {
               if (imageItem.image) {
                  thumbnails.push(imageItem.image);
 
-                 // moment().format('MMMM Do YYYY, h:mm:ss a');
-                 let createdOn = item.created;
-                 if (!createdOn) createdOn = new Date().now;
-                 let formattedDate = moment(createdOn).format('YYYYMMDD h:mm:ss a');
+                // moment().format('MMMM Do YYYY, h:mm:ss a');
+                let createdOn = item.created;
+                if (!createdOn) createdOn = new Date().now;
+                let formattedDate = moment(createdOn).format('YYYYMMDD h:mm:ss a');
 
-                 let photo = {
-                   thumb: '', // thumbnail version of the photo to be displayed in grid view. actual photo is used if thumb is not provided
-                   photo: imageItem.image, // a remote photo or local media url
-                   caption: 'Taken: ' + formattedDate, // photo caption to be displayed
-                   selected: false, // set the photo selected initially(default is false)
-                 };
+                let photoUrl = '';
+                // if(photoUrl.indexOf('mywalkthru')){
+                //   photoUrl = imageItem.image;
+                // } else {
+                //   photoUrl = 'https://s3-us-west-2.amazonaws.com/mywalkthru-pm-files/photos/photo.jpg';
+                // }
 
-                 media.push(photo);
+                photoUrl = imageItem.image;
+
+                //  let photoUrl = imageItem.image;
+                // let photoUrl = 'https://s3-us-west-2.amazonaws.com/mywalkthru-pm-files/photos/SyV-uCOKe.jpg';
+
+                let photo = {
+                 thumb: '', // thumbnail version of the photo to be displayed in grid view. actual photo is used if thumb is not provided
+                 photo: photoUrl, // a remote photo or local media url
+                 caption: 'Taken: ' + formattedDate, // photo caption to be displayed
+                 selected: false, // set the photo selected initially(default is false)
+                };
+
+                media.push(photo);
 
               }
            })
@@ -199,6 +224,10 @@ class CommentsAndPhotos extends Component {
        console.log('<<< Finished onSaveCommentsAndPhotos');
      }
 
+     updateComments(value){
+       this.setState({comments: value});
+     }
+
      saveCommentsAndPhotos(){
         console.log('<<< ENTERED saveCommentsAndPhotos');
 
@@ -237,13 +266,17 @@ class CommentsAndPhotos extends Component {
                                 <Text>Comments</Text>
                             </CardItem>
                             <CardItem>
-                                 <Textarea placeholder="Enter your comments" style={{color: '#333', height: 200, overflow: 'scroll'}} value={this.state.comments}>
+                                 <Textarea
+                                    placeholder="Enter your comments"
+                                    style={{color: '#333', height: 200, overflow: 'scroll'}}
+                                    onChangeText={this.updateComments.bind(this)}
+                                    value={this.state.comments}>
                                  </Textarea>
                             </CardItem>
 
                             <CardItem>
                                  <Button rounded block style={{backgroundColor: '#ad241f'}} onPress={() => this._takePhoto()}>
-                                     <Text>Take Pictures</Text>
+                                     <Text>TAKE CLOSE UP PHOTO</Text>
                                  </Button>
                             </CardItem>
 
@@ -262,6 +295,9 @@ class CommentsAndPhotos extends Component {
     }
 
     _takePhoto = async () => {
+
+      alert('Use the Zoom gesture on your camera to take a close up picture.  Pinch gesture to Zoom in closer.');
+
       let pickerResult = await ImagePicker.launchCameraAsync({
         allowsEditing: true,
         aspect: [4,3]
@@ -397,27 +433,25 @@ class CommentsAndPhotos extends Component {
        }).done();
     }
 
-    // <PhotoBrowser
-    //   mediaList={this.state.media}
-    //   useCircleProgress={true}
-    //   initialIndex={0}
-    //   displayNavArrows={true}
-    //   displaySelectionButtons={false}
-    //   displayActionButton={false}
-    //   startOnGrid={true}
-    //   enableGrid={true}
-    //   onSelectionChanged={this._onPhotoSelectionChanged}
-    //   onActionButton={this._onPhotoActionButton}
-    // />
-
     _maybeRenderPhotos() {
        return(
-          <PhotoBrowser
-            mediaList={this.state.media}
-            useCircleProgress={true}
-            enableGrid={true}
-          />
+         <PhotoBrowser
+           onBack={this._onBack}
+           mediaList={this.state.media}
+           alwaysShowControls={true}
+           displayNavArrows={true}
+           displaySelectionButtons={false}
+           displayActionButton={true}
+           startOnGrid={false}
+           enableGrid={false}
+           onSelectionChanged={this._onPhotoSelectionChanged}
+           onActionButton={this._onPhotoActionButton}
+         />
        );
+    }
+
+    _onBack(){
+       console.log('>>> ENTERED _onBack...');
     }
 
     _onPhotoSelectionChanged(){

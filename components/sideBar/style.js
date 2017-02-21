@@ -6,7 +6,7 @@ var { StyleSheet, Platform } = React;
 
 var fontSizeBase = 16;
 // var largeFont = fontSizeBase * 2.0;
-var largeFont = fontSizeBase * 1.8;
+var largeFont = fontSizeBase * 1.5;
 
 // #232323
 module.exports = StyleSheet.create({
@@ -22,7 +22,7 @@ module.exports = StyleSheet.create({
     sidebarIcon: {
         fontSize: largeFont,
         color: '#fff',
-        lineHeight: largeFont,
+        //lineHeight: largeFont,
       //   lineHeight: (Platform.OS === 'android') ? 32 : 36,
         backgroundColor: 'transparent',
     },
@@ -31,7 +31,7 @@ module.exports = StyleSheet.create({
         color: '#fff', //'#ecebeb',
         fontWeight: '600',
         fontSize: largeFont,
-        lineHeight: largeFont,
+        //lineHeight: largeFont,
     }
 });
 
