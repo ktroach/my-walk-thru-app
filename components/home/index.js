@@ -9,7 +9,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -25,7 +25,6 @@ import theme from '../../themes/form-theme';
 import styles from './styles';
 
 class Home extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -103,14 +102,29 @@ class Home extends Component {
                             </ListItem>
                         </List>
 
-                       <Button transparent large style={styles.roundedButton} onPress={() => this.replaceRoute('categories')}>
-                           <Icon name='ios-close-outline' />
+                       <Button rounded block
+                         style={{marginTop: 20, backgroundColor: '#ad241f'}}
+                         onPress={() => this.replaceRoute('categories')}>
+                           <Text>CONTINUE YOUR WALKTHRU</Text>
                        </Button>
+
+                       <Button rounded block
+                         style={{marginTop: 20, backgroundColor: '#ad241f'}}
+                         onPress={() => this.replaceRoute('submittal')}>
+                           <Text>SUBMIT YOUR WALKTHRU</Text>
+                       </Button>
+
                    </Content>
               </Image>
           </Container>
       );
       //   return (
+
+      // <Button transparent large style={styles.roundedButton} onPress={() => this.replaceRoute('categories')}>
+      //     <Icon name='ios-close-outline' />
+      // </Button>
+
+
       //      <Container theme={theme} style={{backgroundColor: '#333'}}>
       //        <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
         //

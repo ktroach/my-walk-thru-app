@@ -46,7 +46,8 @@ class CommentsAndPhotos extends Component {
          photoUri: '',
          templateId: '',
          userId:'',
-         templateItem: {}
+         templateItem: {},
+         closeUpComments: ''
       };
    }
 
@@ -195,6 +196,10 @@ class CommentsAndPhotos extends Component {
 
      updateComments(value){
        this.setState({comments: value});
+     }
+
+     updateCloseUpComments(value){
+       this.setState({closeUpComments: value});
      }
 
      saveCommentsAndPhotos(route){
@@ -470,16 +475,25 @@ class CommentsAndPhotos extends Component {
           shadowRadius: 5,
         }}>
           <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
-            <Image
-              source={{uri: image}}
-              style={{width: 250, height: 250}}
-            />
+              <Image
+                source={{uri: image}}
+                style={{width: 250, height: 250}}
+              />
+          </View>
+          <View style={{backgroundColor: '#333'}}>
+            <Text
+              style={{paddingVertical: 10, paddingHorizontal: 10, color: '#fff', fontSize: 14, fontWeight: '500'}}>
+              Describe what you just took a picture of in this closeup shot
+            </Text>
+            <Textarea
+               placeholder=""
+               autoFocus = {true} 
+               style={{backgroundColor: '#fff', color: '#333', height: 200, overflow: 'scroll', borderWidth: 1,  borderColor: '#333'}}
+               onChangeText={this.updateCloseUpComments.bind(this)}
+               value={this.state.closeUpComments}>
+            </Textarea>
           </View>
 
-          <Text
-            style={{paddingVertical: 10, paddingHorizontal: 10}}>
-            {image}
-          </Text>
         </View>
       );
     }

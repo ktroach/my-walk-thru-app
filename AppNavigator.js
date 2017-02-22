@@ -28,6 +28,9 @@ import Step5 from './components/signup/step-5';
 import Step6 from './components/signup/step-6';
 import Step1Copy from './components/signup/step-1-copy';
 
+// Submittal screen  process signature
+import Submittal from './components/submittal/';
+
 // Walkthru Categories
 import TopCategories from './components/categories/top';
 import SubCategories from './components/categories/details';
@@ -146,8 +149,7 @@ class AppNavigator extends Component {
                 panCloseMask={0.2}
                 negotiatePan={true}>
                 <StatusBar
-                    backgroundColor={statusBarColor}
-                    barStyle='light-content'
+                    hidden={true}
                 />
                 <Navigator
                     ref={(ref) => this._navigator = ref}
@@ -157,7 +159,9 @@ class AppNavigator extends Component {
                             gestures: {}
                         };
                     }}
-                    initialRoute={{id: (Platform.OS === 'android') ? 'signup-step0' : 'signup-step0', statusBarHidden: true}}
+                    initialRoute={{id: (Platform.OS === 'android') ? 'signup-step0' : 'signup-step0',
+                                   statusBarHidden: true}}
+
                     renderScene={this.renderScene}
                   />
             </Drawer>
@@ -168,6 +172,8 @@ class AppNavigator extends Component {
         switch (route.id) {
             case 'home':
                return <Home navigator={navigator} />;
+            case 'submittal':
+               return <Submittal navigator={navigator} />;
             case 'signup-step0':
                return <Step0 navigator={navigator} />;
             case 'signup-step1':

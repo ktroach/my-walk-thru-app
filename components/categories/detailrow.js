@@ -341,7 +341,6 @@ class DetailRow extends React.Component {
    }
 
    setSelectedOption(selectedOption) {
-
       let selectedItemId = this.state.item.id;
       this.setState({
          selectedOption: selectedOption.value
