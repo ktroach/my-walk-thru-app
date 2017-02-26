@@ -106,7 +106,7 @@ class DetailRow extends React.Component {
             <Content padder style={{backgroundColor: 'transparent'}} >
                 <Card transparent foregroundColor="#000">
                     <CardItem header>
-                       <Text>Actions</Text>
+                       <Text>Observations</Text>
                     </CardItem>
                     <CardItem>
                        {this.renderSegmentControl(this.state.item)}
@@ -415,6 +415,7 @@ class DetailRow extends React.Component {
             optionStyle= {{
               fontSize: 16,
               fontWeight: 'bold',
+              textAlign: 'center'
             }}
             containerStyle= {{
               marginLeft: 5,

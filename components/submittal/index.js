@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Image, Linking, ActivityIndicator } from 'react-native';
+import { Image, Linking, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -9,10 +9,18 @@ import { popRoute, replaceRoute } from '../../actions/route';
 
 import { Container, Header, Title, Content, Text, Button, Icon, Card, CardItem, View } from 'native-base';
 
-import { Checkbox } from 'nachos-ui'
+import { Checkbox } from 'nachos-ui';
+
+import SignatureView from './SignatureView';
 
 import theme from '../../themes/form-theme';
 import styles from './styles';
+
+const flexCenter = {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+};
 
 class Submittal extends Component {
     constructor(props) {
@@ -20,7 +28,8 @@ class Submittal extends Component {
         this.state = {
             updating: false,
             processStatus: '',
-            firstChecked: true
+            firstChecked: false,
+            data: null
        };
     }
 
@@ -40,8 +49,30 @@ class Submittal extends Component {
        Linking.openURL('http://www.mywalkthru.com/');
     }
 
+    _showSignatureView() {
+      this._signatureView.show(true);
+    }
+
+    _onSave(result) {
+      const base64String = `data:image/png;base64,${result.encoded}`;
+      this.setState({data: base64String});
+
+      this._signatureView.show(false);
+    }
+
     submitWalkThru(){
       // alert('Creating Walkthru Report...');
+
+      if (!this.state.firstChecked) {
+        alert('Please check the confirmation circle to proceed.');
+        return;
+      }
+
+      if (!this.state.data) {
+        alert('Please sign off on your Walkthru to proceed');
+        return;
+      }
+
       this.setState({updating: true, processStatus: 'Creating Walkthru Report...'});
 
       // this.replaceRoute('home');
@@ -83,6 +114,7 @@ class Submittal extends Component {
 
     renderSubmittalForm() {
       const checkboxStyle = { margin: 5 }
+      const {data} = this.state;
         return (
             <Container theme={theme} style={{backgroundColor: '#333'}}>
                <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
@@ -103,30 +135,49 @@ class Submittal extends Component {
                             <Card foregroundColor='#000'>
                                 <CardItem header>
                                     <Text>Are you sure you want to Complete your WalkThru?</Text>
+                                </CardItem>
+                                <CardItem header>
+                                    <Text>Check the circle to confirm you are ready</Text>
                                     <Checkbox
-                                      style={checkboxStyle} 
+                                      style={checkboxStyle}
                                       kind='circle'
                                       checked={this.state.firstChecked}
                                       onValueChange={this.handleFirstCheckboxChange}
+                                    ></Checkbox>
+                                </CardItem>
+
+                                <CardItem header>
+                                    <Text onPress={() => this.openLink()}>Tap HERE to Read the Checklist</Text>
+                                </CardItem>
+
+                                <CardItem header>
+                                    <Text onPress={() => this.openLink()}>Tap HERE to View Pending Items</Text>
+                                </CardItem>
+
+                                <CardItem header>
+                                    <Text>By Signing, you Agree that your WalkThru has been Completed:</Text>
+                                    <TouchableOpacity onPress={this._showSignatureView.bind(this)}>
+                                      <View style={[flexCenter, {padding: 10}]}>
+                                        <Text style={{fontSize: 18, fontWeight: 'bold', color: '#333'}}>
+                                          {data ? 'This is a your signature.' : 'SIGN HERE'}
+                                        </Text>
+                                        <View style={{paddingBottom: 10}} />
+                                        {data &&
+                                          <View style={{backgroundColor: 'white'}}>
+                                            <Image
+                                              resizeMode={'contain'}
+                                              style={{width: 300, height: 300}}
+                                              source={{uri: data}}
+                                            />
+                                          </View>
+                                        }
+                                      </View>
+                                    </TouchableOpacity>
+                                    <SignatureView
+                                      ref={r => this._signatureView = r}
+                                      rotateClockwise={!!true}
+                                      onSave={this._onSave.bind(this)}
                                     />
-                                </CardItem>
-
-                                <CardItem header>
-                                    <Text onPress={() => this.openLink()}>Read Checklist</Text>
-                                </CardItem>
-
-                                <CardItem header>
-                                    <Text onPress={() => this.openLink()}>View Pending Items</Text>
-                                </CardItem>
-
-                                <CardItem header>
-                                    <Text>By Signing you agree that your WalkThru is complete</Text>
-                                </CardItem>
-
-                                <CardItem>
-                                    <Text>
-                                        Write Your Signature HERE
-                                    </Text>
                                 </CardItem>
 
                                 <CardItem header>
@@ -141,6 +192,7 @@ class Submittal extends Component {
                     </Content>
                 </Image>
             </Container>
+
         )
     }
 }
