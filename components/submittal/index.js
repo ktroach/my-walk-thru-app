@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Image, Linking, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { Image, Linking, ActivityIndicator, TouchableOpacity, Platform } from 'react-native';
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -16,11 +16,23 @@ import SignatureView from './SignatureView';
 import theme from '../../themes/form-theme';
 import styles from './styles';
 
+import SignatureCapture from 'react-native-signature-capture';
+
 const flexCenter = {
   flex: 1,
   justifyContent: 'center',
   alignItems: 'center',
 };
+
+const modalViewStyle = {
+  paddingTop: toolbarHeight,
+  flex: 1
+};
+
+const toolbarHeight = Platform.select({
+  android: 0,
+  ios: 22
+});
 
 class Submittal extends Component {
     constructor(props) {
@@ -112,6 +124,18 @@ class Submittal extends Component {
        );
     }
 
+    _onDragEvent() {
+      // This callback will be called when the user enters signature
+     console.log("dragged");
+     alert('signature captured');
+    }
+
+    _onSaveEvent(result) {
+      //result.encoded - for the base64 encoded png
+      //result.pathName - for the file path name
+      this.props.onSave && this.props.onSave(result);
+    }
+
     renderSubmittalForm() {
       const checkboxStyle = { margin: 5 }
       const {data} = this.state;
@@ -173,11 +197,6 @@ class Submittal extends Component {
                                         }
                                       </View>
                                     </TouchableOpacity>
-                                    <SignatureView
-                                      ref={r => this._signatureView = r}
-                                      rotateClockwise={!!true}
-                                      onSave={this._onSave.bind(this)}
-                                    />
                                 </CardItem>
 
                                 <CardItem header>
@@ -189,6 +208,7 @@ class Submittal extends Component {
                                 </CardItem>
                             </Card>
                         </View>
+
                     </Content>
                 </Image>
             </Container>

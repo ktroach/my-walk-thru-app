@@ -68,6 +68,7 @@ class SignatureView extends Component {
   _onDragEvent() {
     // This callback will be called when the user enters signature
    console.log("dragged");
+   alert('signature captured');
   }
 
   _onSaveEvent(result) {
