@@ -70,7 +70,10 @@ class Step0 extends Component {
     _renderWelcomeText() {
         return (
           <Text style={welcomeStyle.welcomeText}>
-            Your property manager has made good documentation about the condition of your home and it is important for you to do the same.
+          
+            Thank you for using the best app on the market for recouping your Security Deposit.  My Walkthru will help you document your findings through the apps easy-to-use camera and comments tool.
+            Your Walkthru documentation about the property will help you prove pre-existing damage and repair needs before your Lease begins.  At the end of your Walkthru, the app will produce a comprehensive report of all
+            of your observations and send it to you and your property manager. Your property manager has made good documentation about the condition of your home and it is important for you to do the same.
           </Text>
         );
     }
@@ -79,22 +82,48 @@ class Step0 extends Component {
        Linking.openURL('http://www.onsightpros.com/');
     }
 
+    // {/*
+    // <Button rounded block
+    //   style={{marginBottom: 20, backgroundColor: '#ad241f'}}
+    //   onPress={() => this.replaceRoute('home')}>
+    //     <Text>CONTINUE</Text>
+    // // </Button>
+    // {/*
+    // <Button rounded block
+    //   style={{marginBottom: 20, backgroundColor: '#ad241f'}}
+    //   onPress={() => this.replaceRoute('signup-step1')}>
+    //     <Text>GET STARTED!</Text>
+    // </Button>
+    //   */}
+    // */}
+
+
     _renderButton(){
       if (this.state.signUpDate && this.state.signUpDate.length>0) {
         return (
           <Button rounded block
-            style={{marginBottom: 20, backgroundColor: '#ad241f'}}
-            onPress={() => this.replaceRoute('home')}>
+            style={{alignSelf: 'center',
+                    marginTop: 40,
+                    backgroundColor: '#ad241f',
+                    borderRadius:90,
+                    width: 300,
+                    height:65}}
+              onPress={() => this.replaceRoute('home')}>
               <Text>CONTINUE</Text>
           </Button>
         );
       } else {
         return (
-          <Button rounded block
-            style={{marginBottom: 20, backgroundColor: '#ad241f'}}
-            onPress={() => this.replaceRoute('signup-step1')}>
-              <Text>GET STARTED!</Text>
-          </Button>
+            <Button rounded block
+              style={{alignSelf: 'center',
+                      marginTop: 40,
+                      backgroundColor: '#ad241f',
+                      borderRadius:90,
+                      width: 300,
+                      height:65}}
+                onPress={() => this.replaceRoute('signup-step1')}>
+                <Text>GET STARTED</Text>
+            </Button>
         );
       }
     }
@@ -120,7 +149,7 @@ class Step0 extends Component {
                       {/*
                         <Text style={welcomeStyle.appTitleText}>
                            WELCOME TO
-                        </Text>                        
+                        </Text>
                         */}
 
 
@@ -129,23 +158,16 @@ class Step0 extends Component {
                           source={require('../../assets/images/logo.png')}
                           style={welcomeStyle.welcomeImage}
                          />
-                       </View>
-
-                       <View style={welcomeStyle.getStartedContainer}>
                          {this._renderWelcomeText()}
+                         {this._renderButton()}
                        </View>
 
-                       <View style={welcomeStyle.helpContainer}>
-                         <TouchableOpacity onPress={this._handleLearnMorePress} style={welcomeStyle.helpLink}>
-                          <Text style={welcomeStyle.helpLinkText}>
-                             Learn more on our website
-                          </Text>
-                         </TouchableOpacity>
-                       </View>
+
+
 
                     </Content>
 
-                    {this._renderButton()}
+
 
                 </Image>
             </Container>

@@ -206,9 +206,21 @@ class Submittal extends Component {
 
 
                                 <CardItem header>
+                                    {/*
                                     <Button rounded block
                                       style={{backgroundColor: '#00c497', paddingHorizontal: 15}} textStyle={{color: '#fff'}}
                                       onPress={() => this.submitWalkThru()}>
+                                        <Text>SUBMIT YOUR WALKTHRU</Text>
+                                    </Button>
+                                    */}
+                                    <Button rounded block
+                                      style={{alignSelf: 'center',
+                                              marginTop: 40,
+                                              backgroundColor: '#ad241f',
+                                              borderRadius:90,
+                                              width: 300,
+                                              height:65}}
+                                        onPress={() => this.submitWalkThru()}>
                                         <Text>SUBMIT YOUR WALKTHRU</Text>
                                     </Button>
                                 </CardItem>

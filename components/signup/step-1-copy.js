@@ -336,6 +336,7 @@ class Step1Copy extends Component {
                 title='Lease Details'
                 displayValue='moveindate'
                 scrollEnabled={false}
+                cancelable={true}
                 image={require('../../assets/icons/contact_card.png')}
               >
 
@@ -367,6 +368,8 @@ class Step1Copy extends Component {
               <GiftedForm.ModalWidget
                   title='How long is your lease?'
                   displayValue='leaseDuration'
+                  scrollEnabled={false}
+                  cancelable={true}
                   image={require('../../assets/icons/contact_card.png')}
               >
                   <GiftedForm.SelectWidget name='leaseDuration' title='Lease Length' multiple={false}>
@@ -400,12 +403,13 @@ class Step1Copy extends Component {
               <GiftedForm.ModalWidget
                 title='Property Details'
                 displayValue='propertyAddress'
-                scrollEnabled={false}
+                cancelable={true}
                 image={require('../../assets/icons/contact_card.png')}
               >
                 <GiftedForm.ModalWidget
                     title='Property Type'
                     displayValue='propertyType'
+                    cancelable={true}
                     image={require('../../assets/icons/contact_card.png')}
                 >
                     <GiftedForm.SelectWidget name='propertyType' title='Property Type' multiple={false}>
@@ -421,6 +425,7 @@ class Step1Copy extends Component {
                 <GiftedForm.ModalWidget
                     title='# of Bedrooms'
                     displayValue='numberOfBedRooms'
+                    cancelable={true}
                     image={require('../../assets/icons/contact_card.png')}
                 >
                     <GiftedForm.SelectWidget name='numberOfBedRooms' title='# of Bedrooms' multiple={false}>
@@ -447,6 +452,7 @@ class Step1Copy extends Component {
                 <GiftedForm.ModalWidget
                     title='# of Bathrooms'
                     displayValue='numberOfBathRooms'
+                    cancelable={true}
                     image={require('../../assets/icons/contact_card.png')}
                 >
                     <GiftedForm.SelectWidget name='numberOfBathRooms' title='# of Bathrooms' multiple={false}>
@@ -474,7 +480,7 @@ class Step1Copy extends Component {
                 />
                 <GiftedForm.TextInputWidget
                   name='street2' // optional
-                  title='Street2'
+                  title='Street2 (optional)'
                   autoCapitalize="words"
                   keyboardType="default"
                   placeholder=''
@@ -494,6 +500,7 @@ class Step1Copy extends Component {
                 <GiftedForm.ModalWidget
                   title='State'
                   displayValue='stateName'
+                  cancelable={true}
                   image={require('../../assets/icons/contact_card.png')}
                 >
                   <GiftedForm.SelectWidget name='stateName' title='State' multiple={false}>
@@ -525,9 +532,24 @@ class Step1Copy extends Component {
               <GiftedForm.SeparatorWidget />
 
               <GiftedForm.ModalWidget
+                  title='Add Photo of Property'
+                  displayValue='propertyPhoto'
+                  scrollEnabled={false}
+                  cancelable={true}
+                  image={require('../../assets/icons/contact_card.png')}
+              >
+                  <GiftedForm.SelectWidget name='propertyPhoto' title='Add Photo of Property' multiple={false}>
+                    <GiftedForm.OptionWidget title='Take Photo' value='takephoto'/>
+                    <GiftedForm.OptionWidget title='Camera Roll' value='cameraroll'/>
+                  </GiftedForm.SelectWidget>
+              </GiftedForm.ModalWidget>
+              <GiftedForm.SeparatorWidget/>
+
+              <GiftedForm.ModalWidget
                 title='Property Manager'
                 displayValue='propertyManagerInfo'
                 scrollEnabled={false}
+                cancelable={true}
                 image={require('../../assets/icons/contact_card.png')}
               >
                 <GiftedForm.ModalWidget
@@ -578,12 +600,20 @@ class Step1Copy extends Component {
                 />
               </GiftedForm.ModalWidget>
 
+
+
+
               <GiftedForm.SubmitWidget
                 title='Sign up'
                 widgetStyles={{
                   submitButton: {
+                    alignSelf: 'center',
                     backgroundColor: '#ad241f',
-                    borderRadius:12,
+                    height:65,
+                    marginTop: 40,
+                    backgroundColor: '#ad241f',
+                    borderRadius:90,
+                    width: 300,
                   }
                 }}
                 onSubmit={(isValid, values, validationResults, postSubmit = null, modalNavigator = null) => {

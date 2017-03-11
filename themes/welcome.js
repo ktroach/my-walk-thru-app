@@ -8,10 +8,10 @@ module.exports = {
     backgroundColor: '#fff',
   },
   welcomeText: {
-     paddingTop: 10,
+    paddingTop: 0,
     marginBottom: 10,
    //  color: 'rgba(0,0,0,0.4)',
-    fontSize: 20,
+    fontSize: 18,
     textAlign: 'center',
   },
   developmentModeText: {
@@ -25,11 +25,13 @@ module.exports = {
   },
   welcomeContainer: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 5,
     // marginBottom: 10,
   },
   welcomeImage: {
-    marginTop: 5,
+    marginTop: 50,
+    width: 300,
+    height: 400
   },
   getStartedContainer: {
     alignItems: 'center',

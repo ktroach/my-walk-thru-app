@@ -102,16 +102,37 @@ class Home extends Component {
                             </ListItem>
                         </List>
 
+                        <Button rounded block
+                          style={{alignSelf: 'center',
+                                  marginTop: 40,
+                                  backgroundColor: '#ad241f',
+                                  borderRadius:90,
+                                  width: 300,
+                                  height:65}}
+                          onPress={() => this.replaceRoute('categories')}>
+                            <Text>USE QUICK WALKTHRU TOOL</Text>
+                        </Button>
+
                        <Button rounded block
-                         style={{marginTop: 20, backgroundColor: '#ad241f'}}
+                          style={{alignSelf: 'center',
+                               marginTop: 40,
+                               backgroundColor: '#ad241f',
+                               borderRadius:90,
+                               width: 300,
+                               height:65}}
                          onPress={() => this.replaceRoute('categories')}>
-                           <Text>CONTINUE YOUR WALKTHRU</Text>
+                           <Text>TRACK YOUR WALKTHRU PROGRESS</Text>
                        </Button>
 
                        <Button rounded block
-                         style={{marginTop: 20, backgroundColor: '#ad241f'}}
+                          style={{alignSelf: 'center',
+                               marginTop: 40,
+                               backgroundColor: '#ad241f',
+                               borderRadius:90,
+                               width: 300,
+                               height:65}}
                          onPress={() => this.replaceRoute('submittal')}>
-                           <Text>SUBMIT YOUR WALKTHRU</Text>
+                           <Text>SUBMIT/FINISH YOUR WALKTHRU</Text>
                        </Button>
 
                    </Content>
