@@ -16,23 +16,13 @@ import SignatureView from './SignatureView';
 import theme from '../../themes/form-theme';
 import styles from './styles';
 
-import SignatureCapture from 'react-native-signature-capture';
+import SignaturePad from 'react-native-signature-pad';
 
 const flexCenter = {
   flex: 1,
   justifyContent: 'center',
   alignItems: 'center',
 };
-
-const modalViewStyle = {
-  paddingTop: toolbarHeight,
-  flex: 1
-};
-
-const toolbarHeight = Platform.select({
-  android: 0,
-  ios: 22
-});
 
 class Submittal extends Component {
     constructor(props) {
@@ -41,7 +31,8 @@ class Submittal extends Component {
             updating: false,
             processStatus: '',
             firstChecked: false,
-            data: null
+            data: null,
+            signature: null
        };
     }
 
@@ -80,7 +71,7 @@ class Submittal extends Component {
         return;
       }
 
-      if (!this.state.data) {
+      if (!this.state.signature) {
         alert('Please sign off on your Walkthru to proceed');
         return;
       }
@@ -124,17 +115,14 @@ class Submittal extends Component {
        );
     }
 
-    _onDragEvent() {
-      // This callback will be called when the user enters signature
-     console.log("dragged");
-     alert('signature captured');
-    }
+    _signaturePadError = (error) => {
+      console.error(error);
+    };
 
-    _onSaveEvent(result) {
-      //result.encoded - for the base64 encoded png
-      //result.pathName - for the file path name
-      this.props.onSave && this.props.onSave(result);
-    }
+    _signaturePadChange = ({base64DataUrl}) => {
+      console.log("Got new signature: " + base64DataUrl);
+      this.setState({signature: base64DataUrl});
+    };
 
     renderSubmittalForm() {
       const checkboxStyle = { margin: 5 }
@@ -155,6 +143,10 @@ class Submittal extends Component {
                     </Header>
 
                     <Content padder style={{backgroundColor: 'transparent'}}>
+
+
+
+
                         <View style={styles.box}>
                             <Card foregroundColor='#000'>
                                 <CardItem header>
@@ -178,6 +170,9 @@ class Submittal extends Component {
                                     <Text onPress={() => this.openLink()}>Tap HERE to View Pending Items</Text>
                                 </CardItem>
 
+
+
+                                {/*
                                 <CardItem header>
                                     <Text>By Signing, you Agree that your WalkThru has been Completed:</Text>
                                     <TouchableOpacity onPress={this._showSignatureView.bind(this)}>
@@ -198,6 +193,17 @@ class Submittal extends Component {
                                       </View>
                                     </TouchableOpacity>
                                 </CardItem>
+                                */}
+
+                                <CardItem style={{height: 200}}>
+                                  <View style={{flex: 1}}>
+                                      <Text>By Signing, you Agree that your WalkThru has been Completed:</Text>
+                                      <SignaturePad onError={this._signaturePadError}
+                                                    onChange={this._signaturePadChange}
+                                                    style={{flex: 1, backgroundColor: 'white'}}/>
+                                  </View>
+                                </CardItem>
+
 
                                 <CardItem header>
                                     <Button rounded block
@@ -207,11 +213,31 @@ class Submittal extends Component {
                                     </Button>
                                 </CardItem>
                             </Card>
+
+
+
                         </View>
+
+
+
+
 
                     </Content>
                 </Image>
+
+                {/*
+                <View style={{flex: 1}}>
+                    <Text>By Signing, you Agree that your WalkThru has been Completed:</Text>
+                    <SignaturePad onError={this._signaturePadError}
+                                  onChange={this._signaturePadChange}
+                                  style={{flex: 1, backgroundColor: 'white'}}/>
+                </View>
+                */}
+
+
             </Container>
+
+
 
         )
     }
