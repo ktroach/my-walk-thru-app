@@ -130,6 +130,7 @@ class CategoryDetails extends React.Component {
                        </Button>
                    </Header>
 
+                  
                    <Content padder style={{backgroundColor: 'transparent'}}>
                    <View style={[styles.subHeaderBar]}>
                       <View style={{flex: 1,justifyContent: 'space-between',flexDirection: 'row', padding: 10}}>
@@ -143,6 +144,7 @@ class CategoryDetails extends React.Component {
                          </View>
                       </View>
                   </View>
+
 
                   {
                    this.renderListView()

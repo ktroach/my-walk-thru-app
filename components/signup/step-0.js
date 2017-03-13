@@ -67,14 +67,21 @@ class Step0 extends Component {
         this.props.popRoute();
     }
 
+    // Before you move in, your landlord usually gives you a document to record the condition of your apartment. Take it a step further and snap some photos for your own records. Email your landlord any concerns you might have about pre-move-in conditions. This way, you'll have evidence should an issue arise.
+
+
     _renderWelcomeText() {
         return (
-          <Text style={welcomeStyle.welcomeText}>
-          
-            Thank you for using the best app on the market for recouping your Security Deposit.  My Walkthru will help you document your findings through the apps easy-to-use camera and comments tool.
-            Your Walkthru documentation about the property will help you prove pre-existing damage and repair needs before your Lease begins.  At the end of your Walkthru, the app will produce a comprehensive report of all
-            of your observations and send it to you and your property manager. Your property manager has made good documentation about the condition of your home and it is important for you to do the same.
-          </Text>
+          <View>
+            <Text style={{textAlign: 'center',fontWeight: 'bold',fontSize: 20, paddingBottom: 10}}>The BEST APP for HELPING TENANTS GET their DEPOSITS BACK!</Text>
+
+            <Text style={welcomeStyle.welcomeText}>
+
+              Thank you for using the best app on the market for recouping your Security Deposit.  My Walkthru will help you document your findings through the apps easy-to-use camera and comments tool.
+              Your Walkthru documentation about the property will help you prove pre-existing damage and repair needs before your Lease begins.  At the end of your Walkthru, the app will produce a comprehensive report of all
+              of your observations and send it to you and your property manager. Your property manager has made good documentation about the condition of your home and it is important for you to do the same.
+            </Text>
+          </View>
         );
     }
 

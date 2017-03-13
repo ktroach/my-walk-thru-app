@@ -18,6 +18,9 @@ import styles from './styles';
 
 import SignaturePad from 'react-native-signature-pad';
 
+import moment from 'moment';
+import shortid from 'shortid';
+
 const flexCenter = {
   flex: 1,
   justifyContent: 'center',
@@ -77,6 +80,39 @@ class Submittal extends Component {
       }
 
       this.setState({updating: true, processStatus: 'Creating Walkthru Report...'});
+
+      var url = "https://mywalkthruapi.herokuapp.com/api/v1/Reports/generateReport";
+      var data = JSON.stringify({userId: '58c47c8424947f00112328ca'});
+
+      let completionDate = moment().format();
+      var now = new Date();
+
+      console.log('data: ', data);
+
+      fetch(url, {
+           method: 'post',
+           headers: {
+             "Content-type": "application/json; charset=UTF-8"
+           },
+         body: data
+      }).then((response) => response.json()).then((responseData) => {
+         console.log('RESPONSEDATA: ', responseData);
+
+          if (!responseData) {
+             alert('Sorry, there was a problem Submitting your Walkthru');
+          } else {
+            AsyncStorage.setItem("completionDate", completionDate)
+            .then( () =>
+                {
+                    AsyncStorage.setItem("userId", userId);
+                    alert('Thank you for Completing your Walkthru ('+completionDate+')');
+                    this.replaceRoute('home');
+                }
+            )
+            .done( );
+          }
+
+      }).done();
 
       // this.replaceRoute('home');
     }

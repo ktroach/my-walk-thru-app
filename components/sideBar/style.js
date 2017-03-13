@@ -4,7 +4,7 @@ var React = require('react-native');
 
 var { StyleSheet, Platform } = React;
 
-var fontSizeBase = 16;
+var fontSizeBase = 14;
 // var largeFont = fontSizeBase * 2.0;
 var largeFont = fontSizeBase * 1.5;
 

@@ -100,13 +100,13 @@ class DetailRow extends React.Component {
              borderColor: 'white'
             }}>
 
-            <Header style={{backgroundColor: 'transparent'}}>
-                <Title style={{fontSize: 18, color: '#fff'}}>{this.state.item.name}</Title>
+            <Header style={{backgroundColor: '#fff'}}>
+                <Title style={{fontSize: 20, color: '#333'}}>{this.state.item.name}</Title>
             </Header>
-            <Content padder style={{backgroundColor: 'transparent'}} >
+            <Content padder style={{backgroundColor: '#fff'}} >
                 <Card transparent foregroundColor="#000">
                     <CardItem header>
-                       <Text>Observations</Text>
+                       <Text>Condition</Text>
                     </CardItem>
                     <CardItem>
                        {this.renderSegmentControl(this.state.item)}

@@ -676,36 +676,89 @@ class Step1Copy extends Component {
                     var now = new Date();
                     var url = Config.USERS_API + '/';
 
-                    var data = JSON.stringify({
-                      "userId": userId,
-                      "fullName": values.fullName,
-                      "username": values.username,
-                      "usertype": "Tenant",
-                      "email": values.emailAddress,
-                      "password": "p@ss1word",
-                      "tenant_phone": values.tenantPhone,
-                      "preferred_contact": "sms",
-                      "sms_alerts": "true",
-                      "status": "active",
-                      "propertyType": values.propertyType,
-                      "numberOfBedRooms": values.numberOfBedRooms,
-                      "numberOfBathRooms": values.numberOfBathRooms,
-                      "leaseReason": values.leaseReason,
-                      "leaseBeginDate": values.leaseBeginDate,
-                      "leaseDuration": values.leaseDuration,
-                      "street1": values.street1,
-                      "street2": values.street2,
-                      "cityName": values.cityName,
-                      "stateName": values.stateName,
-                      "zip": values.zipCode,
-                      "landlordType": values.landlordType,
-                      "propertyManagementCompany": values.propertyManagementCompany,
-                      "propertyManagerName": values.propertyManagerName,
-                      "propertyManagerEmail": values.propertyManagerEmail,
-                      "propertyManagerPhone": values.propertyManagerPhone,
-                      "termsAcceptedOn": signUpDate,
-                      "created": now
+                    // var data = JSON.stringify({
+                    //   "userId": userId,
+                    //   "fullName": values.fullName,
+                    //   "username": values.username,
+                    //   "usertype": "Tenant",
+                    //   "email": values.emailAddress,
+                    //   "password": "p@ss1word",
+                    //   "tenant_phone": values.tenantPhone,
+                    //   "preferred_contact": "sms",
+                    //   "sms_alerts": "true",
+                    //   "status": "active",
+                    //   "propertyType": values.propertyType,
+                    //   "numberOfBedRooms": values.numberOfBedRooms,
+                    //   "numberOfBathRooms": values.numberOfBathRooms,
+                    //   "leaseReason": values.leaseReason,
+                    //   "leaseBeginDate": values.leaseBeginDate,
+                    //   "leaseDuration": values.leaseDuration,
+                    //   "street1": values.street1,
+                    //   "street2": values.street2,
+                    //   "cityName": values.cityName,
+                    //   "stateName": values.stateName,
+                    //   "zip": values.zipCode,
+                    //   "landlordType": values.landlordType,
+                    //   "propertyManagementCompany": values.propertyManagementCompany,
+                    //   "propertyManagerName": values.propertyManagerName,
+                    //   "propertyManagerEmail": values.propertyManagerEmail,
+                    //   "propertyManagerPhone": values.propertyManagerPhone,
+                    //   "termsAcceptedOn": signUpDate,
+                    //   "created": now
+                    // });
+
+                    var addressLine = values.street1 + " " + values.cityName + ", " + values.stateName + " " + values.zip;
+                    var leaseEnds= moment().format();
+
+                    var data = JSON.stringify(
+                    {
+                        "userId": userId,
+                        "fullName": values.fullName,
+                        "username": values.username,
+                        "usertype": "Tenant",
+                        "email": values.emailAddress,
+                        "password": "p@ss1word",
+                        "preferred_contact_method": "SMS",
+                        "allow_sms_alerts": "true",
+                        "allow_emails": "true",
+                        "allow_data_usage": "true",
+                        "status": "active",
+                        "deleted": "false",
+                        "notes": "",
+                        "signatureUrl": "",
+                        "termsAcceptedOn": signUpDate,
+                        "created": now,
+                        "report": {
+                            "title": "MyWalkThru Report",
+                            "reportDate": "",
+                            "reportId": ""
+                        },
+                        "property": {
+                            "propertyType": values.propertyType,
+                            "leaseBegins": values.leaseBeginDate,
+                            "leaseEnds": leaseEnds,
+                            "addressLine": addressLine,
+                            "address1": values.street1,
+                            "address2": values.street2,
+                            "city": values.cityName,
+                            "state": values.stateName,
+                            "zip": values.zipCode,
+                            "photoUrl": "",
+                            "numberOfBedRooms": values.numberOfBedRooms,
+                            "numberOfBathRooms": values.numberOfBathRooms,
+                            "leaseReason": values.leaseReason
+                        },
+                        "propertyManager": {
+                            "landlordType": values.landlordType,
+                            "company": values.propertyManagementCompany,
+                            "landLordName": values.propertyManagerName,
+                            "landLordPhone": values.propertyManagerPhone,
+                            "landLordEmail": values.propertyManagerEmail
+                        },
+                        "summary": [],
+                        "details": []
                     });
+
 
                     console.log('data: ', data);
 

@@ -21,7 +21,7 @@ module.exports = {
     textAlign: 'center',
   },
   contentContainer: {
-    paddingTop: 80,
+    paddingTop: 40,
   },
   welcomeContainer: {
     alignItems: 'center',

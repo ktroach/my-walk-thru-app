@@ -92,6 +92,7 @@ class CategoryRow extends React.Component {
                    <Text note style={{ color: '#333' }}>{description}</Text>
                    <Text style={styles.arrow}><Icon name="ios-arrow-forward" style={{ color: '#333' }} /></Text>
                </CardItem>
+               {/*
                <CardItem style={styles.cardItem}   onPress={() => this.navigateTo('subcategories')}>
                   <List>
                        <ListItem style={{borderBottomWidth: 0}}>
@@ -99,6 +100,7 @@ class CategoryRow extends React.Component {
                        </ListItem>
                   </List>
                </CardItem>
+               */}
             </TouchableOpacity>
          </View>
       );
