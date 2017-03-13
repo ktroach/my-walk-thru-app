@@ -130,20 +130,9 @@ class CategoryDetails extends React.Component {
                        </Button>
                    </Header>
 
-                  
-                   <Content padder style={{backgroundColor: 'transparent'}}>
-                   <View style={[styles.subHeaderBar]}>
-                      <View style={{flex: 1,justifyContent: 'space-between',flexDirection: 'row', padding: 10}}>
-                         <View>
-                             <Switch
-                               onValueChange={(value) => this.setState({allObservedSwitchIsOn: value})}
-                               value={this.state.allObservedSwitchIsOn} />
 
-                             <Text style={{color:'#fff', fontSize:12, fontWeight:'500', textAlign: 'center', paddingTop: 3}}>
-                             All Observed</Text>
-                         </View>
-                      </View>
-                  </View>
+                   <Content padder style={{backgroundColor: 'transparent'}}>
+
 
 
                   {

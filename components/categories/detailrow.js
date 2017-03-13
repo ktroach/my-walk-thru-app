@@ -96,8 +96,8 @@ class DetailRow extends React.Component {
              flex: 1,
              flexDirection: 'column',
              justifyContent: 'center',
-             borderWidth: 1,
-             borderColor: 'white'
+             borderWidth: 4,
+             borderColor: '#333'
             }}>
 
             <Header style={{backgroundColor: '#fff'}}>
@@ -111,11 +111,17 @@ class DetailRow extends React.Component {
                     <CardItem>
                        {this.renderSegmentControl(this.state.item)}
                     </CardItem>
+                    <CardItem header>
+                       <Text>Comments/Photos</Text>
+                    </CardItem>
+                    <CardItem>
+                      <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}} onPress={() => this.navigateTo('commentsAndPhotos')}>
+                          <Text style={{fontSize: 16, fontWeight: '500', color: '#fff'}}>Add Comments/Photos</Text>
+                      </Button>
+                    </CardItem>
                 </Card>
             </Content>
-            <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}} onPress={() => this.navigateTo('commentsAndPhotos')}>
-                <Text style={{fontSize: 16, fontWeight: '500', color: '#fff'}}>Comments and Photos</Text>
-            </Button>
+
          </View>
       </View>
      );
