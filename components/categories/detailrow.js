@@ -42,7 +42,7 @@ import moment from 'moment';
 // import RNAssetThumbnail from  'react-native-asset-thumbnail';
 // import PhotoBrowser from 'react-native-photo-browser';
 
-import { Container, Header, Title, Content, Text, Button, List, ListItem, Card, CardItem } from 'native-base';
+import { Container, Header, Title, Content, Text, Button, List, ListItem, Card, CardItem, Textarea } from 'native-base';
 
 import { RNS3 } from 'react-native-aws3';
 
@@ -68,9 +68,8 @@ class DetailRow extends React.Component {
            comments: '',
            photolist: [],
            userId: 'rJirzIMsx',
-           summaryComments: ''
-           //,
-           //templateItem: {}
+           summaryComments: '',
+           summaryPhoto: ''
       };
    }
 
@@ -126,9 +125,9 @@ class DetailRow extends React.Component {
                        <Text>Comments/Photos</Text>
                     </CardItem>
                     <CardItem>
-
-                      {this.maybeRenderSummaryPhotosComments}
-
+                      {this.maybeRenderSummaryPhotosComments()}
+                    </CardItem>
+                    <CardItem>
                       <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}} onPress={() => this.navigateTo('commentsAndPhotos')}>
                           <Text style={{fontSize: 16, fontWeight: '500', color: '#fff'}}>Additional Comments/Photos</Text>
                       </Button>
@@ -142,40 +141,42 @@ class DetailRow extends React.Component {
    }
 
    maybeRenderSummaryPhotosComments = () => {
-     let { image } = this.state;
-     let { summaryComments } = this.state;
-     if (!image) {
+     let { summaryPhoto } = this.state;
+     if (!summaryPhoto) {
        return;
      }
      return (
        <View style={{
          marginTop: 30,
-         width: 250,
+         width: 300,
          borderRadius: 3,
          elevation: 2,
          shadowColor: 'rgba(0,0,0,1)',
          shadowOpacity: 0.2,
          shadowOffset: {width: 4, height: 4},
          shadowRadius: 5,
+         alignSelf: 'center'
        }}>
-         <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
+         <View style={{width: 300, borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
              <Image
-               source={{uri: image}}
-               style={{width: 250, height: 250}}
+               source={{uri: summaryPhoto}}
+               style={{width: 300, height: 200}}
              />
          </View>
          <View style={{backgroundColor: '#333'}}>
            <Text
              style={{paddingVertical: 10, paddingHorizontal: 10, color: '#fff', fontSize: 14, fontWeight: '500'}}>
-             Briefly describe what you just took a picture of (hole in door, cracked tile, etc.)
+             Brief Description
            </Text>
            <Textarea
               placeholder=""
-              autoFocus = {true}
-              style={{backgroundColor: '#fff', color: '#333', height: 200, overflow: 'scroll', borderWidth: 1,  borderColor: '#333'}}
+              style={{backgroundColor: '#fff', color: '#333', height: 100, overflow: 'scroll', borderWidth: 1,  borderColor: '#333'}}
               onChangeText={this.updateSummaryComments.bind(this)}
               value={this.state.summaryComments}>
            </Textarea>
+           <Button block style={{marginBottom: 1, backgroundColor: '#ad241f'}} onPress={() => this.saveSummaryComments()}>
+               <Text style={{fontSize: 16, fontWeight: '500', color: '#fff'}}>Save</Text>
+           </Button>
          </View>
 
        </View>
@@ -184,6 +185,13 @@ class DetailRow extends React.Component {
 
    updateSummaryComments(value){
      this.setState({summaryComments: value});
+   }
+
+   saveSummaryComments() {
+     let now = new Date();
+     let data = {summaryComments: this.state.summaryComments};
+     let item = this.state.item;
+     this.persistData(item.id, data, null);
    }
 
    navigateTo(route) {
@@ -241,6 +249,8 @@ class DetailRow extends React.Component {
            successActionStatus: 201
          };
 
+         console.log('UPLOADING SUMMARY PHOTO TO S3...');
+
          RNS3.put(file, options).then(response => {
            // let res = JSON.stringify(response);
            if (response.status !== 201) {
@@ -253,33 +263,43 @@ class DetailRow extends React.Component {
              throw new Error('Failed to upload image to S3', response);
            }
 
-           // let body = JSON.stringify(response.body);
-           // this.setState({comments: body});
-
            let location = response.body.postResponse.location;
 
-           // alert(location);
+           console.log('SUMMARY PHOTO URI:', location);
 
-           this.setState({image: location});
-
-           var now = new Date();
-
-           let newimages = [];
+           let now = new Date();
+           let data = {summaryComments: this.state.summaryComments, summaryPhoto: location, dateObserved: now};
            let item = this.state.item;
-           let images = item.images;
-           if (images) newimages = images;
-           newimages.push({image: location});
 
-           let data = {comments: this.state.comments, images: newimages, dateObserved: now};
+           this.setState({summaryPhoto: location});
+
+           this.persistData(item.id, data, null);
+
+          //  let newimages = [];
+          //  let item = this.state.item;
+          //  let images = item.images;
+          //  if (images) newimages = images;
+          //  newimages.push({image: location});
+
+           //let data = {comments: this.state.summaryComments, images: newimages, dateObserved: now};
+
+          // let data =  "summary": [{
+          //   "category": "Front Exterior",
+          //   "area": "Roof/Trim",
+          //   "comments": this.state.comments,
+          //   "photoUrl": location,
+          //   "dateTaken": "02/16/2017 7:30 PM (CST)",
+          //   "userId": "987654321"
+          // }];
 
            // this.setState({comments: JSON.stringify(data)});
            // alert('item.id: '+item.id);
 
-           if (item){
-             this.persistData(item.id, data, null);
-           } else {
-             this.persistData('', data, null);
-           }
+          //  if (item){
+          //    this.persistData(item.id, data, null);
+          //  } else {
+          //    this.persistData('', data, null);
+          //  }
 
          });
        }
@@ -394,15 +414,10 @@ class DetailRow extends React.Component {
                this.setState({
                  item: item,
                  selectedOption: item.selectedOption,
-                 loaded: true
+                 loaded: true,
+                 summaryPhoto: item.summaryPhoto,
+                 summaryComments: item.summaryComments
                });
-             } else {
-               // item does not exist
-              //  this.setState({
-              //    item: templateItem,
-              //    selectedOption: templateItem.selectedOption,
-              //    loaded: true
-              //  });
              }
           }).done();
            this.setState({"userId": userId});

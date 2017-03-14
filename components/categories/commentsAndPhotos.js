@@ -253,15 +253,7 @@ class CommentsAndPhotos extends Component {
                     <Content padder style={{backgroundColor: 'transparent'}} >
                         <Card transparent foregroundColor="#000">
                             <CardItem header>
-                                <Text>Comments</Text>
-                            </CardItem>
-                            <CardItem>
-                                 <Textarea
-                                    placeholder="Enter your comments"
-                                    style={{color: '#333', height: 200, overflow: 'scroll'}}
-                                    onChangeText={this.updateComments.bind(this)}
-                                    value={this.state.comments}>
-                                 </Textarea>
+                                <Text>Close Up Photos</Text>
                             </CardItem>
 
                             <CardItem>
