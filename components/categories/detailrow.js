@@ -44,6 +44,8 @@ import moment from 'moment';
 
 import { Container, Header, Title, Content, Text, Button, List, ListItem, Card, CardItem } from 'native-base';
 
+import { RNS3 } from 'react-native-aws3';
+
 import { connect } from 'react-redux'
 import { openDrawer } from '../../actions/drawer';
 import { popRoute } from '../../actions/route';
@@ -65,20 +67,29 @@ class DetailRow extends React.Component {
            thumbnails: [],
            comments: '',
            photolist: [],
-           userId:'',
-           templateItem: {}
+           userId: 'rJirzIMsx',
+           summaryComments: ''
+           //,
+           //templateItem: {}
       };
    }
 
    componentDidMount() {
+     AsyncStorage.getItem("userId")
+     .then( (userId) =>
+           {
+              return this.setState({userId: userId})
+           }
+     )
+     .done();
      AsyncStorage.setItem("photoUri", "")
      .then( () =>
          {
          }
      )
      .done( );
-      // this.fetchWalkthroughItem();
-      this.fetchTemplateItem(this.props.itemId);
+      this.fetchWalkthroughItem(this.props.itemId);
+      // this.fetchTemplateItem(this.props.itemId);
    }
 
    replaceRoute(route) {
@@ -115,8 +126,11 @@ class DetailRow extends React.Component {
                        <Text>Comments/Photos</Text>
                     </CardItem>
                     <CardItem>
+
+                      {this.maybeRenderSummaryPhotosComments}
+
                       <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}} onPress={() => this.navigateTo('commentsAndPhotos')}>
-                          <Text style={{fontSize: 16, fontWeight: '500', color: '#fff'}}>Add Comments/Photos</Text>
+                          <Text style={{fontSize: 16, fontWeight: '500', color: '#fff'}}>Additional Comments/Photos</Text>
                       </Button>
                     </CardItem>
                 </Card>
@@ -127,7 +141,53 @@ class DetailRow extends React.Component {
      );
    }
 
+   maybeRenderSummaryPhotosComments = () => {
+     let { image } = this.state;
+     let { summaryComments } = this.state;
+     if (!image) {
+       return;
+     }
+     return (
+       <View style={{
+         marginTop: 30,
+         width: 250,
+         borderRadius: 3,
+         elevation: 2,
+         shadowColor: 'rgba(0,0,0,1)',
+         shadowOpacity: 0.2,
+         shadowOffset: {width: 4, height: 4},
+         shadowRadius: 5,
+       }}>
+         <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
+             <Image
+               source={{uri: image}}
+               style={{width: 250, height: 250}}
+             />
+         </View>
+         <View style={{backgroundColor: '#333'}}>
+           <Text
+             style={{paddingVertical: 10, paddingHorizontal: 10, color: '#fff', fontSize: 14, fontWeight: '500'}}>
+             Briefly describe what you just took a picture of (hole in door, cracked tile, etc.)
+           </Text>
+           <Textarea
+              placeholder=""
+              autoFocus = {true}
+              style={{backgroundColor: '#fff', color: '#333', height: 200, overflow: 'scroll', borderWidth: 1,  borderColor: '#333'}}
+              onChangeText={this.updateSummaryComments.bind(this)}
+              value={this.state.summaryComments}>
+           </Textarea>
+         </View>
+
+       </View>
+     );
+   }
+
+   updateSummaryComments(value){
+     this.setState({summaryComments: value});
+   }
+
    navigateTo(route) {
+     console.log('>>> detailRow.js >> subItemId:', this.props.itemId);
      AsyncStorage.setItem("subItemId", this.props.itemId)
      .then( () =>
          {
@@ -144,15 +204,97 @@ class DetailRow extends React.Component {
      });
 
      console.log('pickerResult:', pickerResult);
+     this._handleImagePicked(pickerResult);
 
-     AsyncStorage.setItem("photoUri", pickerResult.uri)
-     .then( () =>
-         {
-             this.navigateTo('commentsAndPhotos');
-         }
-     )
-     .done( );
+
+    //  AsyncStorage.setItem("photoUri", pickerResult.uri)
+    //  .then( () =>
+    //      {
+    //         //  this.navigateTo('commentsAndPhotos');
+    //      }
+    //  )
+    //  .done( );
    }
+
+   _handleImagePicked = async (pickerResult) => {
+     let uploadResponse, uploadResult;
+     try {
+       this.setState({uploading: true});
+       if (!pickerResult.cancelled) {
+         let userId = 'unknown';
+         if (this.state.userId) userId = this.state.userId;
+         let fileName = shortid.generate();
+         let fileType = 'jpg';
+
+         const file = {
+           uri: pickerResult.uri,
+           name: `${userId}___${fileName}.${fileType}`,
+           type: `image/${fileType}`
+         };
+
+         const options = {
+           keyPrefix: 'photos/',
+           bucket: 'mywalkthru-pm-files',
+           region: 'us-west-2',
+           accessKey: 'AKIAIRVLMXELYRQ5GYFA',
+           secretKey: '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',
+           successActionStatus: 201
+         };
+
+         RNS3.put(file, options).then(response => {
+           // let res = JSON.stringify(response);
+           if (response.status !== 201) {
+             // this.setState({comments: res});
+             // return;
+             throw new Error('Failed to upload image to S3', response);
+           }
+
+           if (!response.body){
+             throw new Error('Failed to upload image to S3', response);
+           }
+
+           // let body = JSON.stringify(response.body);
+           // this.setState({comments: body});
+
+           let location = response.body.postResponse.location;
+
+           // alert(location);
+
+           this.setState({image: location});
+
+           var now = new Date();
+
+           let newimages = [];
+           let item = this.state.item;
+           let images = item.images;
+           if (images) newimages = images;
+           newimages.push({image: location});
+
+           let data = {comments: this.state.comments, images: newimages, dateObserved: now};
+
+           // this.setState({comments: JSON.stringify(data)});
+           // alert('item.id: '+item.id);
+
+           if (item){
+             this.persistData(item.id, data, null);
+           } else {
+             this.persistData('', data, null);
+           }
+
+         });
+       }
+     } catch(e) {
+       console.log({uploadResponse});
+       console.log({uploadResult});
+       console.log({e});
+       let errorMessage = JSON.stringify(e) + ' : ' + e.message;
+       this.setState({comments: errorMessage});
+       alert('Failed to upload image');
+     } finally {
+       this.setState({uploading: false});
+     }
+   }
+
 
 // THIS WORKED!
 // {"where": {"and": [{"rank": "999"},{"images.image":{ "like": "pros-estimates" }}, {"active":{ "eq": "true"}}]}}
@@ -216,34 +358,36 @@ class DetailRow extends React.Component {
    //    }
    // }
 
-   fetchTemplateItem(itemId){
-     console.log('>>> ENTERED DetailRow::fetchTemplateItem');
-     if (!itemId) {
-        console.log('Invalid itemId');
-        return;
-     }
-     let query = Config.PRICING_ITEMS_API + '?filter={"where": {"id": "' + itemId + '"}}';
-     fetch(query).then((response) => response.json()).then((responseData) => {
-        let templateItem = responseData[0];
-        console.log('>>> templateItem:', templateItem);
-        this.setState({
-          templateItem: templateItem
-        });
-        this.fetchWalkthroughItem(templateItem);
-     }).done();
-   }
+  //  fetchTemplateItem(itemId){
+  //    console.log('>>> ENTERED DetailRow::fetchTemplateItem');
+  //    if (!itemId) {
+  //       console.log('Invalid itemId');
+  //       return;
+  //    }
+  //    let query = Config.PRICING_ITEMS_API + '?filter={"where": {"id": "' + itemId + '"}}';
+  //    fetch(query).then((response) => response.json()).then((responseData) => {
+  //       let templateItem = responseData[0];
+  //       console.log('>>> templateItem:', templateItem);
+  //       this.setState({
+  //         templateItem: templateItem
+  //       });
+  //       this.fetchWalkthroughItem(templateItem);
+  //    }).done();
+  //  }
 
-   fetchWalkthroughItem(templateItem){
+  // {"where": {"and": [{"rank": "999"},{"userId": "rJirzIMsx"},{"PropertyCategoryId":{ "eq": "133b63ad-cdd2-4b50-bbba-401f15d7ed81"}}]}}
+
+   fetchWalkthroughItem(itemId){
      console.log('>>> ENTERED DetailRow::fetchWalkthroughItem');
-     console.log('>>> templateItem.id:', templateItem.id);
+     console.log('>>> itemId:', itemId);
      AsyncStorage.getItem("userId")
      .then( (userId) =>
        {
-          let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"and": [{"userId": "' + userId + '"}, {"PropertyItemId": "' + templateItem.id + '"}]}}';
+          // console.log('>>> userId:', userId);
+          let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"and": [{"id": "' + itemId + '"}]}}';
           // console.log('query: ', query);
-
           fetch(query).then((response) => response.json()).then((responseData) => {
-              // console.log('>>> responseData:', responseData);
+            //  console.log('>>> responseData:', responseData);
              let item = responseData[0];
             //  console.log('>>> item:', item);
              if (item) {
@@ -254,14 +398,14 @@ class DetailRow extends React.Component {
                });
              } else {
                // item does not exist
-               this.setState({
-                 item: templateItem,
-                 selectedOption: templateItem.selectedOption,
-                 loaded: true
-               });
+              //  this.setState({
+              //    item: templateItem,
+              //    selectedOption: templateItem.selectedOption,
+              //    loaded: true
+              //  });
              }
           }).done();
-           this.setState({"userId": userId})
+           this.setState({"userId": userId});
          }
      )
      .done( );
@@ -274,68 +418,86 @@ class DetailRow extends React.Component {
        }
        let url = '';
        let now = new Date();
-       if (!id) {
-         // POST data
-         url = Config.PROPERTY_ITEMS_API + '/';
-         let template = this.state.templateItem;
-         if (template){
-           let postData = {
-             "name": template.name,
-             "userId": this.state.userId,
-             "rank": template.rank,
-             "active": template.active,
-             "deleted": template.deleted,
-             "PropertyItemId": template.id,
-             "PropertyCategoryId": template.divisionid,
-             "cost": template.cost,
-             "selectedOption": template.selectedOption,
-             "allObservedSwitchIsOn": template.allObservedSwitchIsOn,
-             "images": data.images,
-             "comments": data.comments,
-             "created": now
-           };
-           // POST
-           fetch(url, {
-             method: 'post',
-             headers: {
-               'Accept': 'application/json',
-               'Content-Type': 'application/json',
-             },
-             body: JSON.stringify(postData)
-           }).then((response) => response.json()).then((responseData) => {
-              console.log('responseData: ', responseData);
-              if (doCheck) {
-                this.checkAction(responseData);
-              }
-              //this.setState({comments: JSON.stringify(responseData)});
-           }).catch((error) => {
-              console.error(error);
-           }).done();
-         } else {
-           console.warn('templateItem not found');
-           alert('templateItem not found');
-           return;
-         }
-       } else {
-         //PATCH data
-         url = Config.PROPERTY_ITEMS_API + '/' + id;
-         fetch(url, {
-           method: 'PATCH',
-           headers: {
-             'Accept': 'application/json',
-             'Content-Type': 'application/json',
-           },
-           body: JSON.stringify(data)
-         }).then((response) => response.json()).then((responseData) => {
-            console.log('responseData: ', responseData);
-            if (doCheck) {
-              this.checkAction(responseData);
-            }
-            //this.setState({comments: JSON.stringify(responseData)});
-         }).catch((error) => {
-            console.error(error);
-         }).done();
-       }
+       //PATCH data
+       url = Config.PROPERTY_ITEMS_API + '/' + id;
+       fetch(url, {
+         method: 'PATCH',
+         headers: {
+           'Accept': 'application/json',
+           'Content-Type': 'application/json',
+         },
+         body: JSON.stringify(data)
+       }).then((response) => response.json()).then((responseData) => {
+          console.log('responseData: ', responseData);
+          if (doCheck) {
+            this.checkAction(responseData);
+          }
+          //this.setState({comments: JSON.stringify(responseData)});
+       }).catch((error) => {
+          console.error(error);
+       }).done();
+      //  if (!id) {
+      //    // POST data
+      //    url = Config.PROPERTY_ITEMS_API + '/';
+      //    let template = this.state.templateItem;
+      //    if (template){
+      //      let postData = {
+      //        "name": template.name,
+      //        "userId": this.state.userId,
+      //        "rank": template.rank,
+      //        "active": template.active,
+      //        "deleted": template.deleted,
+      //        "PropertyItemId": template.id,
+      //        "PropertyCategoryId": template.divisionid,
+      //        "cost": template.cost,
+      //        "selectedOption": template.selectedOption,
+      //        "allObservedSwitchIsOn": template.allObservedSwitchIsOn,
+      //        "images": data.images,
+      //        "comments": data.comments,
+      //        "created": now
+      //      };
+      //      // POST
+      //      fetch(url, {
+      //        method: 'post',
+      //        headers: {
+      //          'Accept': 'application/json',
+      //          'Content-Type': 'application/json',
+      //        },
+      //        body: JSON.stringify(postData)
+      //      }).then((response) => response.json()).then((responseData) => {
+      //         console.log('responseData: ', responseData);
+      //         if (doCheck) {
+      //           this.checkAction(responseData);
+      //         }
+      //         //this.setState({comments: JSON.stringify(responseData)});
+      //      }).catch((error) => {
+      //         console.error(error);
+      //      }).done();
+      //    } else {
+      //      console.warn('templateItem not found');
+      //      alert('templateItem not found');
+      //      return;
+      //    }
+      //  } else {
+      //    //PATCH data
+      //    url = Config.PROPERTY_ITEMS_API + '/' + id;
+      //    fetch(url, {
+      //      method: 'PATCH',
+      //      headers: {
+      //        'Accept': 'application/json',
+      //        'Content-Type': 'application/json',
+      //      },
+      //      body: JSON.stringify(data)
+      //    }).then((response) => response.json()).then((responseData) => {
+      //       console.log('responseData: ', responseData);
+      //       if (doCheck) {
+      //         this.checkAction(responseData);
+      //       }
+      //       //this.setState({comments: JSON.stringify(responseData)});
+      //    }).catch((error) => {
+      //       console.error(error);
+      //    }).done();
+      //  }
    }
 
    checkAction(data) {
@@ -354,22 +516,29 @@ class DetailRow extends React.Component {
       // let data = {selectedOption: selectedOption.value};
 
       let item = this.state.item;
-      let template = this.state.templateItem;
+      // let template = this.state.templateItem;
       let data = {};
       let modified = new Date();
-      if (item.id != template.id){
-        data = {selectedOption: selectedOption.value, modified: modified};
-        this.persistData(item.id, data, true);
-      } else {
-        data = {selectedOption: selectedOption.value, modified: modified};
-        this.persistData('', data, true);
-      }
+
+      data = {selectedOption: selectedOption.value, modified: modified};
+      this.persistData(item.id, data, true);
+
+      // if (item.id != template.id){
+      //   data = {selectedOption: selectedOption.value, modified: modified};
+      //   this.persistData(item.id, data, true);
+      // } else {
+      //   data = {selectedOption: selectedOption.value, modified: modified};
+      //   this.persistData('', data, true);
+      // }
 
       // this.persistData(selectedOption.item.id, data, true);
    }
 
    renderSegmentControl(item) {
       if(!item) return;
+
+      // const a = ' <Image src="https://s3-us-west-2.amazonaws.com/mywalkthru-pm-files/photos/Ok-48.png" />';
+
       const options = [
         {
           label: 'Observed',

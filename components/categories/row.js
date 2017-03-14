@@ -38,6 +38,9 @@ class CategoryRow extends React.Component {
 
     fetchProgressSummary(){
       this.updateProgress();
+
+      var x = JSON.stringify(this.props.category);
+      // alert(x);
     }
 
     updateProgress() {
@@ -52,6 +55,7 @@ class CategoryRow extends React.Component {
     }
 
     navigateTo(route) {
+
       AsyncStorage.setItem("categoryId", this.props.category.id);
       AsyncStorage.setItem("categoryName", this.props.category.name);
       this.props.toggleTodo(this.props.category.id);
@@ -84,12 +88,15 @@ class CategoryRow extends React.Component {
       // End description details
 
       return (
-         <View>
+         <View style={{
+             borderWidth: 2,
+             borderColor: '#333'
+            }}>
             <TouchableOpacity  style={styles.card} onPress={() => this.navigateTo('subcategories')}>
                <CardItem style={styles.cardHeader}  header  onPress={() => this.navigateTo('subcategories')}>
                    <Thumbnail circular size={50} source={require('../../assets/images/3d-house-1.png')} />
-                   <H3 style={{ color: '#333' }}>{name}</H3>
-                   <Text note style={{ color: '#333' }}>{description}</Text>
+                   <H3 style={{ color: '#333', fontWeight:'bold' }}>{name}</H3>
+                   <Text note style={{ color: '#333' }}>{this.props.category.userId}, {this.props.category.id}</Text>
                    <Text style={styles.arrow}><Icon name="ios-arrow-forward" style={{ color: '#333' }} /></Text>
                </CardItem>
                {/*

@@ -44,49 +44,60 @@ class CommentsAndPhotos extends Component {
          images: [],
          thumbnails: [],
          photoUri: '',
-         templateId: '',
          userId:'',
          templateItem: {},
-         closeUpComments: ''
+         closeUpComments: '',
+         categoryName: ''
       };
    }
 
    componentDidMount() {
       var subItemId = '';
-      AsyncStorage.getItem("subItemId").then((subItemId) => {
-          this.setState({"subItemId": subItemId});
-          if (subItemId) {
-            this.fetchTemplateItem(subItemId);
-          }
-      }).then(res => {});
+      AsyncStorage.getItem("categoryName").then((categoryName) => {
+         this.setState({"categoryName": categoryName});
+         AsyncStorage.getItem("subItemId").then((subItemId) => {
+             this.setState({"subItemId": subItemId});
+             if (subItemId) {
+               this.fetchWalkthruItem(subItemId);
+             }
+         }).then(res => {});
+      }).then(res => {
+      });
+      // AsyncStorage.getItem("subItemId").then((subItemId) => {
+      //     this.setState({"subItemId": subItemId});
+      //     if (subItemId) {
+      //       this.fetchWalkthruItem(subItemId);
+      //     }
+      // }).then(res => {});
    }
 
-   fetchTemplateItem(itemId){
-     console.log('>>> ENTERED commentsAndPhotos::fetchTemplateItem');
+  //  fetchWalkthruItem(itemId){
+  //    console.log('>>> ENTERED commentsAndPhotos::fetchWalkthruItem');
+   //
+  //    if (!itemId) {
+  //       console.log('Invalid itemId');
+  //       return;
+  //    }
+   //
+  //    let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"and": [{"id": "' + itemId + '"}]}}';
+  //    fetch(query).then((response) => response.json()).then((responseData) => {
+  //       let walkthruItem = responseData[0];
+  //       console.log('>>> walkthruItem:', walkthruItem);
+  //       this.setState({
+  //         item: walkthruItem
+  //       });
+  //       this.fetchWalkthroughItem(templateItem.id);
+  //    }).done();
+  //  }
 
-     if (!itemId) {
-        console.log('Invalid itemId');
-        return;
-     }
-
-     let query = Config.PRICING_ITEMS_API + '?filter={"where": {"id": "' + itemId + '"}}';
-     fetch(query).then((response) => response.json()).then((responseData) => {
-        let templateItem = responseData[0];
-        console.log('>>> templateItem:', templateItem);
-        this.setState({
-          templateItem: templateItem
-        });
-        this.fetchWalkthroughItem(templateItem.id);
-     }).done();
-   }
-
-   fetchWalkthroughItem(templateItemId){
+   fetchWalkthruItem(itemId){
      console.log('>>> ENTERED commentsAndPhotos::fetchWalkthroughItem');
-     console.log('>>> templateItemId:', templateItemId);
+     console.log('>>> itemId:', itemId);
      AsyncStorage.getItem("userId")
      .then( (userId) =>
            {
-              let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"and": [{"userId": "' + userId + '"}, {"PropertyItemId": "' + templateItemId + '"}]}}';
+              let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"and": [{"id": "' + itemId + '"}]}}';
+              // let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"and": [{"userId": "' + userId + '"}, {"PropertyItemId": "' + templateItemId + '"}]}}';
               // console.log('query: ', query);
 
               fetch(query).then((response) => response.json()).then((responseData) => {
@@ -207,10 +218,10 @@ class CommentsAndPhotos extends Component {
         let item = this.state.item;
         let modified = new Date();
         if (item){
-          let data = {comments: this.state.comments, modified: modified};
+          let data = {comments: this.state.comments, modified: modified, dateObserved: modified};
           this.persistData(item.id, data, route);
         } else {
-          let data = {comments: this.state.comments, images: this.state.images, modified: modified};
+          let data = {comments: this.state.comments, images: this.state.images, modified: modified, dateObserved: modified};
           this.persistData('', data, route);
         }
         console.log('<<< FINISHED saveCommentsAndPhotos');
@@ -221,6 +232,9 @@ class CommentsAndPhotos extends Component {
     }
 
     render() {
+
+        const title = this.state.categoryName + ' - ' + this.state.item.name;
+
         return (
             <Container theme={theme} style={{backgroundColor: '#333'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
@@ -229,7 +243,7 @@ class CommentsAndPhotos extends Component {
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
-                        <Title>{this.state.item.name}</Title>
+                        <Title style={{fontSize: 20}}>{title}</Title>
 
                         <Button transparent onPress={this._takePhoto}>
                             <Icon name='ios-camera' style={{fontSize: 30, lineHeight: 32}} />
@@ -326,13 +340,15 @@ class CommentsAndPhotos extends Component {
 
             this.setState({image: location});
 
+            var now = new Date();
+
             let newimages = [];
             let item = this.state.item;
             let images = item.images;
             if (images) newimages = images;
             newimages.push({image: location});
 
-            let data = {comments: this.state.comments, images: newimages};
+            let data = {comments: this.state.comments, images: newimages, dateObserved: now};
 
             // this.setState({comments: JSON.stringify(data)});
             // alert('item.id: '+item.id);
@@ -364,68 +380,88 @@ class CommentsAndPhotos extends Component {
         }
         let url = '';
         let now = new Date();
-        if (!id) {
-          // POST data
-          url = Config.PROPERTY_ITEMS_API + '/';
-          let template = this.state.templateItem;
-          if (template){
-            let postData = {
-              "name": template.name,
-              "userId": this.state.userId,
-              "rank": template.rank,
-              "active": template.active,
-              "deleted": template.deleted,
-              "PropertyItemId": template.id,
-              "PropertyCategoryId": template.divisionid,
-              "cost": template.cost,
-              "selectedOption": template.selectedOption,
-              "allObservedSwitchIsOn": template.allObservedSwitchIsOn,
-              "images": data.images,
-              "comments": data.comments,
-              "created": now
-            };
-            // POST
-            fetch(url, {
-              method: 'post',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(postData)
-            }).then((response) => response.json()).then((responseData) => {
-               console.log('responseData: ', responseData);
-               if (route) {
-                 this.replaceRoute(route);
-               }
-               //this.setState({comments: JSON.stringify(responseData)});
-            }).catch((error) => {
-               console.error(error);
-            }).done();
-          } else {
-            console.warn('templateItem not found');
-            alert('templateItem not found');
-            return;
-          }
-        } else {
-          //PATCH data
-          url = Config.PROPERTY_ITEMS_API + '/' + id;
-          fetch(url, {
-            method: 'PATCH',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-          }).then((response) => response.json()).then((responseData) => {
-             console.log('responseData: ', responseData);
-             if (route) {
-               this.replaceRoute(route);
-             }
-             //this.setState({comments: JSON.stringify(responseData)});
-          }).catch((error) => {
-             console.error(error);
-          }).done();
-        }
+
+        //PATCH data
+        url = Config.PROPERTY_ITEMS_API + '/' + id;
+        fetch(url, {
+          method: 'PATCH',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        }).then((response) => response.json()).then((responseData) => {
+           console.log('responseData: ', responseData);
+           if (route) {
+             this.replaceRoute(route);
+           }
+           //this.setState({comments: JSON.stringify(responseData)});
+        }).catch((error) => {
+           console.error(error);
+        }).done();
+
+        // if (!id) {
+        //   // POST data
+        //   url = Config.PROPERTY_ITEMS_API + '/';
+        //   let template = this.state.templateItem;
+        //   if (template){
+        //     let postData = {
+        //       "name": template.name,
+        //       "userId": this.state.userId,
+        //       "rank": template.rank,
+        //       "active": template.active,
+        //       "deleted": template.deleted,
+        //       "PropertyItemId": template.id,
+        //       "PropertyCategoryId": template.divisionid,
+        //       "cost": template.cost,
+        //       "selectedOption": template.selectedOption,
+        //       "allObservedSwitchIsOn": template.allObservedSwitchIsOn,
+        //       "images": data.images,
+        //       "comments": data.comments,
+        //       "created": now
+        //     };
+        //     // POST
+        //     fetch(url, {
+        //       method: 'post',
+        //       headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json',
+        //       },
+        //       body: JSON.stringify(postData)
+        //     }).then((response) => response.json()).then((responseData) => {
+        //        console.log('responseData: ', responseData);
+        //        if (route) {
+        //          this.replaceRoute(route);
+        //        }
+        //        //this.setState({comments: JSON.stringify(responseData)});
+        //     }).catch((error) => {
+        //        console.error(error);
+        //     }).done();
+        //   } else {
+        //     console.warn('templateItem not found');
+        //     alert('templateItem not found');
+        //     return;
+        //   }
+        // } else {
+        //   //PATCH data
+        //   url = Config.PROPERTY_ITEMS_API + '/' + id;
+        //   fetch(url, {
+        //     method: 'PATCH',
+        //     headers: {
+        //       'Accept': 'application/json',
+        //       'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(data)
+        //   }).then((response) => response.json()).then((responseData) => {
+        //      console.log('responseData: ', responseData);
+        //      if (route) {
+        //        this.replaceRoute(route);
+        //      }
+        //      //this.setState({comments: JSON.stringify(responseData)});
+        //   }).catch((error) => {
+        //      console.error(error);
+        //   }).done();
+        // }
     }
 
     _maybeRenderPhotos() {
@@ -487,7 +523,7 @@ class CommentsAndPhotos extends Component {
             </Text>
             <Textarea
                placeholder=""
-               autoFocus = {true} 
+               autoFocus = {true}
                style={{backgroundColor: '#fff', color: '#333', height: 200, overflow: 'scroll', borderWidth: 1,  borderColor: '#333'}}
                onChangeText={this.updateCloseUpComments.bind(this)}
                value={this.state.closeUpComments}>

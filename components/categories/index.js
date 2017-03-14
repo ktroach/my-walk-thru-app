@@ -47,7 +47,8 @@ class CategoryList extends React.Component {
     }
 
     fetchAll () {
-      fetch(Config.PRICING_API_URL).then((response) => response.json()).then((responseData) => {
+      var url = 'https://mywalkthruapi.herokuapp.com/api/v1/PropertyCategories?filter={"where": {"and": [{"active": "true"},{"userId":{ "eq": "rJirzIMsx"}}]}}';
+      fetch(url).then((response) => response.json()).then((responseData) => {
             this.setState({
                categories: responseData,
                dataSource: this.state.dataSource.cloneWithRows(responseData),

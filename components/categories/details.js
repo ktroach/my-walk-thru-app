@@ -62,7 +62,6 @@ class CategoryDetails extends React.Component {
    constructor(props, context) {
       super(props, context);
 
-
       this.state = {
            isRefreshing: false,
            isLoaded: false,
@@ -86,22 +85,44 @@ class CategoryDetails extends React.Component {
            selectedoptions: [],
            selectedindexset: [],
            subCategoryStates: {},
-           subcategories: []
+           subcategories: [],
+           userId: ''
       };
    }
 
    componentDidMount() {
       var categoryId = '';
-      AsyncStorage.getItem("categoryId").then((categoryId) => {
-          this.setState({"categoryId": categoryId});
-         if (categoryId) {
-            AsyncStorage.getItem("categoryName").then((categoryName) => {
-               this.setState({"categoryName": categoryName});
-               console.log('categoryName: '+categoryName);
-               this.fetchWalkthroughItems(categoryId);
-           }).then(res => {});
-         }
-      }).then(res => {});
+      var userId = '';
+      AsyncStorage.getItem("userId").then((userId) => {
+         this.setState({"userId": userId});
+         console.log('userId: '+userId);
+      }).then(res => {
+        AsyncStorage.getItem("categoryId").then((categoryId) => {
+           this.setState({"categoryId": categoryId});
+           if (categoryId) {
+              AsyncStorage.getItem("categoryName").then((categoryName) => {
+                 this.setState({"categoryName": categoryName});
+                 console.log('categoryName: '+categoryName);
+                 this.fetchWalkthroughItems(categoryId);
+              }).then(res => {
+              });
+           }
+        }).then(res => {
+        });
+      });
+
+      // AsyncStorage.getItem("categoryId").then((categoryId) => {
+      //    this.setState({"categoryId": categoryId});
+      //    if (categoryId) {
+      //       AsyncStorage.getItem("categoryName").then((categoryName) => {
+      //          this.setState({"categoryName": categoryName});
+      //          console.log('categoryName: '+categoryName);
+      //          this.fetchWalkthroughItems(categoryId);
+      //       }).then(res => {
+      //       });
+      //    }
+      // }).then(res => {
+      // });
    }
 
 
@@ -123,7 +144,7 @@ class CategoryDetails extends React.Component {
                           <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                       </Button>
 
-                       <Title>{this.state.toolbarTitle}</Title>
+                       <Title style={{fontSize: 20}}>{this.state.toolbarTitle}</Title>
 
                        <Button onPress={this.props.openDrawer} >
                            <Icon name='ios-add-outline' style={{fontSize: 30, lineHeight: 32}} />
@@ -132,8 +153,6 @@ class CategoryDetails extends React.Component {
 
 
                    <Content padder style={{backgroundColor: 'transparent'}}>
-
-
 
                   {
                    this.renderListView()
@@ -186,7 +205,14 @@ class CategoryDetails extends React.Component {
    // }
 
    fetchWalkthroughItems(categoryId) {
-      let query = Config.PRICING_ITEMS_API + '?filter={"where": {"rank": 999, "divisionid": "'+categoryId+'"}}';
+
+     var userId = this.state.userId;
+
+     var filter = '{"where": {"and": [{"rank": "999"},{"userId": "'+userId+'"},{"PropertyCategoryId":{ "eq": "'+categoryId+'"}}]}}';
+
+     let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"rank": 999, "PropertyCategoryId": "'+categoryId+'"}}';
+
+      // let query = Config.PRICING_ITEMS_API + '?filter={"where": {"rank": 999, "divisionid": "'+categoryId+'"}}';
       let count = 0;
       let categoryName = this.state.categoryName;
 

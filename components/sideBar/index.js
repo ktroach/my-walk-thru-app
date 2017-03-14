@@ -97,7 +97,7 @@ class SideBar extends Component {
                        </ListItem>
                        <ListItem button onPress={() => this.navigateTo('signup-step1')} iconLeft style={styles.links} >
                            <Icon style={styles.sidebarIcon} name='ios-person' />
-                           <Text style={styles.text}>Settings</Text>
+                           <Text style={styles.text}>Sign Up (Test)</Text>
                        </ListItem>
                    </List>
                </Image>

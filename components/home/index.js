@@ -43,8 +43,37 @@ class Home extends Component {
         this.props.popRoute();
     }
 
-    getCurrentDateTime(){
+    getCurrentDateTime() {
       return moment().format('MMM DD YYYY h:mm:ss a');
+    }
+
+    getDaysLeft() {
+      var now = new Date();
+      // var start = moment(start).add(-2, 'days');
+      var start = new Date();
+
+      if (this.state.termsAcceptedOn) {
+        start = this.state.termsAcceptedOn;
+      }
+
+      var end = moment(start).add(5, 'days');
+
+      var daysLeft = Math.floor(( end - now ) / 86400000);
+
+      return daysLeft;
+    }
+
+    getDueDate() {
+      var now = new Date();
+      var start = new Date();
+
+      if (this.state.termsAcceptedOn) {
+        start = this.state.termsAcceptedOn;
+      }
+
+      var end = moment(start).add(5, 'days');
+
+      return moment(end).calendar();
     }
 
     componentDidMount(){
@@ -52,6 +81,8 @@ class Home extends Component {
       var termsAcceptedOn = "";
       var deadlineDate = "";
       var daysLeft = "";
+
+      // daysLeft = moment().add(5, 'days').calendar();
 
       AsyncStorage.getItem("termsAccepted").then((termsAccepted) => {
           this.setState({"termsAccepted": termsAccepted});
@@ -65,11 +96,11 @@ class Home extends Component {
          // daysLeft = moment(termsAcceptedOn).add(5, 'days').calendar();
 
          daysLeft = moment().add(5, 'days').calendar();
-         alert('daysLeft:', daysLeft);
+        //  alert('daysLeft:', daysLeft);
 
          deadlineDate = moment(termsAcceptedOn, "DD.MM.YYYY");
          deadlineDate.add(5, 'days');
-         alert('deadlineDate:', deadlineDate);
+        //  alert('deadlineDate:', deadlineDate);
       }
 
     }
@@ -97,7 +128,12 @@ class Home extends Component {
                             </ListItem>
                             <ListItem iconLeft >
                                <Icon name='ios-megaphone'/>
-                               <Text>You have 5 days left to complete your Walk Thru. Better get busy.</Text>
+                               <Text>You have {this.getDaysLeft()} days left to complete your Walk Thru.</Text>
+                               <Text style={{fontWeight: '400'}} note>{this.state.deadlineDate}</Text>
+                            </ListItem>
+                            <ListItem iconLeft >
+                               <Icon name='ios-person'/>
+                               <Text>You have until {this.getDueDate()} to complete your Walk Thru. </Text>
                                <Text style={{fontWeight: '400'}} note>{this.state.deadlineDate}</Text>
                             </ListItem>
                         </List>
@@ -110,19 +146,22 @@ class Home extends Component {
                                   width: 300,
                                   height:65}}
                           onPress={() => this.replaceRoute('categories')}>
-                            <Text>USE QUICK WALKTHRU TOOL</Text>
+                            <Text>START/CONTINUE YOUR WALKTHRU</Text>
                         </Button>
 
-                       <Button rounded block
-                          style={{alignSelf: 'center',
-                               marginTop: 40,
-                               backgroundColor: '#ad241f',
-                               borderRadius:90,
-                               width: 300,
-                               height:65}}
-                         onPress={() => this.replaceRoute('categories')}>
-                           <Text>TRACK YOUR WALKTHRU PROGRESS</Text>
-                       </Button>
+                        {/*
+                          <Button rounded block
+                             style={{alignSelf: 'center',
+                                  marginTop: 40,
+                                  backgroundColor: '#ad241f',
+                                  borderRadius:90,
+                                  width: 300,
+                                  height:65}}
+                            onPress={() => this.replaceRoute('categories')}>
+                              <Text>WALKTHRU PROGRESS CHARTS</Text>
+                          </Button>
+                          */}
+
 
                        <Button rounded block
                           style={{alignSelf: 'center',

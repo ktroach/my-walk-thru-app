@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 
 import {
+   AsyncStorage,
    StyleSheet,
    View,
    ListView,
@@ -50,11 +51,19 @@ class TopCategories extends Component {
            categories: [],
            category: {},
            categoryCount: 0,
-           user: {}
+           user: {},
+           userId: 'rJirzIMsx'
       };
    }
 
    componentDidMount() {
+     AsyncStorage.getItem("userId")
+     .then( (userId) =>
+           {
+              return this.setState({userId: userId})
+           }
+     )
+     .done();
       this.fetchAll();
    }
 
@@ -85,7 +94,7 @@ class TopCategories extends Component {
                  <Header>
                     <Button transparent> </Button>
 
-                    <Title>Categories</Title>
+                    <Title style={{fontSize: 20}}>Categories</Title>
 
                     <Button transparent onPress={this.props.openDrawer} >
                         <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
@@ -102,14 +111,14 @@ class TopCategories extends Component {
     }
 
     renderListView() {
-      var title =  "  Categories (" + this.state.categoryCount + ")";
+      var title = "  Categories (" + this.state.categoryCount + ")";
       return (
          <Container theme={theme} style={{backgroundColor: '#FBFAFA'}} >
              <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
              <Header>
                 <Button transparent> </Button>
 
-                <Title>My Walk Thru - Categories</Title>
+                <Title style={{fontSize: 20}}>{title}</Title>
 
                 <Button transparent onPress={this.props.openDrawer} >
                     <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
@@ -135,7 +144,8 @@ class TopCategories extends Component {
     }
 
     fetchAll () {
-      fetch(Config.PRICING_API_URL).then((response) => response.json()).then((responseData) => {
+      var url = 'https://mywalkthruapi.herokuapp.com/api/v1/PropertyCategories?filter={"where": {"and": [{"active": "true"},{"userId":{ "eq": "'+this.state.userId+'"}}]}}';
+      fetch(url).then((response) => response.json()).then((responseData) => {
             this.setState({
                categories: responseData,
                dataSource: this.state.dataSource.cloneWithRows(responseData),

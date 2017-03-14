@@ -777,9 +777,15 @@ class Step1Copy extends Component {
                           AsyncStorage.setItem("signUpDate", signUpDate)
                           .then( () =>
                               {
-                                  AsyncStorage.setItem("userId", userId);
-                                  alert('Thank you for Signing Up ('+signUpDate+')');
-                                  this.replaceRoute('home');
+                                  AsyncStorage.setItem("userId", userId)
+                                  .then( () => {
+                                      alert('Thank you for Signing Up (' + signUpDate + ' -- ' + userId + ')' );
+                                      this.replaceRoute('home');
+                                    }
+                                  ).done();
+
+                                  // alert('Thank you for Signing Up ('+signUpDate+')');
+                                  // this.replaceRoute('home');
                               }
                           )
                           .done( );
