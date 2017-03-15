@@ -143,10 +143,10 @@ class CommentsAndPhotos extends Component {
                           //   selected: false, // set the photo selected initially(default is false)
                           //  };
 
-                          let caption = '';
+                          let caption = imageItem.timestamp;
 
-                          if (imageItem.caption) caption = caption + imageItem.caption;
-                          if (imageItem.timestamp) caption = caption + imageItem.timestamp;
+                          // if (imageItem.caption) caption = caption + imageItem.caption;
+                          // if (imageItem.timestamp) caption = caption + imageItem.timestamp;
 
                           let photo = {
                            thumb: '', // thumbnail version of the photo to be displayed in grid view. actual photo is used if thumb is not provided
@@ -278,35 +278,59 @@ class CommentsAndPhotos extends Component {
                         visible={this.state.modalVisible}
                         onRequestClose={() => {alert("Modal has been closed.")}}
                         >
-                       <View style={{marginTop: 22}}>
-                        <View>
-                          <Text style={{color:'#333'}}>this.state.image</Text>
 
-                          <Button rounded block style={{backgroundColor: '#ad241f'}}
-                              onPress={() => this.setModalVisible(!this.state.modalVisible)}>
-                              <Text>Save Comments</Text>
-                          </Button>
+                       <View style={{marginTop: 5}}>
+
+                        <View>
+
+                          <Text style={{color:'#333'}}>{this.state.image}</Text>
+
+                          <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
+                              <Image
+                                source={{uri: this.state.image}}
+                                style={{width: 250, height: 250}}
+                              />
+                          </View>
+
+                          <View style={{backgroundColor: '#333'}}>
+
+                            <Text
+                              style={{paddingVertical: 10, paddingHorizontal: 10, color: '#fff', fontSize: 14, fontWeight: '500'}}>
+                              Briefly describe your Close Up shot of this Area
+                            </Text>
+
+                            <Text
+                               autoFocus = {true}
+                               style={{backgroundColor: '#fff', color: '#333', borderWidth: 1,  borderColor: '#333'}}
+                               onChangeText={this.updateCloseUpComments.bind(this)}
+                               value={this.state.closeUpComments}>
+                            </Text>
+
+                          </View>
+
+                          <View style={{marginTop: 5}}>
+
+                            <Button rounded block style={{backgroundColor: '#ad241f'}}
+                                onPress={() => this.saveCloseUp()}>
+                                <Text>Save Close Up</Text>
+                            </Button>
+
+                          </View>
 
                         </View>
                        </View>
                       </Modal>
 
-                      <Button rounded block style={{backgroundColor: '#ad241f'}}
-                          onPress={() => this.setModalVisible(true)}>
-                          <Text>Show Modal</Text>
-                      </Button>
-
-
-
                     </View>
 
                         <Card transparent foregroundColor="#000">
                             <CardItem header>
-                                <Text>Close Up Photos</Text>
+                                <Text>Close Up Photos/Comments</Text>
                             </CardItem>
 
                             <CardItem>
-                                 <Button rounded block style={{backgroundColor: '#ad241f'}} onPress={() => this._takePhoto()}>
+                                 <Button rounded block style={{backgroundColor: '#ad241f'}}
+                                     onPress={() => this._takePhoto()}>
                                      <Text>TAKE CLOSE UP PHOTO</Text>
                                  </Button>
                             </CardItem>
@@ -387,28 +411,28 @@ class CommentsAndPhotos extends Component {
 
             this.setModalVisible(true);
 
-            var now = new Date();
-
-            let newimages = [];
-            let item = this.state.item;
-            let images = item.images;
-            if (images) newimages = images;
-
-            let ordinal = newimages.length+1;
-
-            newimages.push({key: key, ordinal: ordinal, image: location,
-              caption: this.state.closeUpComments, timestamp: now});
-
-            let data = {comments: this.state.comments, images: newimages, dateObserved: now};
-
-            // this.setState({comments: JSON.stringify(data)});
-            // alert('item.id: '+item.id);
-
-            if (item){
-              this.persistData(item.id, data, null);
-            } else {
-              this.persistData('', data, null);
-            }
+            // var now = new Date();
+            //
+            // let newimages = [];
+            // let item = this.state.item;
+            // let images = item.images;
+            // if (images) newimages = images;
+            //
+            // let ordinal = newimages.length+1;
+            //
+            // newimages.push({key: key, ordinal: ordinal, image: location,
+            //   caption: this.state.closeUpComments, timestamp: now});
+            //
+            // let data = {comments: this.state.comments, images: newimages, dateObserved: now};
+            //
+            // // this.setState({comments: JSON.stringify(data)});
+            // // alert('item.id: '+item.id);
+            //
+            // if (item){
+            //   this.persistData(item.id, data, null);
+            // } else {
+            //   this.persistData('', data, null);
+            // }
 
           });
         }
@@ -424,34 +448,74 @@ class CommentsAndPhotos extends Component {
       }
     }
 
+    saveCloseUp() {
+      let timestamp = new Date();
+      let newimages = [];
+      let item = this.state.item;
+      let images = item.images;
+
+      if (!item) {
+        console.log('Failed to Save Close Up: [this.state.item] is undefined.');
+        alert('Failed to Save Close Up!');
+        return;
+      }
+
+      // images can be null/undefined, its ok.
+      if (images) {
+        newimages = images
+      };
+
+      let ordinal = newimages.length+1;
+
+      newimages.push(
+      {
+          key: this.state.key,
+          ordinal: ordinal,
+          image: this.state.image,
+          caption: this.state.closeUpComments,
+          timestamp: timestamp
+      });
+
+      let data =
+      {
+        comments: this.state.comments,
+        images: newimages,
+        dateObserved: timestamp
+      };
+
+      this.setModalVisible(!this.state.modalVisible);
+
+      this.persistData(item.id, data, null);
+    }
+
     persistData(id, data, route) {
-        if (!data) {
-          alert('Invalid parameter: data');
-          return;
-        }
-        let url = '';
-        let now = new Date();
+      if (!data) {
+        alert('Invalid parameter: data');
+        return;
+      }
+      let url = '';
+      let now = new Date();
 
-        //PATCH data
-        url = Config.PROPERTY_ITEMS_API + '/' + id;
-        fetch(url, {
-          method: 'PATCH',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data)
-        }).then((response) => response.json()).then((responseData) => {
-           console.log('responseData: ', responseData);
+      //PATCH data
+      url = Config.PROPERTY_ITEMS_API + '/' + id;
+      fetch(url, {
+        method: 'PATCH',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      }).then((response) => response.json()).then((responseData) => {
+         console.log('responseData: ', responseData);
 
-           // change navigation route post save
-           if (route) {
-             this.replaceRoute(route);
-           }
-           //this.setState({comments: JSON.stringify(responseData)});
-        }).catch((error) => {
-           console.error(error);
-        }).done();
+         // change navigation route post save
+         if (route) {
+           this.replaceRoute(route);
+         }
+         //this.setState({comments: JSON.stringify(responseData)});
+      }).catch((error) => {
+         console.error(error);
+      }).done();
 
         // if (!id) {
         //   // POST data
