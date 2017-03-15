@@ -116,7 +116,7 @@ class Step0 extends Component {
                     width: 300,
                     height:65}}
               onPress={() => this.replaceRoute('home')}>
-              <Text>CONTINUE</Text>
+              <Text style={{color:'#fff', fontWeight: 'bold'}}>CONTINUE</Text>
           </Button>
         );
       } else {
@@ -129,7 +129,7 @@ class Step0 extends Component {
                       width: 300,
                       height:65}}
                 onPress={() => this.replaceRoute('signup-step1')}>
-                <Text>GET STARTED</Text>
+                <Text style={{color:'#fff', fontWeight: 'bold'}}>GET STARTED</Text>
             </Button>
         );
       }
@@ -137,9 +137,11 @@ class Step0 extends Component {
 
     render() {
         return (
-            <Container theme={theme} style={{backgroundColor: '#333'}} >
+            <Container theme={theme} style={{backgroundColor: '#fff'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
+
                     <Header>
+
                         <Button transparent onPress={() => this.replaceRoute('signup-step0')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30}} />
                         </Button>

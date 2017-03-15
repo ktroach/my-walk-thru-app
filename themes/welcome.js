@@ -10,7 +10,7 @@ module.exports = {
   welcomeText: {
     paddingTop: 0,
     marginBottom: 10,
-   //  color: 'rgba(0,0,0,0.4)',
+    color: 'rgba(0,0,0,0.4)',
     fontSize: 18,
     textAlign: 'center',
   },

@@ -107,7 +107,7 @@ class Home extends Component {
 
     render() {
       return (
-          <Container theme={theme} style={{backgroundColor: '#333'}}>
+          <Container theme={theme} style={{backgroundColor: '#fff'}}>
               <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                    <Header>
                        <Button transparent onPress={() => this.replaceRoute('signup-step0')}>
@@ -148,7 +148,7 @@ class Home extends Component {
                                   width: 300,
                                   height:65}}
                           onPress={() => this.replaceRoute('categories')}>
-                            <Text>CONTINUE YOUR WALKTHRU</Text>
+                            <Text style={{color:'#fff', fontWeight: 'bold'}}>CONTINUE YOUR WALKTHRU</Text>
                         </Button>
 
                         {/*
@@ -173,7 +173,7 @@ class Home extends Component {
                                width: 300,
                                height:65}}
                          onPress={() => this.replaceRoute('submittal')}>
-                           <Text>SUBMIT / FINISH YOUR WALKTHRU</Text>
+                           <Text style={{color:'#fff', fontWeight: 'bold'}}>SUBMIT / FINISH YOUR WALKTHRU</Text>
                        </Button>
 
                    </Content>

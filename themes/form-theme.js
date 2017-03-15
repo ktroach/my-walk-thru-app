@@ -17,7 +17,7 @@ module.exports = {
     subtitleColor: '#8e8e93',
 
     inverseTextColor: "#000",
-    textColor: "#fff",
+    textColor: "#333",
 
     fontSizeBase: 15,
     titleFontSize: (Platform.OS === 'ios' ) ? 17 : 19,
@@ -62,7 +62,7 @@ module.exports = {
 
     footerHeight: 55,
     toolbarHeight: (Platform.OS === 'ios' ) ? 64 : 56,
-    toolbarDefaultBg: "#333",
+    toolbarDefaultBg: "#2d609b",
     toolbarInverseBg: "#222",
 
     iosToolbarBtnColor: '#fff',

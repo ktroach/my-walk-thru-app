@@ -28,7 +28,9 @@ import { Container, Header, Title, Content, Text, Button, Icon, List, ListItem, 
 import Config from '../../config'
 import Toolbar from '../toolbar'
 
-import theme from './form-theme';
+// import theme from './form-theme';
+import theme from '../../themes/form-theme';
+
 import styles from './styles';
 // import styles from './styles/list';
 import CategoryRow from './row';
@@ -89,7 +91,7 @@ class TopCategories extends Component {
 
     renderLoadingView() {
       return (
-         <Container theme={theme} style={{backgroundColor: '#333'}} >
+         <Container theme={theme} style={{backgroundColor: '#fff'}} >
              <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                  <Header>
                     <Button transparent> </Button>

@@ -178,7 +178,7 @@ class Submittal extends Component {
       const checkboxStyle = { margin: 5 }
       const {data} = this.state;
         return (
-            <Container theme={theme} style={{backgroundColor: '#333'}}>
+            <Container theme={theme} style={{backgroundColor: '#fff'}}>
                <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
                         <Button transparent onPress={() => this.replaceRoute('home')}>
@@ -271,7 +271,7 @@ class Submittal extends Component {
                                               width: 300,
                                               height:65}}
                                         onPress={() => this.submitWalkThru()}>
-                                        <Text>SUBMIT YOUR WALKTHRU</Text>
+                                        <Text style={{color:'#fff', fontWeight: 'bold'}}>SUBMIT YOUR WALKTHRU</Text>
                                     </Button>
                                 </CardItem>
                             </Card>
