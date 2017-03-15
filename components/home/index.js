@@ -110,7 +110,9 @@ class Home extends Component {
           <Container theme={theme} style={{backgroundColor: '#333'}}>
               <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                    <Header>
-                       <Button transparent> </Button>
+                       <Button transparent onPress={() => this.replaceRoute('signup-step0')}>
+                           <Icon name='ios-arrow-back' style={{fontSize: 30}} />
+                       </Button>
 
                        <Title>Home</Title>
 
@@ -146,7 +148,7 @@ class Home extends Component {
                                   width: 300,
                                   height:65}}
                           onPress={() => this.replaceRoute('categories')}>
-                            <Text>START/CONTINUE YOUR WALKTHRU</Text>
+                            <Text>CONTINUE YOUR WALKTHRU</Text>
                         </Button>
 
                         {/*
@@ -171,7 +173,7 @@ class Home extends Component {
                                width: 300,
                                height:65}}
                          onPress={() => this.replaceRoute('submittal')}>
-                           <Text>SUBMIT/FINISH YOUR WALKTHRU</Text>
+                           <Text>SUBMIT / FINISH YOUR WALKTHRU</Text>
                        </Button>
 
                    </Content>

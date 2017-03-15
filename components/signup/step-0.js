@@ -165,8 +165,13 @@ class Step0 extends Component {
                           source={require('../../assets/images/logo.png')}
                           style={welcomeStyle.welcomeImage}
                          />
-                         {this._renderWelcomeText()}
+
                          {this._renderButton()}
+
+                         <View style={{marginTop: 20}}>
+                          {this._renderWelcomeText()}
+                         </View>
+
                        </View>
 
 
