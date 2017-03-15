@@ -9,7 +9,7 @@ import { popRoute } from '../../actions/route';
 
 import { pushNewRoute, replaceRoute } from '../../actions/route';
 
-import { Container, Header, Title, Content, Text, Button, Icon, List, ListItem, Card, CardItem, InputGroup, Input } from 'native-base';
+import { Container, Header, Title, Content, Text, Button, Icon, List, ListItem, Card, CardItem, InputGroup, Input, Toast } from 'native-base';
 
 import theme from '../../themes/form-theme';
 import styles from './styles';
@@ -18,6 +18,8 @@ import Config from '../../config';
 
 import moment from 'moment';
 import shortid from 'shortid';
+
+import DateTimePicker from 'react-native-modal-datetime-picker';
 
 import ExNavigator from '@exponent/react-native-navigator';
 import { GiftedForm, GiftedFormManager } from 'react-native-gifted-form';
@@ -40,6 +42,8 @@ class Step1Copy extends Component {
            },
            loaded: false,
            leaseBeginDate: new Date(),
+           isDateTimePickerVisible: false,
+           showToast: false
       };
    }
 
@@ -51,6 +55,14 @@ class Step1Copy extends Component {
      console.log('handleValueChange', values)
      this.setState({ form: values })
    }
+
+  //  _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
+  //  _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
+   //
+  //  _handleDatePicked = (date) => {
+  //    console.log('A date has been picked: ', date);
+  //    this._hideDateTimePicker();
+  //  };
 
    onPress() {
      alert('Next Step');
@@ -101,8 +113,9 @@ class Step1Copy extends Component {
           initialRoute={this.getRoute(someState, this.props)}
           style={{ flex: 1 }}
           titleStyle={{
-            fontSize: 14,
-            color: '#fff'
+            fontSize: 18,
+            color: '#fff',
+
           }}
           sceneStyle={{
             paddingTop: 64,
@@ -111,7 +124,7 @@ class Step1Copy extends Component {
             shadowOpacity: 0.5,
             shadowRadius: 6
           }}
-          navigationBarStyle={{ backgroundColor: '#333', height: 64, borderBottomColor: 'transparent' }}
+          navigationBarStyle={{ backgroundColor: '#2d609b', height: 64, borderBottomColor: 'transparent' }}
         />
       );
     }
@@ -126,19 +139,21 @@ class Step1Copy extends Component {
           //return this.someState;
           // alert('someState key: ' + key);
           console.log('>>> entered getSomeState:', key);
-          if (key==='leaseBeginDate') return someState.leaseBeginDate;
+          if (key==='leaseBeginDate') return this.someState.leaseBeginDate;
+          // if (key==='isDateTimePickerVisible') return this.someState.isDateTimePickerVisible;
         },
         setSomeState(key, val){
-          if (key==='leaseBeginDate') return someState.setState({"leaseBeginDate": val});
+          if (key==='leaseBeginDate') return this.someState.setState({"leaseBeginDate": val});
+          // if (key==='isDateTimePickerVisible') return this.someState.setState({"isDateTimePickerVisible": val});
         },
         replaceRoute(route) {
            props.replaceRoute(route);
         },
         onDateChange(date){
           console.log('entered onDateChange:', date);
-          console.log('>>> someState: ', someState);
-          someState.leaseBeginDate = date;
-          console.log('>>> someState: ', someState);
+          // console.log('>>> someState: ', someState);
+          // someState.leaseBeginDate = date;
+          // console.log('>>> someState: ', someState);
           // return someState.leaseBeginDate;
           // someState.setState({"leaseBeginDate": date});
 
@@ -170,11 +185,29 @@ class Step1Copy extends Component {
           console.log('handleValueChange', values)
           // this.setState({ form: values })
         },
+
+        // _showDateTimePicker(){
+        //   this.setSomeState('isDateTimePickerVisible', true);
+        // },
+        //
+        // _hideDateTimePicker(){
+        //   this.setSomeState('isDateTimePickerVisible', false);
+        // },
+        //
+        // _handleDatePicked(date) {
+        //   console.log('A date has been picked: ', date);
+        //   this._hideDateTimePicker();
+        // },
+
         getTitle() {
           return 'TENANT SIGN UP';
         },
         formatDateField(dateValue){
-          return dateValue;
+          if (!moment(dateValue).isValid()){
+            alert("Invalid Date entered");
+            return '';
+          }
+          return moment(dateValue, "MM-DD-YYYY");
         },
         formatUsPhone(phone) {
             let phoneFormatted = phone;
@@ -206,18 +239,22 @@ class Step1Copy extends Component {
           //   Linking.openURL('http://www.mywalkthru.com/tos');
           // }
         },
+        onShowToast(message) {
+
+        },
 
         renderScene(navigator) {
           return (
             <Container theme={theme} style={{backgroundColor: '#fff'}} >
             <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
 
-
             <Content padder style={{backgroundColor: 'transparent'}} >
 
             <GiftedForm
               formName='signupForm' // GiftedForm instances that use the same name will also share the same states
+
               onValueChange={this.handleValueChange.bind(this)}
+
               openModal={(route) => {
                 navigator.push(route); // The ModalWidget will be opened using this method. Tested with ExNavigator
               }}
@@ -343,16 +380,30 @@ class Step1Copy extends Component {
                 image={require('../../assets/icons/contact_card.png')}
               >
 
-
               <GiftedForm.ModalWidget
                   title='What is the primary reason you are leasing?'
                   displayValue='leaseReason'
                   image={require('../../assets/icons/contact_card.png')}
               >
-                  <GiftedForm.SelectWidget name='leaseReason' title='Primary Reason' multiple={false}>
+                  <GiftedForm.SelectWidget name='leaseReason' title='Lease Reason' multiple={false}>
                     <GiftedForm.OptionWidget title='First time Lease' value='First time Lease'/>
                     <GiftedForm.OptionWidget title='Renewing Lease' value='Renewing Lease'/>
                   </GiftedForm.SelectWidget>
+
+                  <Button rounded block
+                    style={{alignSelf: 'center',
+                            marginTop: 10,
+                            backgroundColor: '#ad241f',
+                            borderRadius:90,
+                            width: 300,
+                            height:65}}
+                            onPress={() => {
+                              navigator.pop();
+                            }}
+                      >
+                      <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
+                  </Button>
+
               </GiftedForm.ModalWidget>
               <GiftedForm.SeparatorWidget/>
 
@@ -368,6 +419,17 @@ class Step1Copy extends Component {
                 clearButtonMode='while-editing'
               />
 
+              <GiftedForm.DatePickerIOSWidget
+                name='moveindate'
+                mode='date'
+                title='Lease Begins?'
+                getDefaultDate={() => {
+                  return new Date();
+                }}
+                onDateChange={this.onDateChange}
+              />
+
+
               <GiftedForm.ModalWidget
                   title='How long is your lease?'
                   displayValue='leaseDuration'
@@ -375,11 +437,25 @@ class Step1Copy extends Component {
                   cancelable={true}
                   image={require('../../assets/icons/contact_card.png')}
               >
-                  <GiftedForm.SelectWidget name='leaseDuration' title='Lease Length' multiple={false}>
+                  <GiftedForm.SelectWidget name='leaseDuration' title='Lease Duration' multiple={false}>
                     <GiftedForm.OptionWidget title='6 Months' value='6'/>
                     <GiftedForm.OptionWidget title='1 Year' value='12'/>
                     <GiftedForm.OptionWidget title='2 Years' value='24'/>
                   </GiftedForm.SelectWidget>
+
+                  <Button rounded block
+                    style={{alignSelf: 'center',
+                            marginTop: 10,
+                            backgroundColor: '#ad241f',
+                            borderRadius:90,
+                            width: 300,
+                            height:65}}
+                            onPress={() => {
+                              navigator.pop();
+                            }}
+                      >
+                      <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
+                  </Button>
               </GiftedForm.ModalWidget>
               <GiftedForm.SeparatorWidget/>
 
@@ -399,6 +475,20 @@ class Step1Copy extends Component {
                     }}
                   />
                   */}
+
+                  <Button rounded block
+                    style={{alignSelf: 'center',
+                            marginTop: 10,
+                            backgroundColor: '#ad241f',
+                            borderRadius:90,
+                            width: 300,
+                            height:65}}
+                            onPress={() => {
+                              navigator.pop();
+                            }}
+                      >
+                      <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
+                  </Button>
 
               </GiftedForm.ModalWidget>
 
@@ -422,6 +512,21 @@ class Step1Copy extends Component {
                       <GiftedForm.OptionWidget title='Duplex' value='Duplex'/>
                       <GiftedForm.OptionWidget title='Townhouse' value='Townhouse'/>
                     </GiftedForm.SelectWidget>
+
+                    <Button rounded block
+                      style={{alignSelf: 'center',
+                              marginTop: 10,
+                              backgroundColor: '#ad241f',
+                              borderRadius:90,
+                              width: 300,
+                              height:65}}
+                              onPress={() => {
+                                navigator.pop();
+                              }}
+                        >
+                        <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
+                    </Button>
+
                 </GiftedForm.ModalWidget>
                 <GiftedForm.SeparatorWidget/>
 
@@ -449,6 +554,21 @@ class Step1Copy extends Component {
                       <GiftedForm.OptionWidget title='15' value='15'/>
                       <GiftedForm.OptionWidget title='16' value='16'/>
                     </GiftedForm.SelectWidget>
+
+                    <Button rounded block
+                      style={{alignSelf: 'center',
+                              marginTop: 10,
+                              backgroundColor: '#ad241f',
+                              borderRadius:90,
+                              width: 300,
+                              height:65}}
+                              onPress={() => {
+                                navigator.pop();
+                              }}
+                        >
+                        <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
+                    </Button>
+
                 </GiftedForm.ModalWidget>
                 <GiftedForm.SeparatorWidget/>
 
@@ -468,6 +588,21 @@ class Step1Copy extends Component {
                       <GiftedForm.OptionWidget title='7' value='7'/>
                       <GiftedForm.OptionWidget title='8' value='8'/>
                     </GiftedForm.SelectWidget>
+
+                    <Button rounded block
+                      style={{alignSelf: 'center',
+                              marginTop: 10,
+                              backgroundColor: '#ad241f',
+                              borderRadius:90,
+                              width: 300,
+                              height:65}}
+                              onPress={() => {
+                                navigator.pop();
+                              }}
+                        >
+                        <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
+                    </Button>
+
                 </GiftedForm.ModalWidget>
                 <GiftedForm.SeparatorWidget/>
 
@@ -514,6 +649,21 @@ class Step1Copy extends Component {
                     <GiftedForm.OptionWidget title='Texas' value='TX'/>
                     <GiftedForm.OptionWidget title='Virginia' value='VA'/>
                   </GiftedForm.SelectWidget>
+
+                  <Button rounded block
+                    style={{alignSelf: 'center',
+                            marginTop: 10,
+                            backgroundColor: '#ad241f',
+                            borderRadius:90,
+                            width: 300,
+                            height:65}}
+                            onPress={() => {
+                              navigator.pop();
+                            }}
+                      >
+                      <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
+                  </Button>
+
                 </GiftedForm.ModalWidget>
 
                 <GiftedForm.TextInputWidget
@@ -531,6 +681,22 @@ class Step1Copy extends Component {
                   showsUserLocation={true}
                   followUserLocation={true}
                 />
+
+                <Button rounded block
+                  style={{alignSelf: 'center',
+                          marginTop: 10,
+                          backgroundColor: '#ad241f',
+                          borderRadius:90,
+                          width: 300,
+                          height:65}}
+                          onPress={() => {
+                            navigator.pop();
+                          }}
+                    >
+                    <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
+                </Button>
+
+
               </GiftedForm.ModalWidget>
               <GiftedForm.SeparatorWidget />
 
@@ -545,6 +711,21 @@ class Step1Copy extends Component {
                     <GiftedForm.OptionWidget title='Take Photo' value='takephoto'/>
                     <GiftedForm.OptionWidget title='Camera Roll' value='cameraroll'/>
                   </GiftedForm.SelectWidget>
+
+                  <Button rounded block
+                    style={{alignSelf: 'center',
+                            marginTop: 10,
+                            backgroundColor: '#ad241f',
+                            borderRadius:90,
+                            width: 300,
+                            height:65}}
+                            onPress={() => {
+                              navigator.pop();
+                            }}
+                      >
+                      <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
+                  </Button>
+
               </GiftedForm.ModalWidget>
               <GiftedForm.SeparatorWidget/>
 
@@ -562,8 +743,23 @@ class Step1Copy extends Component {
                 >
                     <GiftedForm.SelectWidget name='landlordType' title='Landlord Type' multiple={false}>
                       <GiftedForm.OptionWidget title='Individual' value='Individual'/>
-                      <GiftedForm.OptionWidget title='Corporation/Organization' value='CorpOrg'/>
+                      <GiftedForm.OptionWidget title='Corporation' value='CorpOrg'/>
                     </GiftedForm.SelectWidget>
+
+                    <Button rounded block
+                      style={{alignSelf: 'center',
+                              marginTop: 10,
+                              backgroundColor: '#ad241f',
+                              borderRadius:90,
+                              width: 300,
+                              height:65}}
+                              onPress={() => {
+                                navigator.pop();
+                              }}
+                        >
+                        <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
+                    </Button>
+
                 </GiftedForm.ModalWidget>
 
                 <GiftedForm.SeparatorWidget/>
@@ -601,6 +797,21 @@ class Step1Copy extends Component {
                   placeholder="Landlord's Phone"
                   clearButtonMode='while-editing'
                 />
+
+                <Button rounded block
+                  style={{alignSelf: 'center',
+                          marginTop: 10,
+                          backgroundColor: '#ad241f',
+                          borderRadius:90,
+                          width: 300,
+                          height:65}}
+                          onPress={() => {
+                            navigator.pop();
+                          }}
+                    >
+                    <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
+                </Button>
+
               </GiftedForm.ModalWidget>
 
 
@@ -625,6 +836,11 @@ class Step1Copy extends Component {
                     console.log('values:',values);
                     if(!values.fullName) {
                       alert('Full Name is required');
+                    //   Toast.show({
+                    //    text: 'Full Name is required',
+                    //    position: 'bottom',
+                    //    buttonText: 'Okay'
+                    //  });
                       postSubmit(['An error occurred, please try again']);
                       return;
                     }
@@ -775,14 +991,26 @@ class Step1Copy extends Component {
                        console.log('RESPONSEDATA: ', responseData);
 
                         if (!responseData) {
-                           alert('Sorry, there was a problem signing up.');
+                           alert('Sorry, there was a problem Signing Up.');
+                          //  Toast.show({
+                          //   text: 'Sorry, there was a problem Signing Up.',
+                          //   position: 'bottom',
+                          //   buttonText: 'Okay'
+                          // });
                         } else {
                           AsyncStorage.setItem("signUpDate", signUpDate)
                           .then( () =>
                               {
                                   AsyncStorage.setItem("userId", userId)
                                   .then( () => {
-                                      alert('Thank you for Signing Up (' + signUpDate + ' -- ' + userId + ')' );
+                                      alert('Thank you for Signing Up (' + signUpDate + ')' );
+
+                                    //   Toast.show({
+                                    //    text: 'Thank you for Signing Up (' + signUpDate + ')',
+                                    //    position: 'bottom',
+                                    //    buttonText: 'Okay'
+                                    //  });
+
                                       this.replaceRoute('home');
                                     }
                                   ).done();
