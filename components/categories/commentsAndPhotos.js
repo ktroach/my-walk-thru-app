@@ -15,7 +15,7 @@ import { popRoute } from '../../actions/route';
 
 import { pushNewRoute, replaceRoute } from '../../actions/route';
 
-import { Container, Header, Title, Content, Text, Button, Icon, List, ListItem, Card, CardItem, InputGroup, Input, Textarea } from 'native-base';
+import { Container, Header, Title, Content, Text, Button, Icon, List, ListItem, DeckSwiper, Card, CardItem, Left, Body, Thumbnail, InputGroup, Input, Textarea } from 'native-base';
 
 import moment from 'moment';
 import shortid from 'shortid';
@@ -28,6 +28,7 @@ import { SegmentedControls } from 'react-native-radio-buttons'
 import Config from '../../config'
 
 import PhotoBrowser from 'react-native-photo-browser';
+
 
 import { RNS3 } from 'react-native-aws3';
 
@@ -283,7 +284,7 @@ class CommentsAndPhotos extends Component {
 
                          <Button rounded block style={{backgroundColor: '#ad241f'}}
                              onPress={() => this.saveCloseUp()}>
-                             <Text>Save Close Up</Text>
+                             <Text style={{color:'#fff', fontWeight: 'bold'}}>Save Close Up</Text>
                          </Button>
 
                         <View style={{marginTop: 15}}>
@@ -341,7 +342,7 @@ class CommentsAndPhotos extends Component {
                             <CardItem>
                                  <Button rounded block style={{backgroundColor: '#ad241f'}}
                                      onPress={() => this._takePhoto()}>
-                                     <Text>TAKE CLOSE UP PHOTO</Text>
+                                     <Text style={{color:'#fff', fontWeight: 'bold'}}>TAKE CLOSE UP PHOTO</Text>
                                  </Button>
                             </CardItem>
 
@@ -353,7 +354,9 @@ class CommentsAndPhotos extends Component {
                               {this._maybeRenderPhotos()}
                            </CardItem>
                         </Card>
+
                     </Content>
+
                 </Image>
             </Container>
         )
@@ -599,22 +602,23 @@ class CommentsAndPhotos extends Component {
         // }
     }
 
-    _maybeRenderPhotos() {
-       return(
-         <PhotoBrowser
-           onBack={this._onBack}
-           mediaList={this.state.media}
-           alwaysShowControls={true}
-           displayNavArrows={true}
-           displaySelectionButtons={false}
-           displayActionButton={false}
-           startOnGrid={false}
-           enableGrid={false}
-           onSelectionChanged={this._onPhotoSelectionChanged}
-           onActionButton={this._onPhotoActionButton}
-         />
-       );
-    }
+
+        _maybeRenderPhotos() {
+           return(
+             <PhotoBrowser
+               onBack={this._onBack}
+               mediaList={this.state.media}
+               alwaysShowControls={true}
+               displayNavArrows={true}
+               displaySelectionButtons={false}
+               displayActionButton={false}
+               startOnGrid={false}
+               enableGrid={false}
+               onSelectionChanged={this._onPhotoSelectionChanged}
+               onActionButton={this._onPhotoActionButton}
+             />
+           );
+        }
 
     _onBack(){
        console.log('>>> ENTERED _onBack...');

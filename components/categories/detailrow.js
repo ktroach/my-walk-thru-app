@@ -109,13 +109,20 @@ class DetailRow extends React.Component {
              flexDirection: 'column',
              justifyContent: 'center',
              borderWidth: 4,
-             borderColor: '#333'
+             borderColor: '#C8C7CC',
+             borderRadius: 3,
+             elevation: 2,
+             shadowColor: 'rgba(0,0,0,1)',
+             shadowOpacity: 0.2,
+             shadowOffset: {width: 4, height: 4},
+             shadowRadius: 5,
             }}>
 
             <Header style={{backgroundColor: '#fff'}}>
                 <Title style={{fontSize: 20, color: '#333'}}>{this.state.item.name}</Title>
             </Header>
-            <Content padder style={{backgroundColor: '#fff'}} >
+
+            <View padder style={{backgroundColor: '#fff'}} >
                 <Card transparent foregroundColor="#000">
                     <CardItem header>
                        <Text>Condition</Text>
@@ -137,11 +144,11 @@ class DetailRow extends React.Component {
                             borderRadius:90,
                             width: 300,
                             height:65}} onPress={() => this.navigateTo('commentsAndPhotos')}>
-                          <Text style={{fontSize: 16, fontWeight: '500', color: '#fff'}}>Additional Comments/Photos</Text>
+                          <Text style={{fontSize: 16, fontWeight: 'bold', color: '#fff'}}>Close Up Photos/Comments</Text>
                       </Button>
                     </CardItem>
                 </Card>
-            </Content>
+            </View>
 
          </View>
       </View>
@@ -156,7 +163,7 @@ class DetailRow extends React.Component {
      return (
        <View style={{
          marginTop: 30,
-         width: 300,
+         width: 333,
          borderRadius: 3,
          elevation: 2,
          shadowColor: 'rgba(0,0,0,1)',
@@ -171,19 +178,25 @@ class DetailRow extends React.Component {
                style={{width: 300, height: 200}}
              />
          </View>
-         <KeyboardAvoidingView behavior={this.state.behavior} style={{backgroundColor: '#333'}}>
+         <KeyboardAvoidingView behavior={this.state.behavior} style={{backgroundColor: '#fff'}}>
            <Text
-             style={{paddingVertical: 10, paddingHorizontal: 10, color: '#fff', fontSize: 14, fontWeight: '500'}}>
+             style={{paddingVertical: 5, paddingHorizontal: 5, color: '#fff', fontSize: 14, fontWeight: '500'}}>
              Brief Description
            </Text>
            <Textarea
               placeholder=""
-              style={{backgroundColor: '#fff', color: '#333', height: 100, overflow: 'scroll', borderWidth: 1,  borderColor: '#333'}}
+              style={{backgroundColor: '#fff', color: '#333', height: 100, overflow: 'scroll', borderWidth: 1,  borderColor: '#C8C7CC'}}
               onChangeText={this.updateSummaryComments.bind(this)}
               value={this.state.summaryComments}>
            </Textarea>
-           <Button block style={{marginBottom: 1, backgroundColor: '#ad241f'}} onPress={() => this.saveSummaryComments()}>
-               <Text style={{fontSize: 16, fontWeight: '500', color: '#fff'}}>Save</Text>
+           <Button rounded block
+              style={{alignSelf: 'center',
+                   marginTop: 5,
+                   backgroundColor: '#ad241f',
+                   borderRadius:90,
+                   width: 300,
+                   height:65}} onPress={() => this.saveSummaryComments()}>
+               <Text style={{fontSize: 16, fontWeight: 'bold', color: '#fff'}}>Save Comment</Text>
            </Button>
          </KeyboardAvoidingView>
 

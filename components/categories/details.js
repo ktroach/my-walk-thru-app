@@ -137,7 +137,8 @@ class CategoryDetails extends React.Component {
 
     renderWalkthrough() {
       return (
-          <Container theme={theme} style={{backgroundColor: '#333'}}>
+          <Container theme={theme} style={{backgroundColor: '#fff'}}>
+          
               <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                    <Header>
                       <Button onPress={() => this.replaceRoute('categories')}>
