@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { AsyncStorage, Image, View, TouchableWithoutFeedback, ScrollView, TouchableOpacity } from 'react-native';
+import { AsyncStorage, Image, View, TouchableWithoutFeedback, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import Exponent, {
   Constants,
   ImagePicker,
@@ -35,6 +35,7 @@ class CommentsAndPhotos extends Component {
    constructor(props) {
       super(props);
       this.state = {
+         modalVisible: false,
          subItemId: '',
          item: {},
          comments: '',
@@ -47,8 +48,13 @@ class CommentsAndPhotos extends Component {
          userId:'',
          templateItem: {},
          closeUpComments: '',
-         categoryName: ''
+         categoryName: '',
+         key: ''
       };
+   }
+
+   setModalVisible(visible) {
+     this.setState({modalVisible: visible});
    }
 
    componentDidMount() {
@@ -130,12 +136,24 @@ class CommentsAndPhotos extends Component {
                            //  let photoUrl = imageItem.image;
                            // let photoUrl = 'https://s3-us-west-2.amazonaws.com/mywalkthru-pm-files/photos/SyV-uCOKe.jpg';
 
-                           let photo = {
-                            thumb: '', // thumbnail version of the photo to be displayed in grid view. actual photo is used if thumb is not provided
-                            photo: photoUrl, // a remote photo or local media url
-                            caption: 'Taken: ' + formattedDate, // photo caption to be displayed
-                            selected: false, // set the photo selected initially(default is false)
-                           };
+                          //  let photo = {
+                          //   thumb: '', // thumbnail version of the photo to be displayed in grid view. actual photo is used if thumb is not provided
+                          //   photo: photoUrl, // a remote photo or local media url
+                          //   caption: 'Taken: ' + formattedDate, // photo caption to be displayed
+                          //   selected: false, // set the photo selected initially(default is false)
+                          //  };
+
+                          let caption = '';
+
+                          if (imageItem.caption) caption = caption + imageItem.caption;
+                          if (imageItem.timestamp) caption = caption + imageItem.timestamp;
+
+                          let photo = {
+                           thumb: '', // thumbnail version of the photo to be displayed in grid view. actual photo is used if thumb is not provided
+                           photo: photoUrl, // a remote photo or local media url
+                           caption: caption, // photo caption to be displayed
+                           selected: false, // set the photo selected initially(default is false)
+                          };
 
                            media.push(photo);
 
@@ -238,6 +256,7 @@ class CommentsAndPhotos extends Component {
         return (
             <Container theme={theme} style={{backgroundColor: '#333'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
+
                     <Header>
                         <Button onPress={() => this.maybeProceed('subcategories')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
@@ -251,6 +270,36 @@ class CommentsAndPhotos extends Component {
                     </Header>
 
                     <Content padder style={{backgroundColor: 'transparent'}} >
+
+                    <View style={{marginTop: 5}}>
+                      <Modal
+                        animationType={"slide"}
+                        transparent={false}
+                        visible={this.state.modalVisible}
+                        onRequestClose={() => {alert("Modal has been closed.")}}
+                        >
+                       <View style={{marginTop: 22}}>
+                        <View>
+                          <Text style={{color:'#333'}}>this.state.image</Text>
+
+                          <Button rounded block style={{backgroundColor: '#ad241f'}}
+                              onPress={() => this.setModalVisible(!this.state.modalVisible)}>
+                              <Text>Save Comments</Text>
+                          </Button>
+
+                        </View>
+                       </View>
+                      </Modal>
+
+                      <Button rounded block style={{backgroundColor: '#ad241f'}}
+                          onPress={() => this.setModalVisible(true)}>
+                          <Text>Show Modal</Text>
+                      </Button>
+
+
+
+                    </View>
+
                         <Card transparent foregroundColor="#000">
                             <CardItem header>
                                 <Text>Close Up Photos</Text>
@@ -293,7 +342,11 @@ class CommentsAndPhotos extends Component {
         if (!pickerResult.cancelled) {
           let userId = 'unknown';
           if (this.state.userId) userId = this.state.userId;
-          let fileName = shortid.generate();
+
+          let key = shortid.generate();
+          this.setState({key: key});
+
+          let fileName = key;
           let fileType = 'jpg';
 
           const file = {
@@ -332,13 +385,19 @@ class CommentsAndPhotos extends Component {
 
             this.setState({image: location});
 
+            this.setModalVisible(true);
+
             var now = new Date();
 
             let newimages = [];
             let item = this.state.item;
             let images = item.images;
             if (images) newimages = images;
-            newimages.push({image: location});
+
+            let ordinal = newimages.length+1;
+
+            newimages.push({key: key, ordinal: ordinal, image: location,
+              caption: this.state.closeUpComments, timestamp: now});
 
             let data = {comments: this.state.comments, images: newimages, dateObserved: now};
 
@@ -384,6 +443,8 @@ class CommentsAndPhotos extends Component {
           body: JSON.stringify(data)
         }).then((response) => response.json()).then((responseData) => {
            console.log('responseData: ', responseData);
+
+           // change navigation route post save
            if (route) {
              this.replaceRoute(route);
            }
@@ -464,7 +525,7 @@ class CommentsAndPhotos extends Component {
            alwaysShowControls={true}
            displayNavArrows={true}
            displaySelectionButtons={false}
-           displayActionButton={true}
+           displayActionButton={false}
            startOnGrid={false}
            enableGrid={false}
            onSelectionChanged={this._onPhotoSelectionChanged}
@@ -520,40 +581,52 @@ class CommentsAndPhotos extends Component {
                onChangeText={this.updateCloseUpComments.bind(this)}
                value={this.state.closeUpComments}>
             </Textarea>
+            <Button block style={{marginBottom: 1, backgroundColor: '#ad241f'}} onPress={() => this.saveCloseUpComments()}>
+                <Text style={{fontSize: 16, fontWeight: '500', color: '#fff'}}>Save</Text>
+            </Button>
           </View>
 
         </View>
       );
     }
 
-}
+    saveCloseUpComments() {
+      let now = new Date();
+      let item = this.state.item;
+      let key = this.state.key;
+      let imageToUpdate = {};
+      let newimages = [];
 
-async function uploadImageAsync(uri) {
+      // let closeUpImages = this.state.images;
+      // if (closeUpImages) {
+      //   closeUpImages.forEach(function(closeUpImage){
+      //     console.log(closeUpImage);
+      //     if (closeUpImage.key){
+      //       if (closeUpImage.key === key) {
+      //         console.log('FOUND closeUpImage (KEY):', key);
+      //         imageToUpdate = closeUpImage;
+      //         imageToUpdate.caption = this.state.closeUpComments;
+      //         newimages.push(imageToUpdate);
+      //       } else {
+      //         otherImage = closeUpImage;
+      //         newimages.push(otherImage);
+      //       }
+      //     }
+      //   });
+      //   if (imageToUpdate && newimages) {
+      //     // imageToUpdate.caption = this.state.closeUpComments;
+      //     let data = {images: newimages};
+      //     this.persistData(item.id, data, null);
+      //   }
 
-  let apiUrl = 'https://pros-s3-image-uploader.herokuapp.com/api/CloudStoreImages/images/upload';
+      // }
 
-  let uriParts = uri.split('.');
-  let fileType = uri[uri.length - 1];
 
-  let formData = new FormData();
-  formData.append('fileUpload=', uri);
+      //newimages.push({key: key, ordinal: ordinal, image: location, caption: this.state.closeUpComments, timestamp: now});
 
-  // formData.append('photo', {
-  //   uri,
-  //   name: `photo.${fileType}`,
-  //   type: `image/${fileType}`,
-  // });
 
-  let options = {
-    method: 'POST',
-    body: formData,
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'multipart/form-data',
-    },
-  };
+    }
 
-  return fetch(apiUrl, options);
 }
 
 

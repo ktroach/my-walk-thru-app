@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Image, Linking, ActivityIndicator, TouchableOpacity, Platform } from 'react-native';
+import { Image, Linking, ActivityIndicator, TouchableOpacity, Platform, AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -35,8 +35,19 @@ class Submittal extends Component {
             processStatus: '',
             firstChecked: false,
             data: null,
-            signature: null
+            signature: null,
+            userId: ''
        };
+    }
+
+    componentDidMount() {
+      AsyncStorage.getItem("userId")
+      .then( (userId) =>
+            {
+               return this.setState({userId: userId})
+            }
+      )
+      .done();
     }
 
     popRoute() {
@@ -69,6 +80,11 @@ class Submittal extends Component {
     submitWalkThru(){
       // alert('Creating Walkthru Report...');
 
+      if(!this.state.userId){
+        alert('UserId is invalid');
+        return;
+      }
+
       if (!this.state.firstChecked) {
         alert('Please check the confirmation circle to proceed.');
         return;
@@ -81,22 +97,21 @@ class Submittal extends Component {
 
       this.setState({updating: true, processStatus: 'Creating Walkthru Report...'});
 
-      var url = "https://mywalkthruapi.herokuapp.com/api/v1/Reports/generateReport";
-      var data = JSON.stringify({userId: '58c47c8424947f00112328ca'});
+      var url = "https://mywalkthruapi.herokuapp.com/api/v1/Reports/pdfExport/"+this.state.userId;
+      // var data = {userId: this.state.userId};
 
       let completionDate = moment().format();
       var now = new Date();
 
-      console.log('data: ', data);
+      // console.log('data: ', data);
 
       fetch(url, {
-           method: 'post',
+           method: 'get',
            headers: {
-             "Content-type": "application/json; charset=UTF-8"
-           },
-         body: data
+             "Content-type": "application/json"
+           }
       }).then((response) => response.json()).then((responseData) => {
-         console.log('RESPONSEDATA: ', responseData);
+        //  console.log('RESPONSEDATA: ', responseData);
 
           if (!responseData) {
              alert('Sorry, there was a problem Submitting your Walkthru');
@@ -104,7 +119,6 @@ class Submittal extends Component {
             AsyncStorage.setItem("completionDate", completionDate)
             .then( () =>
                 {
-                    AsyncStorage.setItem("userId", userId);
                     alert('Thank you for Completing your Walkthru ('+completionDate+')');
                     this.replaceRoute('home');
                 }

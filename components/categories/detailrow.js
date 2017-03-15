@@ -17,7 +17,8 @@ import {
    RecyclerViewBackedScrollView,
    StatusBar,
    Switch,
-   ScrollView
+   ScrollView,
+   KeyboardAvoidingView
 } from 'react-native';
 import Exponent, {
    Components,
@@ -69,7 +70,8 @@ class DetailRow extends React.Component {
            photolist: [],
            userId: 'rJirzIMsx',
            summaryComments: '',
-           summaryPhoto: ''
+           summaryPhoto: '',
+           behavior: 'padding'
       };
    }
 
@@ -163,7 +165,7 @@ class DetailRow extends React.Component {
                style={{width: 300, height: 200}}
              />
          </View>
-         <View style={{backgroundColor: '#333'}}>
+         <KeyboardAvoidingView behavior={this.state.behavior} style={{backgroundColor: '#333'}}>
            <Text
              style={{paddingVertical: 10, paddingHorizontal: 10, color: '#fff', fontSize: 14, fontWeight: '500'}}>
              Brief Description
@@ -177,7 +179,7 @@ class DetailRow extends React.Component {
            <Button block style={{marginBottom: 1, backgroundColor: '#ad241f'}} onPress={() => this.saveSummaryComments()}>
                <Text style={{fontSize: 16, fontWeight: '500', color: '#fff'}}>Save</Text>
            </Button>
-         </View>
+         </KeyboardAvoidingView>
 
        </View>
      );
