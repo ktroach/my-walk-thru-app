@@ -94,14 +94,19 @@ class TopCategories extends Component {
          <Container theme={theme} style={{backgroundColor: '#fff'}} >
              <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                  <Header>
-                    <Button transparent> </Button>
+
+                   <Button transparent onPress={() => this.replaceRoute('home')}>
+                       <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
+                   </Button>
 
                     <Title style={{fontSize: 20}}>Categories</Title>
 
                     <Button transparent onPress={this.props.openDrawer} >
                         <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
                     </Button>
+
                  </Header>
+
                  <ActivityIndicator
                     animating={!this.state.loaded}
                     style={[styles.activityIndicator, {height: 80}]}
@@ -118,13 +123,17 @@ class TopCategories extends Component {
          <Container theme={theme} style={{backgroundColor: '#FBFAFA'}} >
              <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
              <Header>
-                <Button transparent> </Button>
+
+               <Button transparent onPress={() => this.replaceRoute('home')}>
+                   <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
+               </Button>
 
                 <Title style={{fontSize: 20}}>{title}</Title>
 
                 <Button transparent onPress={this.props.openDrawer} >
                     <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
                 </Button>
+                
              </Header>
                 <Content style={{backgroundColor: 'transparent'}}>
                 <ListView

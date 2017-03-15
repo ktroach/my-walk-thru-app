@@ -130,7 +130,13 @@ class DetailRow extends React.Component {
                       {this.maybeRenderSummaryPhotosComments()}
                     </CardItem>
                     <CardItem>
-                      <Button rounded block style={{marginBottom: 20, backgroundColor: '#ad241f'}} onPress={() => this.navigateTo('commentsAndPhotos')}>
+                    <Button rounded block
+                       style={{alignSelf: 'center',
+                            marginTop: 5,
+                            backgroundColor: '#ad241f',
+                            borderRadius:90,
+                            width: 300,
+                            height:65}} onPress={() => this.navigateTo('commentsAndPhotos')}>
                           <Text style={{fontSize: 16, fontWeight: '500', color: '#fff'}}>Additional Comments/Photos</Text>
                       </Button>
                     </CardItem>
