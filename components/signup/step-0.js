@@ -110,7 +110,7 @@ class Step0 extends Component {
         return (
           <Button rounded block
             style={{alignSelf: 'center',
-                    marginTop: 40,
+                    marginTop: 10,
                     backgroundColor: '#ad241f',
                     borderRadius:90,
                     width: 300,
@@ -123,7 +123,7 @@ class Step0 extends Component {
         return (
             <Button rounded block
               style={{alignSelf: 'center',
-                      marginTop: 40,
+                      marginTop: 10,
                       backgroundColor: '#ad241f',
                       borderRadius:90,
                       width: 300,
@@ -161,12 +161,18 @@ class Step0 extends Component {
 
 
                        <View style={welcomeStyle.welcomeContainer}>
-                         <Image
-                          source={require('../../assets/images/logo.png')}
-                          style={welcomeStyle.welcomeImage}
-                         />
 
+                        <View>
+                           <Image
+                            source={require('../../assets/images/logo.png')}
+                            style={welcomeStyle.welcomeImage}
+                           />
+                        </View>
+
+                        <View>
                          {this._renderButton()}
+                        </View>
+
 
                          <View style={{marginTop: 20}}>
                           {this._renderWelcomeText()}

@@ -271,7 +271,7 @@ class CommentsAndPhotos extends Component {
 
                     <Content padder style={{backgroundColor: 'transparent'}} >
 
-                    <View style={{marginTop: 5}}>
+                    <View style={{marginTop: 15}}>
                       <Modal
                         animationType={"slide"}
                         transparent={false}
@@ -279,11 +279,14 @@ class CommentsAndPhotos extends Component {
                         onRequestClose={() => {alert("Modal has been closed.")}}
                         >
 
-                       <View style={{marginTop: 5}}>
+                       <View style={{marginTop: 15}}>
 
-                        <View>
+                         <Button rounded block style={{backgroundColor: '#ad241f'}}
+                             onPress={() => this.saveCloseUp()}>
+                             <Text>Save Close Up</Text>
+                         </Button>
 
-                          <Text style={{color:'#333'}}>{this.state.image}</Text>
+                        <View style={{marginTop: 15}}>
 
                           <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
                               <Image
@@ -292,33 +295,40 @@ class CommentsAndPhotos extends Component {
                               />
                           </View>
 
-                          <View style={{backgroundColor: '#333'}}>
+                          <View style={{backgroundColor: '#333', marginTop: 15}}>
 
                             <Text
                               style={{paddingVertical: 10, paddingHorizontal: 10, color: '#fff', fontSize: 14, fontWeight: '500'}}>
-                              Briefly describe your Close Up shot of this Area
+                              Briefly describe your Close Up shot of this Area (required)
                             </Text>
 
-                            <Text
+                          </View>
+
+                          <View style={{marginTop: 15}}>
+
+                            <Textarea
                                autoFocus = {true}
-                               style={{backgroundColor: '#fff', color: '#333', borderWidth: 1,  borderColor: '#333'}}
+                               style={{height: 100, backgroundColor: '#fff', color: '#333', borderWidth: 1,  borderColor: '#333'}}
                                onChangeText={this.updateCloseUpComments.bind(this)}
                                value={this.state.closeUpComments}>
-                            </Text>
+                            </Textarea>
 
                           </View>
 
-                          <View style={{marginTop: 5}}>
 
-                            <Button rounded block style={{backgroundColor: '#ad241f'}}
-                                onPress={() => this.saveCloseUp()}>
-                                <Text>Save Close Up</Text>
-                            </Button>
-
-                          </View>
 
                         </View>
+
+
+
                        </View>
+
+                       <View style={{marginTop: 10}}>
+
+
+
+                       </View>
+
                       </Modal>
 
                     </View>
@@ -460,6 +470,12 @@ class CommentsAndPhotos extends Component {
         return;
       }
 
+      if (!this.state.closeUpComments) {
+        console.log('Close Up Comments are Required');
+        alert('Close Up Comments are Required');
+        return;
+      }
+
       // images can be null/undefined, its ok.
       if (images) {
         newimages = images
@@ -483,9 +499,11 @@ class CommentsAndPhotos extends Component {
         dateObserved: timestamp
       };
 
-      this.setModalVisible(!this.state.modalVisible);
+
 
       this.persistData(item.id, data, null);
+
+      this.setModalVisible(!this.state.modalVisible);
     }
 
     persistData(id, data, route) {
@@ -627,6 +645,7 @@ class CommentsAndPhotos extends Component {
           shadowOffset: {width: 4, height: 4},
           shadowRadius: 5,
         }}>
+          <Text>Close Up Saved</Text>
           <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
               <Image
                 source={{uri: image}}
@@ -636,18 +655,16 @@ class CommentsAndPhotos extends Component {
           <View style={{backgroundColor: '#333'}}>
             <Text
               style={{paddingVertical: 10, paddingHorizontal: 10, color: '#fff', fontSize: 14, fontWeight: '500'}}>
-              Describe what you just took a picture of in this closeup shot
+              Close Up Comments (required)
             </Text>
             <Textarea
-               placeholder=""
-               autoFocus = {true}
+               disabled
+               autoFocus = {false}
                style={{backgroundColor: '#fff', color: '#333', height: 200, overflow: 'scroll', borderWidth: 1,  borderColor: '#333'}}
                onChangeText={this.updateCloseUpComments.bind(this)}
                value={this.state.closeUpComments}>
             </Textarea>
-            <Button block style={{marginBottom: 1, backgroundColor: '#ad241f'}} onPress={() => this.saveCloseUpComments()}>
-                <Text style={{fontSize: 16, fontWeight: '500', color: '#fff'}}>Save</Text>
-            </Button>
+
           </View>
 
         </View>
