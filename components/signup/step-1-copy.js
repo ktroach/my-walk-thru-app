@@ -209,9 +209,12 @@ class Step1Copy extends Component {
 
         renderScene(navigator) {
           return (
-            <Container theme={theme} style={{backgroundColor: '#333'}} >
+            <Container theme={theme} style={{backgroundColor: '#fff'}} >
             <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
+
+
             <Content padder style={{backgroundColor: 'transparent'}} >
+
             <GiftedForm
               formName='signupForm' // GiftedForm instances that use the same name will also share the same states
               onValueChange={this.handleValueChange.bind(this)}
