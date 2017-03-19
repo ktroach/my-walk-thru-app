@@ -1,7 +1,16 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { AsyncStorage, Image, View, Linking, MapView, DatePickerIOS } from 'react-native';
+import {
+   AsyncStorage,
+   Clipboard,
+   Image,
+   Share,
+   View,
+   Linking,
+   MapView,
+   DatePickerIOS } from 'react-native';
+
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -23,7 +32,17 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 
 import ExNavigator from '@exponent/react-native-navigator';
 import { GiftedForm, GiftedFormManager } from 'react-native-gifted-form';
-import {withNavigation} from "@exponent/ex-navigation/src/ExNavigationComponents";
+import { withNavigation } from "@exponent/ex-navigation/src/ExNavigationComponents";
+
+import Exponent, {
+   Components,
+   Permissions,
+   Location,
+   Constants,
+   ImagePicker,
+} from 'exponent';
+
+import { RNS3 } from 'react-native-aws3';
 
 // const homePlace = {description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } }};
 // const workPlace = {description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } }};
@@ -131,6 +150,9 @@ class Step1Copy extends Component {
 
     getRoute(someState, someProps) {
       // this.setState({loaded: true});
+
+      let propertyImage = 'https://cdn.shopify.com/s/files/1/1142/1104/t/2/assets/property-placeholder.jpg';
+
       var someState = someState;
       var props = someProps;
       console.log('>>> props:', props);
@@ -243,7 +265,73 @@ class Step1Copy extends Component {
 
         },
 
+        takePhoto() {
+          let pickerResult = ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            aspect: [4,3]
+          });
+          console.log('pickerResult:', pickerResult);
+          let propertyPhoto = pickerResult.uri;
+          AsyncStorage.setItem("propertyPhoto", propertyPhoto)
+          .then( () =>
+              {
+                  this.handlePropertyPhoto(propertyPhoto);
+              }
+          )
+          .done( );
+       },
+
+       handlePropertyPhoto(uri) {
+          if (!uri) return;
+
+          let uploadResponse, uploadResult;
+          let fileName = shortid.generate();
+          let fileType = 'jpg';
+
+          const file = {
+           uri: uri,
+           name: `${userId}___${fileName}.${fileType}`,
+           type: `image/${fileType}`
+          };
+
+          const options = {
+           keyPrefix: 'photos/',
+           bucket: 'mywalkthru-pm-files',
+           region: 'us-west-2',
+           accessKey: 'AKIAIRVLMXELYRQ5GYFA',
+           secretKey: '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',
+           successActionStatus: 201
+          };
+
+          console.log('UPLOADING SUMMARY PHOTO TO S3...');
+
+          RNS3.put(file, options).then(response => {
+           if (response.status !== 201) {
+             throw new Error('Failed to upload image to S3', response);
+           }
+
+           if (!response.body){
+             throw new Error('Failed to upload image to S3', response);
+           }
+
+           let location = response.body.postResponse.location;
+
+           console.log('PROPERTY PHOTO URI:', location);
+
+
+
+          });
+
+        },
+
         renderScene(navigator) {
+
+          // console.log(navigator);
+
+          // state = { count: this.props.initialCount };
+
+          // console.log(this.refs);
+
           return (
             <Container theme={theme} style={{backgroundColor: '#fff'}} >
             <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
@@ -405,22 +493,25 @@ class Step1Copy extends Component {
                   </Button>
 
               </GiftedForm.ModalWidget>
+
               <GiftedForm.SeparatorWidget/>
+  {/*
+              // <GiftedForm.TextInputWidget
+              //   name='leaseBeginDate' // optional
+              //   title='Lease Begins?'
+              //   image={require('../../assets/icons/book.png')}
+              //   placeholder='Lease Begin Date'
+              //   autoCapitalize="none"
+              //   autoCorrect={false}
+              //   onTextInputBlur={(currentText) => this.formatDateField(currentText)}
+              //   keyboardType='default'
+              //   clearButtonMode='while-editing'
+              // />
+      */}
 
-              <GiftedForm.TextInputWidget
-                name='leaseBeginDate' // optional
-                title='Lease Begins?'
-                image={require('../../assets/icons/book.png')}
-                placeholder='Lease Begin Date'
-                autoCapitalize="none"
-                autoCorrect={false}
-                onTextInputBlur={(currentText) => this.formatDateField(currentText)}
-                keyboardType='default'
-                clearButtonMode='while-editing'
-              />
-
+              <Text style={{fontSize: 16, fontWeight: '600'}}>Lease Begins?</Text>
               <GiftedForm.DatePickerIOSWidget
-                name='moveindate'
+                name='leaseBeginDate'
                 mode='date'
                 title='Lease Begins?'
                 getDefaultDate={() => {
@@ -428,36 +519,50 @@ class Step1Copy extends Component {
                 }}
                 onDateChange={this.onDateChange}
               />
-
-
-              <GiftedForm.ModalWidget
-                  title='How long is your lease?'
-                  displayValue='leaseDuration'
-                  scrollEnabled={false}
-                  cancelable={true}
-                  image={require('../../assets/icons/contact_card.png')}
-              >
-                  <GiftedForm.SelectWidget name='leaseDuration' title='Lease Duration' multiple={false}>
-                    <GiftedForm.OptionWidget title='6 Months' value='6'/>
-                    <GiftedForm.OptionWidget title='1 Year' value='12'/>
-                    <GiftedForm.OptionWidget title='2 Years' value='24'/>
-                  </GiftedForm.SelectWidget>
-
-                  <Button rounded block
-                    style={{alignSelf: 'center',
-                            marginTop: 10,
-                            backgroundColor: '#ad241f',
-                            borderRadius:90,
-                            width: 300,
-                            height:65}}
-                            onPress={() => {
-                              navigator.pop();
-                            }}
-                      >
-                      <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
-                  </Button>
-              </GiftedForm.ModalWidget>
               <GiftedForm.SeparatorWidget/>
+
+              <Text style={{fontSize: 16, fontWeight: '600'}}>Lease Ends?</Text>
+              <GiftedForm.DatePickerIOSWidget
+                name='leaseEndDate'
+                mode='date'
+                title='Lease Ends?'
+                getDefaultDate={() => {
+                  return new Date();
+                }}
+                onDateChange={this.onDateChange}
+              />
+              <GiftedForm.SeparatorWidget/>
+
+      {/*
+              // <GiftedForm.ModalWidget
+              //     title='How long is your lease?'
+              //     displayValue='leaseDuration'
+              //     scrollEnabled={false}
+              //     cancelable={true}
+              //     image={require('../../assets/icons/contact_card.png')}
+              // >
+              //     <GiftedForm.SelectWidget name='leaseDuration' title='Lease Duration' multiple={false}>
+              //       <GiftedForm.OptionWidget title='6 Months' value='6'/>
+              //       <GiftedForm.OptionWidget title='1 Year' value='12'/>
+              //       <GiftedForm.OptionWidget title='2 Years' value='24'/>
+              //     </GiftedForm.SelectWidget>
+              //
+              //     <Button rounded block
+              //       style={{alignSelf: 'center',
+              //               marginTop: 10,
+              //               backgroundColor: '#ad241f',
+              //               borderRadius:90,
+              //               width: 300,
+              //               height:65}}
+              //               onPress={() => {
+              //                 navigator.pop();
+              //               }}
+              //         >
+              //         <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
+              //     </Button>
+              // </GiftedForm.ModalWidget>
+              // <GiftedForm.SeparatorWidget/>
+      */}
 
                 {/*
                   <GiftedForm.SeparatorWidget/>
@@ -642,12 +747,112 @@ class Step1Copy extends Component {
                   image={require('../../assets/icons/contact_card.png')}
                 >
                   <GiftedForm.SelectWidget name='stateName' title='State' multiple={false}>
+
+
+
+                    <GiftedForm.OptionWidget title='Alabama' value='AL'/>
+
+                    <GiftedForm.OptionWidget title='Alaska' value='AK'/>
+
                     <GiftedForm.OptionWidget title='Arizona' value='AZ'/>
-                    <GiftedForm.OptionWidget title='District of Columbia' value='DC'/>
-                    <GiftedForm.OptionWidget title='Georgia' value='GA'/>
+
+                    <GiftedForm.OptionWidget title='Arkansas' value='AR'/>
+
+                    <GiftedForm.OptionWidget title='California' value='CA'/>
+
+                    <GiftedForm.OptionWidget title='Colorado' value='CO'/>
+
+                    <GiftedForm.OptionWidget title='Connecticut' value='CT'/>
+
+                    <GiftedForm.OptionWidget title='Delaware' value='DE'/>
+
+                    <GiftedForm.OptionWidget title='District Of Columbia' value='DC'/>
+
                     <GiftedForm.OptionWidget title='Florida' value='FL'/>
+
+                    <GiftedForm.OptionWidget title='Georgia' value='GA'/>
+
+                    <GiftedForm.OptionWidget title='Hawaii' value='HI'/>
+
+                    <GiftedForm.OptionWidget title='Idaho' value='ID'/>
+
+                    <GiftedForm.OptionWidget title='Illinois' value='IL'/>
+
+                    <GiftedForm.OptionWidget title='Indiana' value='IN'/>
+
+                    <GiftedForm.OptionWidget title='Iowa' value='IA'/>
+
+                    <GiftedForm.OptionWidget title='Kansas' value='KS'/>
+
+                    <GiftedForm.OptionWidget title='Kentucky' value='KY'/>
+
+                    <GiftedForm.OptionWidget title='Louisiana' value='LA'/>
+
+                    <GiftedForm.OptionWidget title='Maine' value='ME'/>
+
+                    <GiftedForm.OptionWidget title='Maryland' value='MD'/>
+
+                    <GiftedForm.OptionWidget title='Massachusetts' value='MA'/>
+
+                    <GiftedForm.OptionWidget title='Michigan' value='MI'/>
+
+                    <GiftedForm.OptionWidget title='Minnesota' value='MN'/>
+
+                    <GiftedForm.OptionWidget title='Mississippi' value='MS'/>
+
+                    <GiftedForm.OptionWidget title='Missouri' value='MO'/>
+
+                    <GiftedForm.OptionWidget title='Montana' value='MT'/>
+
+                    <GiftedForm.OptionWidget title='Nebraska' value='NE'/>
+
+                    <GiftedForm.OptionWidget title='Nevada' value='NV'/>
+
+                    <GiftedForm.OptionWidget title='New Hampshire' value='NH'/>
+
+                    <GiftedForm.OptionWidget title='New Jersey' value='NJ'/>
+
+                    <GiftedForm.OptionWidget title='New Mexico' value='NJ'/>
+
+                    <GiftedForm.OptionWidget title='New York' value='NY'/>
+
+                    <GiftedForm.OptionWidget title='North Carolina' value='NC'/>
+
+                    <GiftedForm.OptionWidget title='North Dakota' value='ND'/>
+
+                    <GiftedForm.OptionWidget title='Ohio' value='OH'/>
+
+                    <GiftedForm.OptionWidget title='Oklahoma' value='OK'/>
+
+                    <GiftedForm.OptionWidget title='Oregon' value='OR'/>
+
+                    <GiftedForm.OptionWidget title='Pennsylvania' value='PA'/>
+
+                    <GiftedForm.OptionWidget title='Rhode Island' value='RI'/>
+
+                    <GiftedForm.OptionWidget title='South Carolina' value='SC'/>
+
+                    <GiftedForm.OptionWidget title='South Dakota' value='SD'/>
+
+                    <GiftedForm.OptionWidget title='Tennessee' value='TN'/>
+
                     <GiftedForm.OptionWidget title='Texas' value='TX'/>
+
+                    <GiftedForm.OptionWidget title='Utah' value='UT'/>
+
+                    <GiftedForm.OptionWidget title='Vermont' value='VT'/>
+
                     <GiftedForm.OptionWidget title='Virginia' value='VA'/>
+
+                    <GiftedForm.OptionWidget title='Washington' value='WA'/>
+
+                    <GiftedForm.OptionWidget title='West Virginia' value='WV'/>
+
+                    <GiftedForm.OptionWidget title='Wisconsin' value='WI'/>
+
+                    <GiftedForm.OptionWidget title='Wyoming' value='WY'/>
+
+
                   </GiftedForm.SelectWidget>
 
                   <Button rounded block
@@ -676,11 +881,6 @@ class Step1Copy extends Component {
                 />
 
               <GiftedForm.SeparatorWidget/>
-                <MapView
-                  style={{height: 300, margin: 10}}
-                  showsUserLocation={true}
-                  followUserLocation={true}
-                />
 
                 <Button rounded block
                   style={{alignSelf: 'center',
@@ -701,16 +901,35 @@ class Step1Copy extends Component {
               <GiftedForm.SeparatorWidget />
 
               <GiftedForm.ModalWidget
-                  title='Add Photo of Property'
+                  title='Photo of Property'
                   displayValue='propertyPhoto'
                   scrollEnabled={false}
                   cancelable={true}
                   image={require('../../assets/icons/contact_card.png')}
               >
-                  <GiftedForm.SelectWidget name='propertyPhoto' title='Add Photo of Property' multiple={false}>
-                    <GiftedForm.OptionWidget title='Take Photo' value='takephoto'/>
-                    <GiftedForm.OptionWidget title='Camera Roll' value='cameraroll'/>
-                  </GiftedForm.SelectWidget>
+
+                <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>Take a Photo of the front of the Property</Text>
+
+                  <Button rounded block
+                    style={{alignSelf: 'center',
+                            marginTop: 10,
+                            backgroundColor: '#ad241f',
+                            borderRadius:90,
+                            width: 300,
+                            height:65}}
+                            onPress={() => {
+                              this.takePhoto();
+                            }}
+                      >
+                      <Text style={{color:'#fff', fontWeight: 'bold'}}>Take Photo</Text>
+                  </Button>
+
+                  <View style={{alignSelf: 'center', marginTop: 10}}>
+                  <Image
+                    source={{uri: this.propertyImage}}
+                    style={{width: 300, height: 200}}
+                  />
+                  </View>
 
                   <Button rounded block
                     style={{alignSelf: 'center',
@@ -769,7 +988,7 @@ class Step1Copy extends Component {
                   title='Company'
                   autoCapitalize="words"
                   image={require('../../assets/icons/contact_card.png')}
-                  placeholder="Landlord's Company Name"
+                  placeholder="Property Managment Company"
                   clearButtonMode='while-editing'
                 />
                 <GiftedForm.TextInputWidget
@@ -777,7 +996,7 @@ class Step1Copy extends Component {
                   title='Name'
                   autoCapitalize="words"
                   image={require('../../assets/icons/user.png')}
-                  placeholder="Landlord's Name"
+                  placeholder="Landlord / Property Manager"
                   clearButtonMode='while-editing'
                 />
                 <GiftedForm.TextInputWidget
@@ -785,7 +1004,7 @@ class Step1Copy extends Component {
                   title='Email'
                   autoCapitalize="none"
                   autoCorrect={false}
-                  placeholder="Landlord's Email"
+                  placeholder="Email"
                   keyboardType='email-address'
                   clearButtonMode='while-editing'
                   image={require('../../assets/icons/email.png')}
@@ -813,9 +1032,6 @@ class Step1Copy extends Component {
                 </Button>
 
               </GiftedForm.ModalWidget>
-
-
-
 
               <GiftedForm.SubmitWidget
                 title='Sign up'

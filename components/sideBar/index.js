@@ -83,8 +83,9 @@ class SideBar extends Component {
     renderSignedUp(){
         return (
             <Content style={styles.sidebar} >
-               <Image source={require('../../assets/images/slide_properties.jpg')} style={{resizeMode: 'cover', opacity: 0.5}}>
-                   <Thumbnail size={500} style={{resizeMode: 'contain', marginTop: 7, opacity: 1.0}} source={require('../../assets/images/logo.png')} />
+               <Image source={require('../../assets/images/slide_properties.jpg')} style={{resizeMode: 'cover', opacity: 1.0}}>
+
+                   <Thumbnail size={620} style={{resizeMode: 'contain', marginTop: 10, opacity: 1.0}} source={require('../../assets/images/logo.png')} />
 
                    <List style={{paddingTop: 20}}>
                         <ListItem button onPress={() => this.navigateTo('home')} iconLeft style={styles.links} >
@@ -100,6 +101,8 @@ class SideBar extends Component {
                            <Text style={styles.text}>Sign Up (Test)</Text>
                        </ListItem>
                    </List>
+
+
                </Image>
             </Content>
         );
