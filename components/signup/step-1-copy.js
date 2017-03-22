@@ -44,6 +44,12 @@ import Exponent, {
 
 import { RNS3 } from 'react-native-aws3';
 
+import imagePicker from 'react-native-image-picker';
+
+// import imagePicker from 'react-native-customized-image-picker';
+
+// import imagePicker from 'react-native-imagepicker';
+
 // const homePlace = {description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } }};
 // const workPlace = {description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } }};
 
@@ -156,7 +162,17 @@ class Step1Copy extends Component {
       var someState = someState;
       var props = someProps;
       console.log('>>> props:', props);
+
+
       return {
+
+        getInitialState() {
+          return {
+            savedPropertyPhotoUrl: ''
+          }
+        },
+
+
         getSomeState(key){
           //return this.someState;
           // alert('someState key: ' + key);
@@ -266,65 +282,75 @@ class Step1Copy extends Component {
         },
 
         takePhoto() {
-          let pickerResult = ImagePicker.launchCameraAsync({
+          ImagePicker.launchCameraAsync({
             allowsEditing: true,
             aspect: [4,3]
-          });
-          console.log('pickerResult:', pickerResult);
-          let propertyPhoto = pickerResult.uri;
-          AsyncStorage.setItem("propertyPhoto", propertyPhoto)
-          .then( () =>
-              {
-                  this.handlePropertyPhoto(propertyPhoto);
+          }).then(function(pickerResult) {
+              console.log('pickerResult:', pickerResult);
+              let uploadResponse, uploadResult;
+              try {
+                if (!pickerResult.cancelled) {
+                  let userId = 'unknown';
+                  let fileName = shortid.generate();
+                  let fileType = 'jpg';
+
+                  const file = {
+                    uri: pickerResult.uri,
+                    name: `${fileName}.${fileType}`,
+                    type: `image/${fileType}`
+                  };
+
+                  const options = {
+                    keyPrefix: 'photos/',
+                    bucket: 'mywalkthru-pm-files',
+                    region: 'us-west-2',
+                    accessKey: 'AKIAIRVLMXELYRQ5GYFA',
+                    secretKey: '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',
+                    successActionStatus: 201
+                  };
+
+                  console.log('UPLOADING SUMMARY PHOTO TO S3...');
+
+                  RNS3.put(file, options).then(response => {
+                    // let res = JSON.stringify(response);
+                    if (response.status !== 201) {
+                      throw new Error('Failed to upload image to S3', response);
+                    }
+
+                    if (!response.body){
+                      throw new Error('Failed to upload image to S3', response);
+                    }
+
+                    let photoUrl = response.body.postResponse.location;
+
+                    console.log('Property photoUrl:', photoUrl);
+
+                    let username = GiftedFormManager.getValue('signupForm', 'username');
+
+                    // this.savedPropertyPhotoUrl = photoUrl;
+
+
+                  });
+                }
+              } catch(e) {
+                console.log({uploadResponse});
+                console.log({uploadResult});
+                console.log({e});
+                let errorMessage = JSON.stringify(e) + ' : ' + e.message;
+                alert('Failed to upload image');
+              } finally {
+                console.log('finally');
               }
-          )
-          .done( );
+
+
+          }, function() {
+              console.log('Photo Cancelled');
+          });
        },
 
-       handlePropertyPhoto(uri) {
-          if (!uri) return;
-
-          let uploadResponse, uploadResult;
-          let fileName = shortid.generate();
-          let fileType = 'jpg';
-
-          const file = {
-           uri: uri,
-           name: `${userId}___${fileName}.${fileType}`,
-           type: `image/${fileType}`
-          };
-
-          const options = {
-           keyPrefix: 'photos/',
-           bucket: 'mywalkthru-pm-files',
-           region: 'us-west-2',
-           accessKey: 'AKIAIRVLMXELYRQ5GYFA',
-           secretKey: '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',
-           successActionStatus: 201
-          };
-
-          console.log('UPLOADING SUMMARY PHOTO TO S3...');
-
-          RNS3.put(file, options).then(response => {
-           if (response.status !== 201) {
-             throw new Error('Failed to upload image to S3', response);
-           }
-
-           if (!response.body){
-             throw new Error('Failed to upload image to S3', response);
-           }
-
-           let location = response.body.postResponse.location;
-
-           console.log('PROPERTY PHOTO URI:', location);
-
-
-
-          });
-
-        },
-
         renderScene(navigator) {
+
+          let savedPropertyPhotoUrl = '';
 
           // console.log(navigator);
 
@@ -925,10 +951,10 @@ class Step1Copy extends Component {
                   </Button>
 
                   <View style={{alignSelf: 'center', marginTop: 10}}>
-                  <Image
-                    source={{uri: this.propertyImage}}
-                    style={{width: 300, height: 200}}
-                  />
+                    <Image
+                      source={{uri: savedPropertyPhotoUrl}}
+                      style={{width: 300, height: 200}}
+                    />
                   </View>
 
                   <Button rounded block
