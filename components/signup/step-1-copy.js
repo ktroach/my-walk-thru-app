@@ -30,17 +30,17 @@ import shortid from 'shortid';
 
 import DateTimePicker from 'react-native-modal-datetime-picker';
 
-import ExNavigator from '@exponent/react-native-navigator';
+import ExNavigator from '@expo/react-native-navigator';
 import { GiftedForm, GiftedFormManager } from 'react-native-gifted-form';
-import { withNavigation } from "@exponent/ex-navigation/src/ExNavigationComponents";
+import { withNavigation } from "@expo/ex-navigation/src/ExNavigationComponents";
 
-import Exponent, {
+import Expo, {
    Components,
    Permissions,
    Location,
    Constants,
    ImagePicker,
-} from 'exponent';
+} from 'expo';
 
 import { RNS3 } from 'react-native-aws3';
 
@@ -187,18 +187,30 @@ class Step1Copy extends Component {
         replaceRoute(route) {
            props.replaceRoute(route);
         },
-        onDateChange(date){
-          console.log('entered onDateChange:', date);
-          // console.log('>>> someState: ', someState);
-          // someState.leaseBeginDate = date;
-          // console.log('>>> someState: ', someState);
-          // return someState.leaseBeginDate;
-          // someState.setState({"leaseBeginDate": date});
 
-          //this.setSomeState("leaseBeginDate", date);
-          // this.something.date = date;
-          //this.setState({date: date});
-        },
+        // onLeaseBeginDateChange(date) {
+        //   console.log('entered onLeaseBeginDateChange:', date);
+        // },
+        //
+        // onLeaseEndDateChange(date) {
+        //   console.log('entered onLeaseEndDateChange:', date);
+        // },
+
+        // onDateChange(date){
+        //   console.log('entered onDateChange:', date);
+        //
+        //
+        //
+        //   // console.log('>>> someState: ', someState);
+        //   // someState.leaseBeginDate = date;
+        //   // console.log('>>> someState: ', someState);
+        //   // return someState.leaseBeginDate;
+        //   // someState.setState({"leaseBeginDate": date});
+        //
+        //   //this.setSomeState("leaseBeginDate", date);
+        //   // this.something.date = date;
+        //   //this.setState({date: date});
+        // },
         // getDefaultProps() {
         //   return {
         //      date: new Date()
@@ -220,7 +232,10 @@ class Step1Copy extends Component {
         //   }
         // },
         handleValueChange(values) {
-          console.log('handleValueChange', values)
+          console.log('handleValueChange', values);
+
+
+
           // this.setState({ form: values })
         },
 
@@ -429,6 +444,55 @@ class Step1Copy extends Component {
                     message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
                   }]
                 },
+
+
+                leaseBeginDate: {
+                  title: 'leaseBeginDate',
+                  validate: [{
+                    validator: 'isBefore',
+                    arguments: [moment().utc().subtract(1, 'years').format('YYYY-MM-DD')],
+                    message: 'Your Lease Begin date must be in the future'
+                  }, {
+                    validator: 'isAfter',
+                    arguments: [moment().utc().subtract(100, 'years').format('YYYY-MM-DD')],
+                    message: '{TITLE} is not valid'
+                  }]
+                },
+
+                birthday: {
+                  title: 'Birthday',
+                  validate: [{
+                    validator: 'isBefore',
+                    arguments: [moment().utc().subtract(18, 'years').format('YYYY-MM-DD')],
+                    message: 'You must be at least 18 years old'
+                  }, {
+                    validator: 'isAfter',
+                    arguments: [moment().utc().subtract(100, 'years').format('YYYY-MM-DD')],
+                    message: '{TITLE} is not valid'
+                  }]
+                },
+
+                propertyManagerEmail: {
+                  title: 'Email address',
+                  validate: [{
+                    validator: 'isLength',
+                    arguments: [6, 255],
+                  },{
+                    validator: 'isEmail',
+                  }]
+                },
+                propertyManagerPhone: {
+                  title: 'Phone',
+                  validate: [{
+                    validator: 'isLength',
+                    arguments: [1, 14],
+                    message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
+                  },{
+                    validator: 'matches',
+                    arguments: /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/,
+                    message: ' Enter complete {TITLE} number'
+                  }]
+                },
               }}
             >
 
@@ -488,7 +552,7 @@ class Step1Copy extends Component {
 
               <GiftedForm.ModalWidget
                 title='Lease Details'
-                displayValue='moveindate'
+                displayValue='leaseReason'
                 scrollEnabled={false}
                 cancelable={true}
                 image={require('../../assets/icons/contact_card.png')}
@@ -499,24 +563,13 @@ class Step1Copy extends Component {
                   displayValue='leaseReason'
                   image={require('../../assets/icons/contact_card.png')}
               >
+                  <GiftedForm.SeparatorWidget/>
+
                   <GiftedForm.SelectWidget name='leaseReason' title='Lease Reason' multiple={false}>
                     <GiftedForm.OptionWidget title='First time Lease' value='First time Lease'/>
                     <GiftedForm.OptionWidget title='Renewing Lease' value='Renewing Lease'/>
                   </GiftedForm.SelectWidget>
 
-                  <Button rounded block
-                    style={{alignSelf: 'center',
-                            marginTop: 10,
-                            backgroundColor: '#ad241f',
-                            borderRadius:90,
-                            width: 300,
-                            height:65}}
-                            onPress={() => {
-                              navigator.pop();
-                            }}
-                      >
-                      <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
-                  </Button>
 
               </GiftedForm.ModalWidget>
 
@@ -539,11 +592,11 @@ class Step1Copy extends Component {
               <GiftedForm.DatePickerIOSWidget
                 name='leaseBeginDate'
                 mode='date'
-                title='Lease Begins?'
                 getDefaultDate={() => {
-                  return new Date();
+                  let leaseBeginDate = GiftedFormManager.getValue('signupForm', 'leaseBeginDate');
+                  if (!leaseBeginDate) leaseBeginDate = new Date();
+                  return leaseBeginDate;
                 }}
-                onDateChange={this.onDateChange}
               />
               <GiftedForm.SeparatorWidget/>
 
@@ -551,11 +604,11 @@ class Step1Copy extends Component {
               <GiftedForm.DatePickerIOSWidget
                 name='leaseEndDate'
                 mode='date'
-                title='Lease Ends?'
                 getDefaultDate={() => {
-                  return new Date();
+                  let leaseEndDate = GiftedFormManager.getValue('signupForm', 'leaseEndDate');
+                  if (!leaseEndDate) leaseEndDate = new Date();
+                  return leaseEndDate;
                 }}
-                onDateChange={this.onDateChange}
               />
               <GiftedForm.SeparatorWidget/>
 
@@ -623,6 +676,7 @@ class Step1Copy extends Component {
 
               </GiftedForm.ModalWidget>
 
+
               <GiftedForm.SeparatorWidget />
               <GiftedForm.ModalWidget
                 title='Property Details'
@@ -630,12 +684,15 @@ class Step1Copy extends Component {
                 cancelable={true}
                 image={require('../../assets/icons/contact_card.png')}
               >
+
+                <GiftedForm.SeparatorWidget />
                 <GiftedForm.ModalWidget
                     title='Property Type'
                     displayValue='propertyType'
                     cancelable={true}
                     image={require('../../assets/icons/contact_card.png')}
                 >
+                    <GiftedForm.SeparatorWidget />
                     <GiftedForm.SelectWidget name='propertyType' title='Property Type' multiple={false}>
                       <GiftedForm.OptionWidget title='House' value='House'/>
                       <GiftedForm.OptionWidget title='Apartment' value='Apartment'/>
@@ -927,56 +984,8 @@ class Step1Copy extends Component {
               <GiftedForm.SeparatorWidget />
 
               <GiftedForm.ModalWidget
-                  title='Photo of Property'
-                  displayValue='propertyPhoto'
-                  scrollEnabled={false}
-                  cancelable={true}
-                  image={require('../../assets/icons/contact_card.png')}
-              >
-
-                <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>Take a Photo of the front of the Property</Text>
-
-                  <Button rounded block
-                    style={{alignSelf: 'center',
-                            marginTop: 10,
-                            backgroundColor: '#ad241f',
-                            borderRadius:90,
-                            width: 300,
-                            height:65}}
-                            onPress={() => {
-                              this.takePhoto();
-                            }}
-                      >
-                      <Text style={{color:'#fff', fontWeight: 'bold'}}>Take Photo</Text>
-                  </Button>
-
-                  <View style={{alignSelf: 'center', marginTop: 10}}>
-                    <Image
-                      source={{uri: savedPropertyPhotoUrl}}
-                      style={{width: 300, height: 200}}
-                    />
-                  </View>
-
-                  <Button rounded block
-                    style={{alignSelf: 'center',
-                            marginTop: 10,
-                            backgroundColor: '#ad241f',
-                            borderRadius:90,
-                            width: 300,
-                            height:65}}
-                            onPress={() => {
-                              navigator.pop();
-                            }}
-                      >
-                      <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
-                  </Button>
-
-              </GiftedForm.ModalWidget>
-              <GiftedForm.SeparatorWidget/>
-
-              <GiftedForm.ModalWidget
                 title='Property Manager'
-                displayValue='propertyManagerInfo'
+                displayValue='propertyManagementCompany'
                 scrollEnabled={false}
                 cancelable={true}
                 image={require('../../assets/icons/contact_card.png')}
@@ -1010,13 +1019,14 @@ class Step1Copy extends Component {
                 <GiftedForm.SeparatorWidget/>
 
                 <GiftedForm.TextInputWidget
-                  name='propertyManagementCompany' // mandatory
+                  name='propertyManagementCompany'
                   title='Company'
                   autoCapitalize="words"
                   image={require('../../assets/icons/contact_card.png')}
                   placeholder="Property Managment Company"
                   clearButtonMode='while-editing'
                 />
+
                 <GiftedForm.TextInputWidget
                   name='propertyManagerName' // mandatory
                   title='Name'
@@ -1025,22 +1035,29 @@ class Step1Copy extends Component {
                   placeholder="Landlord / Property Manager"
                   clearButtonMode='while-editing'
                 />
+
                 <GiftedForm.TextInputWidget
                   name='propertyManagerEmail' // mandatory
                   title='Email'
                   autoCapitalize="none"
                   autoCorrect={false}
-                  placeholder="Email"
+                  placeholder='user@domain.com'
                   keyboardType='email-address'
                   clearButtonMode='while-editing'
                   image={require('../../assets/icons/email.png')}
                 />
+
                 <GiftedForm.TextInputWidget
                   name='propertyManagerPhone' // mandatory
                   title='Phone'
                   image={require('../../assets/icons/user.png')}
-                  placeholder="Landlord's Phone"
+                  placeholder='(555) 555-5555'
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  onTextInputBlur={(currentText) => this.formatUsPhone(currentText)}
+                  keyboardType='phone-pad'
                   clearButtonMode='while-editing'
+                  dataDetectorTypes="phoneNumber"
                 />
 
                 <Button rounded block
@@ -1067,7 +1084,6 @@ class Step1Copy extends Component {
                     backgroundColor: '#ad241f',
                     height:65,
                     marginTop: 40,
-                    backgroundColor: '#ad241f',
                     borderRadius:90,
                     width: 300,
                   }
@@ -1101,6 +1117,11 @@ class Step1Copy extends Component {
                       postSubmit(['An error occurred, please try again']);
                       return;
                     }
+                    if(!values.leaseEndDate) {
+                      alert('leaseEndDate is required');
+                      postSubmit(['An error occurred, please try again']);
+                      return;
+                    }
                     if(!values.street1) {
                       alert('street1 is required');
                       postSubmit(['An error occurred, please try again']);
@@ -1131,11 +1152,17 @@ class Step1Copy extends Component {
                       postSubmit(['An error occurred, please try again']);
                       return;
                     }
+                    if(!values.propertyManagerPhone) {
+                      alert('propertyManagerPhone is required');
+                      postSubmit(['An error occurred, please try again']);
+                      return;
+                    }
 
                     let userId = shortid.generate();
                     let signUpDate = moment().format();
                     var now = new Date();
                     var url = Config.USERS_API + '/';
+                    var leaseBeginDate = values.leaseBeginDate;
 
                     // var data = JSON.stringify({
                     //   "userId": userId,
@@ -1169,7 +1196,7 @@ class Step1Copy extends Component {
                     // });
 
                     var addressLine = values.street1 + " " + values.cityName + ", " + values.stateName + " " + values.zip;
-                    var leaseEnds= moment().format();
+                    // var leaseEnds= moment().format();
 
                     var data = JSON.stringify(
                     {
@@ -1197,7 +1224,7 @@ class Step1Copy extends Component {
                         "property": {
                             "propertyType": values.propertyType,
                             "leaseBegins": values.leaseBeginDate,
-                            "leaseEnds": leaseEnds,
+                            "leaseEnds": values.leaseEndDate,
                             "addressLine": addressLine,
                             "address1": values.street1,
                             "address2": values.street2,
@@ -1245,15 +1272,19 @@ class Step1Copy extends Component {
                               {
                                   AsyncStorage.setItem("userId", userId)
                                   .then( () => {
-                                      alert('Thank you for Signing Up (' + signUpDate + ')' );
+                                      //alert('Thank you for Signing Up! ');
+                                      //this.replaceRoute('home');
+                                      //leaseBeginDate
 
-                                    //   Toast.show({
-                                    //    text: 'Thank you for Signing Up (' + signUpDate + ')',
-                                    //    position: 'bottom',
-                                    //    buttonText: 'Okay'
-                                    //  });
+                                      AsyncStorage.setItem("leaseBeginDate", leaseBeginDate)
+                                      .then( () => {
 
-                                      this.replaceRoute('home');
+                                          alert('Thank you for Signing Up! ');
+
+                                          this.replaceRoute('home');
+
+                                        }
+                                      ).done();
                                     }
                                   ).done();
 

@@ -1,12 +1,14 @@
 'use strict';
 
 import React, { Component } from 'react';
+
 import { AsyncStorage, Image, View, TouchableWithoutFeedback, ScrollView, TouchableOpacity, Modal } from 'react-native';
-import Exponent, {
+
+import Expo, {
   Constants,
   ImagePicker,
   registerRootComponent,
-} from 'exponent';
+} from 'expo';
 
 import { connect } from 'react-redux';
 

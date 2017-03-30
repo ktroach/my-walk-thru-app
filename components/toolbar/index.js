@@ -13,10 +13,10 @@ import styles from './styles';
 
 var ToolbarAndroid = require('ToolbarAndroid');
 
-import { Ionicons } from '@exponent/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 const Icon = Ionicons;
 
-import { FontAwesome} from '@exponent/vector-icons';
+import { FontAwesome} from '@expo/vector-icons';
 const FIcon = FontAwesome;
 
 // const {ToolbarAndroid} = Icon;

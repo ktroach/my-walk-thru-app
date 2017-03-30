@@ -23,13 +23,13 @@ import {
    Switch,
     Image
 } from 'react-native';
-import Exponent, {
+import Expo, {
    Components,
    Permissions,
    Location,
    Constants,
    ImagePicker,
-} from 'exponent';
+} from 'expo';
 import Config from '../../config'
 import styles from './styles/details';
 import rowStyles from './styles/row';
@@ -52,8 +52,8 @@ import Toolbar from '../toolbar'
 
 import {
   FontAwesome,
-} from '@exponent/vector-icons';
-import { Ionicons } from '@exponent/vector-icons';
+} from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 const Icon = Ionicons;
 
 import theme from '../../themes/form-theme';

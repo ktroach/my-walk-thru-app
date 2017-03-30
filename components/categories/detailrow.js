@@ -20,13 +20,13 @@ import {
    ScrollView,
    KeyboardAvoidingView
 } from 'react-native';
-import Exponent, {
+import Expo, {
    Components,
    Permissions,
    Location,
    Constants,
    ImagePicker,
-} from 'exponent';
+} from 'expo';
 import Config from '../../config'
 import styles from './styles/details';
 import rowStyles from './styles/row';
@@ -35,8 +35,8 @@ import shortid from 'shortid';
 import { SegmentedControls } from 'react-native-radio-buttons';
 import {
   FontAwesome,
-} from '@exponent/vector-icons';
-import { Ionicons } from '@exponent/vector-icons';
+} from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 const Icon = Ionicons;
 import moment from 'moment';
 // import Lightbox from 'react-native-lightbox';

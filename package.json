@@ -1,28 +1,28 @@
 {
   "name": "my-walk-thru",
-  "version": "1.01.11",
-  "description": "My Walk Thru",
+  "version": "1.7.1",
+  "description": "My Walk Thru App",
   "author": "Kyle Roach (kyle.roach.pros@gmail.com)",
   "main": "main.js",
   "scripts": {
     "test": "jest"
   },
   "jest": {
-    "preset": "jest-exponent"
+    "preset": "jest-expo"
   },
   "dependencies": {
-    "@exponent/ex-navigation": "~2.3.0",
-    "@exponent/react-native-navigator": "^0.4.9",
-    "@exponent/samples": "~1.0.2",
-    "@exponent/vector-icons": "~2.0.3",
-    "babel-preset-exponent": "^1.0.0",
+    "@expo/ex-navigation": "2.9.2",
+    "@expo/react-native-navigator": "0.4.10",
+    "@expo/vector-icons": "4.0.0",
+    "babel-preset-expo": "^1.0.0",
     "buffer": "^5.0.1",
-    "exponent": "~12.0.3",
+    "expo": "^15.0.1",
     "lodash": "^4.13.1",
     "moment": "^2.17.1",
-    "native-base": "0.5.8",
-    "react": "~15.3.2",
-    "react-native": "git+https://github.com/exponentjs/react-native#sdk-12.0.0",
+    "nachos-ui": "^0.1.2",
+    "native-base": "^0.5.22",
+    "react": "~15.4.2",
+    "react-native": "https://github.com/exponent/react-native/archive/sdk-15.0.0.tar.gz",
     "react-native-aws3": "0.0.4",
     "react-native-button": "^1.6.0",
     "react-native-camera": "git+https://github.com/lwansbrough/react-native-camera.git",
@@ -39,7 +39,6 @@
     "react-native-s3": "0.0.24",
     "react-native-signature-capture": "^0.4.5",
     "react-native-signature-pad": "0.0.8",
-    "react-native-stripe-api": "0.0.6",
     "react-native-uikit": "^0.1.6",
     "react-native-vector-icons": "^4.0.0",
     "react-redux": "^4.4.5",

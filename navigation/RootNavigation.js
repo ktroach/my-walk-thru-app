@@ -6,15 +6,15 @@ import {
 } from 'react-native';
 import {
   Notifications,
-} from 'exponent';
+} from 'expo';
 import {
   StackNavigation,
   TabNavigation,
   TabNavigationItem,
-} from '@exponent/ex-navigation';
+} from '@expo/ex-navigation';
 import {
   FontAwesome,
-} from '@exponent/vector-icons';
+} from '@expo/vector-icons';
 
 import Alerts from '../constants/Alerts';
 import Colors from '../constants/Colors';

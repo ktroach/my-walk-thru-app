@@ -3,21 +3,17 @@
   "description": "MyWalkThru",
   "slug": "my-walk-thru",
   "privacy": "public",
-  "sdkVersion": "12.0.0",
+  "sdkVersion": "15.0.0",
   "version": "1.01.11",
   "orientation": "default",
   "primaryColor": "#cccccc",
-  "iconUrl": "https://s3-us-west-2.amazonaws.com/pros-storage-service/mwtlogo.png",
-  "notification": {
-    "iconUrl": "https://s3-us-west-2.amazonaws.com/pros-storage-service/mwtlogo.png",
-    "color": "#000000"
-  }, 
+  "icon": "https://s3-us-west-2.amazonaws.com/pros-storage-service/mwtlogo.png",
   "loading": {
-    "iconUrl": "https://s3-us-west-2.amazonaws.com/pros-storage-service/mwt-logo-full.png",
+    "icon": "https://s3-us-west-2.amazonaws.com/pros-storage-service/mwt-logo-full.png",
     "hideExponentText": true
   },
   "packagerOpts": {
-    "assetExts": ["ttf"]
+    "assetExts": ["ttf", "mp3", "png"]
   },
   "ios": {
     "supportsTablet": true

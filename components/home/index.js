@@ -30,6 +30,7 @@ class Home extends Component {
         this.state = {
             termsAccepted: "",
             termsAcceptedOn: "",
+            leaseBeginsOn: "",
             deadlineDate: "",
             daysLeft: ""
        };
@@ -52,8 +53,8 @@ class Home extends Component {
       // var start = moment(start).add(-2, 'days');
       var start = new Date();
 
-      if (this.state.termsAcceptedOn) {
-        start = this.state.termsAcceptedOn;
+      if (this.state.leaseBeginsOn) {
+        start = this.state.leaseBeginsOn;
       }
 
       var end = moment(start).add(5, 'days');
@@ -67,8 +68,8 @@ class Home extends Component {
       var now = new Date();
       var start = new Date();
 
-      if (this.state.termsAcceptedOn) {
-        start = this.state.termsAcceptedOn;
+      if (this.state.leaseBeginsOn) {
+        start = this.state.leaseBeginsOn;
       }
 
       var end = moment(start).add(5, 'days');
@@ -79,10 +80,13 @@ class Home extends Component {
     componentDidMount(){
       var termsAccepted = false;
       var termsAcceptedOn = "";
+      var leaseBeginsOn = "";
       var deadlineDate = "";
       var daysLeft = "";
 
       // daysLeft = moment().add(5, 'days').calendar();
+
+      //USE leaseBeginDate
 
       AsyncStorage.getItem("termsAccepted").then((termsAccepted) => {
           this.setState({"termsAccepted": termsAccepted});
@@ -92,13 +96,17 @@ class Home extends Component {
           this.setState({"termsAcceptedOn": termsAcceptedOn});
       }).then(res => {});
 
-      if (termsAcceptedOn) {
+      AsyncStorage.getItem("leaseBegins").then((leaseBeginsOn) => {
+          this.setState({"leaseBeginsOn": leaseBeginsOn});
+      }).then(res => {});
+
+      if (leaseBeginsOn) {
          // daysLeft = moment(termsAcceptedOn).add(5, 'days').calendar();
 
          daysLeft = moment().add(5, 'days').calendar();
         //  alert('daysLeft:', daysLeft);
 
-         deadlineDate = moment(termsAcceptedOn, "DD.MM.YYYY");
+         deadlineDate = moment(leaseBeginsOn, "DD.MM.YYYY");
          deadlineDate.add(5, 'days');
         //  alert('deadlineDate:', deadlineDate);
       }
@@ -129,6 +137,11 @@ class Home extends Component {
                                <Text style={{fontWeight: '400'}} note>{this.state.termsAcceptedOn}</Text>
                             </ListItem>
                             <ListItem iconLeft >
+                               <Icon name='ios-checkmark-circle-outline'/>
+                               <Text>Lease Begins</Text>
+                               <Text style={{fontWeight: '400'}} note>{this.state.leaseBeginsOn}</Text>
+                            </ListItem>
+                            <ListItem iconLeft >
                                <Icon name='ios-megaphone'/>
                                <Text>You have {this.getDaysLeft()} days left to complete your Walk Thru.</Text>
                                <Text style={{fontWeight: '400'}} note>{this.state.deadlineDate}</Text>
@@ -139,6 +152,22 @@ class Home extends Component {
                                <Text style={{fontWeight: '400'}} note>{this.state.deadlineDate}</Text>
                             </ListItem>
                         </List>
+
+
+                        <Text style={{color:'#fff', fontWeight: 'bold'}}>STEPS LEFT TO COMPLETE:</Text>
+
+                        
+
+                        <Button rounded block
+                          style={{alignSelf: 'center',
+                                  marginTop: 40,
+                                  backgroundColor: '#ad241f',
+                                  borderRadius:90,
+                                  width: 300,
+                                  height:65}}
+                          onPress={() => this.replaceRoute('categories')}>
+                            <Text style={{color:'#fff', fontWeight: 'bold'}}>ADD A PHOTO OF THE PROPERTY</Text>
+                        </Button>
 
                         <Button rounded block
                           style={{alignSelf: 'center',
@@ -173,7 +202,7 @@ class Home extends Component {
                                width: 300,
                                height:65}}
                          onPress={() => this.replaceRoute('submittal')}>
-                           <Text style={{color:'#fff', fontWeight: 'bold'}}>SUBMIT / FINISH YOUR WALKTHRU</Text>
+                           <Text style={{color:'#fff', fontWeight: 'bold'}}>SUBMIT WALKTHRU FOR APPROVAL</Text>
                        </Button>
 
                    </Content>

@@ -11,13 +11,13 @@ import {
    TouchableOpacity,
    View,
 } from 'react-native';
-import Exponent, {
+import Expo, {
    Components,
    Permissions,
    Location,
    Constants,
    ImagePicker,
-} from 'exponent';
+} from 'expo';
 import shortid from 'shortid';
 
 export default class Photo extends React.Component {
