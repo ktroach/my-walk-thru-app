@@ -436,41 +436,6 @@ class Step1Copy extends Component {
                     message: ' Enter complete {TITLE} number'
                   }]
                 },
-                leaseBeginDate: {
-                  title: 'Lease Start Date',
-                  validate: [{
-                    validator: 'isLength',
-                    arguments: [1, 10],
-                    message: '{TITLE} must be between {ARGS[0]} and {ARGS[1]} characters'
-                  }]
-                },
-
-
-                leaseBeginDate: {
-                  title: 'leaseBeginDate',
-                  validate: [{
-                    validator: 'isBefore',
-                    arguments: [moment().utc().subtract(1, 'years').format('YYYY-MM-DD')],
-                    message: 'Your Lease Begin date must be in the future'
-                  }, {
-                    validator: 'isAfter',
-                    arguments: [moment().utc().subtract(100, 'years').format('YYYY-MM-DD')],
-                    message: '{TITLE} is not valid'
-                  }]
-                },
-
-                birthday: {
-                  title: 'Birthday',
-                  validate: [{
-                    validator: 'isBefore',
-                    arguments: [moment().utc().subtract(18, 'years').format('YYYY-MM-DD')],
-                    message: 'You must be at least 18 years old'
-                  }, {
-                    validator: 'isAfter',
-                    arguments: [moment().utc().subtract(100, 'years').format('YYYY-MM-DD')],
-                    message: '{TITLE} is not valid'
-                  }]
-                },
 
                 propertyManagerEmail: {
                   title: 'Email address',
@@ -551,13 +516,15 @@ class Step1Copy extends Component {
               <GiftedForm.SeparatorWidget />
 
               <GiftedForm.ModalWidget
-                title='Lease Details'
+                title='Lease Terms'
                 displayValue='leaseReason'
                 scrollEnabled={false}
                 cancelable={true}
                 image={require('../../assets/icons/contact_card.png')}
               >
 
+
+  {/*
               <GiftedForm.ModalWidget
                   title='What is the primary reason you are leasing?'
                   displayValue='leaseReason'
@@ -574,7 +541,7 @@ class Step1Copy extends Component {
               </GiftedForm.ModalWidget>
 
               <GiftedForm.SeparatorWidget/>
-  {/*
+
               // <GiftedForm.TextInputWidget
               //   name='leaseBeginDate' // optional
               //   title='Lease Begins?'
@@ -679,12 +646,13 @@ class Step1Copy extends Component {
 
               <GiftedForm.SeparatorWidget />
               <GiftedForm.ModalWidget
-                title='Property Details'
+                title='Property Address'
                 displayValue='propertyAddress'
                 cancelable={true}
                 image={require('../../assets/icons/contact_card.png')}
               >
 
+              {/*
                 <GiftedForm.SeparatorWidget />
                 <GiftedForm.ModalWidget
                     title='Property Type'
@@ -794,8 +762,10 @@ class Step1Copy extends Component {
                 </GiftedForm.ModalWidget>
                 <GiftedForm.SeparatorWidget/>
 
+                */}
+
                 <GiftedForm.TextInputWidget
-                  name='street1' // optional
+                  name='street1' 
                   title='Street1'
                   autoCapitalize="words"
                   kkeyboardType="default"
@@ -806,16 +776,16 @@ class Step1Copy extends Component {
                 />
                 <GiftedForm.TextInputWidget
                   name='street2' // optional
-                  title='Street2 (optional)'
+                  title='Street2'
                   autoCapitalize="words"
                   keyboardType="default"
-                  placeholder=''
+                  placeholder='(Optional)'
                   clearButtonMode='while-editing'
                   dataDetectorTypes="address"
                   image={require('../../assets/icons/contact_card.png')}
                 />
                 <GiftedForm.TextInputWidget
-                  name='cityName' // optional
+                  name='cityName' 
                   title='City'
                   keyboardType="default"
                   placeholder=''

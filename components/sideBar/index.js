@@ -18,6 +18,7 @@ import {Container, Text, Icon, List, ListItem, Content, Thumbnail, Badge, View }
 import styles from './style';
 
 class SideBar extends Component {
+
    state = {
      username: '',
      loaded: false,
@@ -68,7 +69,7 @@ class SideBar extends Component {
     renderLoadingView() {
       return (
          <Content style={styles.sidebar} >
-             <Image source={require('../../assets/images/asdasd.jpg')} style={styles.container} >
+             <Image source={require('../../assets/images/house02.jpg')} style={styles.container} >
                  <ActivityIndicator
                     animating={!this.state.loaded}
                     style={[styles.activityIndicator, {height: 80}]}
@@ -83,7 +84,7 @@ class SideBar extends Component {
     renderSignedUp(){
         return (
             <Content style={styles.sidebar} >
-               <Image source={require('../../assets/images/asdasd.jpg')} style={{resizeMode: 'cover', opacity: 1.0}}>
+               <Image source={require('../../assets/images/house02.jpg')} style={{resizeMode: 'cover', opacity: 1.0}}>
 
                    <Thumbnail size={620} style={{resizeMode: 'contain', marginTop: 10, opacity: 1.0}} source={require('../../assets/images/logo.png')} />
 
@@ -108,19 +109,26 @@ class SideBar extends Component {
         );
     }
 
-    // they need to sign up first so dont display the good stuff . tough luck sukers
+    // they need to sign up first so dont display the good stuff 
     renderNotSignedUp(){
         return (
            <Content style={styles.sidebar} >
-             <Image source={require('../../assets/images/asdasd.jpg')} style={{resizeMode: 'cover', opacity: 0.8}}>
+
+             <Image source={require('../../assets/images/3d-house-1.png')} style={{resizeMode: 'cover', opacity: 0.8}}>
+
                   <Thumbnail size={500} style={{resizeMode: 'contain', marginTop: 7}} source={require('../../assets/images/logo.png')} />
 
-                  <List style={{paddingTop: 50}}>
+                  <List style={{paddingTop: 1}}>
                          <ListItem button onPress={() => this.navigateTo('signup-step0')} iconLeft style={styles.links} >
+                             <Icon style={styles.sidebarIcon} name='ios-person' />
+                             <Text style={styles.text}>Welcome</Text>
+                         </ListItem>                     
+                         <ListItem button onPress={() => this.navigateTo('signup-step1')} iconLeft style={styles.links} >
                              <Icon style={styles.sidebarIcon} name='ios-person' />
                              <Text style={styles.text}>Sign Up</Text>
                          </ListItem>
                    </List>
+
                </Image>
             </Content>
         );

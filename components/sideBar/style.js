@@ -12,23 +12,24 @@ var largeFont = fontSizeBase * 1.5;
 module.exports = StyleSheet.create({
     sidebar: {
         flex: 1,
-        backgroundColor: '#333'
+        backgroundColor: '#ecebeb',
+        borderBottomColor: '#454545'
     },
     links: {
         paddingTop: 10,
         paddingBottom: 10,
-        borderBottomColor: '#454545'
+        // borderBottomColor: '#454545'
     },
     sidebarIcon: {
         fontSize: largeFont,
-        color: '#fff',
+        color: '#333',
         //lineHeight: largeFont,
       //   lineHeight: (Platform.OS === 'android') ? 32 : 36,
         backgroundColor: 'transparent',
     },
     text: {
         backgroundColor: 'transparent', //'transparent',
-        color: '#fff', //'#ecebeb',
+        color: '#333', //'#ecebeb',
         fontWeight: '600',
         fontSize: largeFont,
         //lineHeight: largeFont,
