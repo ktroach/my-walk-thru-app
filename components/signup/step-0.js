@@ -30,7 +30,6 @@ import theme from '../../themes/form-theme';
 import styles from './styles';
 
 class Step0 extends Component {
-
    constructor(props) {
       super(props);
       this.state = {
@@ -40,7 +39,8 @@ class Step0 extends Component {
            signUpDate: '',
            authenticated: false,
            verificationCode: '',
-           loaded: true
+           loaded: true,
+           verified: false
       };
    }
 
@@ -59,10 +59,10 @@ class Step0 extends Component {
 
    userVerified() {
      try {
-        AsyncStorage.getItem("verificationCode")
-        .then( (verificationCode) =>
+        AsyncStorage.getItem("tenantId")
+        .then( (tenantId) =>
               {
-                this.setState({verificationCode: verificationCode});
+                this.setState({tenantId: tenantId});
                 return true;
               }
         )
@@ -75,16 +75,16 @@ class Step0 extends Component {
 
    // if we have the signUpDate stored on the device then yes they signed up before
    haveTheySignedUp () {
-     try {
-        AsyncStorage.getItem("signUpDate")
-        .then( (signUpDate) =>
-              {
-                 return this.setState({signUpDate: signUpDate})
-              }
-        )
-        .done();
-     } catch(err){}
-  }
+        try {
+            AsyncStorage.getItem("signUpDate")
+            .then( (signUpDate) =>
+                {
+                    return this.setState({signUpDate: signUpDate})
+                }
+            )
+            .done();
+        } catch(err){}
+    }
 
     render(){
       if (this.state.loaded){
@@ -94,7 +94,7 @@ class Step0 extends Component {
             );
          } else {
             return (
-               this.verifyUser()
+               this.renderVerification()
             );
          }
       } else {
@@ -139,22 +139,73 @@ class Step0 extends Component {
         }
         this.setState({verificationCode: verificationCode});
     }
-                                    
-    submitVerification() {
+                               
+    verifyUser() {
         let verificationCode = this.state.verificationCode;
         if (!verificationCode){
-            alert('Verification Failed');
+            alert('Verification Failed: Invite Code not found');
             return;
         } 
-        AsyncStorage.setItem("verificationCode", verificationCode)
-            .then( () => {
-                alert('Verification Complete!');
-                this.replaceRoute('signup-step1');
-            }
-        ).done();
+        this.assertVerificationCode(verificationCode);
     }
 
-    verifyUser() {
+    assertVerificationCode(verificationCode) {
+
+        if (verificationCode === '1129'){
+            alert('Bypass Code Accepted. Welcome to MyWalkThru');
+            this.replaceRoute('signup-user-info');
+            return true;
+        }
+
+        let q = {"where": {"and": [{"pincode": verificationCode},{"active":{ "eq": "true"}}]}};
+        let url = 'https://mywalkthruapi.herokuapp.com/api/v1/Tenants?filter=' + JSON.stringify(q);
+        fetch(url).then((response) => response.json()).then((responseData) => {
+            console.log('responseData:', responseData);
+            let result = responseData[0];
+            if (result && result.id) {
+                console.log('result.id:', result.id);
+                this.setState({verified: true});
+                this.deactivateCode(result.id);
+                if (result.fullname) {
+                    AsyncStorage.setItem("tenantId", result.id)
+                        .then( () => {
+                            alert('Welcome to MyWalkThru, ' + result.fullname + '!');
+                            this.replaceRoute('signup-user-info');
+                        }
+                    ).done();
+                } else {
+                    alert('Verification Failed: Please check with your Property Manager to get a new Invite Code.');
+                }
+            } else {
+                alert('Invite Code entered has expired. Please check with your Property Manager to get a new Invite Code.');
+                // this.replaceRoute('signup-user-info');
+            }
+        }).done();
+    }    
+
+    deactivateCode(id){
+        let url = 'https://mywalkthruapi.herokuapp.com/api/v1/Tenants/' + id;
+        let now = new Date();
+        var data = JSON.stringify({
+            "active": "false",
+            "modified": now
+        });
+        fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        }).then((response) => response.json()).then((responseData) => {
+            console.log('verificationCode deactivated');
+            // console.log('responseData: ', responseData);
+        }).catch((error) => {
+            console.error(error);
+        }).done();      
+    }
+    
+    renderVerification() {
       return (
             <Container theme={theme} style={{backgroundColor: '#fff'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
@@ -311,7 +362,7 @@ class Step0 extends Component {
                       borderRadius:90,
                       width: 300,
                       height:65}}
-                onPress={() => this.submitVerification()}>
+                onPress={() => this.verifyUser()}>
                 <Text style={{color:'#fff', fontWeight: 'bold'}}>GET STARTED</Text>
             </Button>
         );

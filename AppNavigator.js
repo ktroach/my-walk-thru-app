@@ -18,7 +18,17 @@ import SideBar from './components/sideBar';
 // Home
 import Home from './components/home/';
 
-// Sign Up Routes
+// New Sign Up Routes (replace old signup routes)
+import SignUpUserInfo from './components/signup/signup-user-info';
+import SignUpPropertyInfo from './components/signup/signup-property-info';
+import SignUpPropertyLocation from './components/signup/signup-property-location';
+import SignUpLeaseInfo from './components/signup/signup-lease-info';
+import SignUpPropertyManagerInfo from './components/signup/signup-property-manager-info';
+import SignUpTermsConditions from './components/signup/signup-terms-conditions';
+import SignUpPropertyPhotos from './components/signup/signup-property-photos';
+import SignUpValidatorSubmittor from './components/signup/signup-validator-submittor';
+
+// Old Sign Up Routes (replace)
 import Step0 from './components/signup/step-0';
 import Step1 from './components/signup/step-1';
 import Step2 from './components/signup/step-2';
@@ -26,6 +36,8 @@ import Step3 from './components/signup/step-3';
 import Step4 from './components/signup/step-4';
 import Step5 from './components/signup/step-5';
 import Step6 from './components/signup/step-6';
+
+// we have to deprecate the react-native-gifted-form becuase it was a terrible peice of crap
 import Step1Copy from './components/signup/step-1-copy';
 
 // Submittal screen  process signature
@@ -99,13 +111,6 @@ class AppNavigator extends Component {
             if(this.props.store.getState().drawer.drawerState == 'closed')
                 this._drawer.close();
 
-            // if(this.props.store.getState().subitem){
-            //    var sub_id = this.props.store.getState().subitem.id;
-            //    if(sub_id) {
-            //       alert(sub_id);
-            //    }
-            // }
-
         });
 
         BackAndroid.addEventListener('hardwareBackPress', () => {
@@ -174,6 +179,22 @@ class AppNavigator extends Component {
                return <Home navigator={navigator} />;
             case 'submittal':
                return <Submittal navigator={navigator} />;
+            case 'signup-user-info':
+               return <SignUpUserInfo navigator={navigator} />;               
+            case 'signup-property-info':
+               return <SignUpPropertyInfo navigator={navigator} />;               
+            case 'signup-property-location':
+               return <SignUpPropertyLocation navigator={navigator} />;               
+            case 'signup-lease-info':
+               return <SignUpLeaseInfo navigator={navigator} />;               
+            case 'signup-property-manager-info':
+               return <SignUpPropertyManagerInfo navigator={navigator} />;               
+            case 'signup-terms-conditions':
+               return <SignUpTermsConditions navigator={navigator} />;               
+            case 'signup-property-photos':
+               return <SignUpPropertyPhotos navigator={navigator} />;               
+            case 'signup-validator-submittor':
+               return <SignUpValidatorSubmittor navigator={navigator} />;               
             case 'signup-step0':
                return <Step0 navigator={navigator} />;
             case 'signup-step1':
