@@ -197,11 +197,11 @@ export class SignUpUserInfo extends Component {
         body: JSON.stringify(data)
       }).then((response) => response.json()).then((responseData) => {
         console.log('responseData: ', responseData);
-        let result = responseData[0];
+        let result = responseData;
         if (result && result.id) {
             console.log('result.id:', result.id);
             if (route) {
-            this.replaceRoute(route);
+                this.replaceRoute(route);
             }            
         }
       }).catch((error) => {
