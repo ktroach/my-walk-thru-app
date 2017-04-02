@@ -276,8 +276,8 @@ class Step0 extends Component {
                                         textAlign: 'center', 
                                         fontSize: 20, 
                                         height:60, 
-                                        width: 300}}
-                                placeholder="Enter 4 digit Code" 
+                                        width: 122}}
+                                placeholder="" 
                                 secureTextEntry={true} 
                                 autoCapitalize={'none'}
                                 maxLength={4}

@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 'use strict';
 
 import React, { Component } from 'react';
@@ -21,79 +23,31 @@ import {
     Keyboard,
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/Ionicons';
-
-import { 
-    Form,
-    Separator,
-    InputField, 
-    LinkField,
-    SwitchField, 
-    PickerField,
-    DatePickerField,
-    TimePickerField
-} from 'react-native-form-generator';
+import {
+  ActionSheetCell,
+  ButtonCell,
+  createValidator,
+  DatePickerCell,
+  emailValidator,
+  Form,
+  PushButtonCell,
+  Section,
+  SwitchCell,
+  TextInputCell,
+} from 'react-native-forms';
 
 import { Container, Header, Title, Content, Button, Image } from 'native-base';
 
-import theme from '../../themes/form-theme';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-class CustomModal extends React.Component{
-
-  handleClose(){
-    this.props.onHidePicker && this.props.onHidePicker();
-  }
-
-  render(){
-    return <Modal transparent={true}>
-    <View style={{padding:20, flex:1, justifyContent:'center', backgroundColor:'rgba(43, 48, 62, 0.57)'}}>
-    <View
-      style={{
-        backgroundColor:'white',
-        borderRadius: 8,
-        flexDirection:'column',
-
-    }}
-      >
-      <Text style={{
-        textAlign: 'center',
-        marginTop:10,
-        paddingTop:10,
-        paddingBottom:10,
-        fontSize:18
-      }}>A Custom Wrapper for your picker</Text>
-      {this.props.children}
-
-    <TouchableHighlight
-        onPress={this.handleClose.bind(this)}
-        underlayColor='#78ac05'>
-        <View style={{
-            flex:1, alignItems:'center'
-        }}>
-            <Text style={{fontSize:19,padding:15,}}>Close</Text>
-        </View>
-    </TouchableHighlight>
-    </View>
-    </View>
-    </Modal>
-  }
-}
-
-class WrappedIcon extends React.Component {
-  render() {
-    return (
-      <Icon {...this.props} />
-    );
-  }
-}
+import CustomInput from './CustomInput';
 
 export class SignUpUserInfo extends Component {
     constructor(props){
         super(props);
         this.state = {
             tenantId: '',
-            validated:  false,
-            formData:{}
+            validated:  false
         }
     } 
 
@@ -124,47 +78,104 @@ export class SignUpUserInfo extends Component {
         .done();
      } catch(err){
          console.log('Failed to get tenantId: ' + err);
+
+         //REMOVE!!!
+         let tenantId = '58decc07583ad3e4bab8b0ce';
+         console.log('REMOVE!!! USING TEST TENANTID...')
+         this.setState({tenantId: tenantId});
+
      }       
    }    
 
-    handleFormChange(formData){
+    onValidationError(ref, message) {
+        console.log(ref, message);
 
-        if (formData.tenant_full_name && formData.tenant_email && formData.tenant_phone_number){
-            this.setState({validated:true});
-        }
-
-        this.setState({formData:formData})
-        this.props.onFormChange && this.props.onFormChange(formData);
-    }    
-
-    // focusNextField = (nextField) => {
-    //     this.refs[nextField].focus();
-    // };    
-
-    handleFormFocus(e, component){
-        console.log(e, component);
     }
 
-    // openTermsAndConditionsURL(){
-    //     console.log('>>ENTERED: saveData');
-    //     Linking.openURL('http://www.mywalkthru.com/');
-    // }
+    handleChange(ref, change) {
+        console.log('>>> handleChange: ', ref, change);
+        if(change && change !== ''){
+            this.setState({validated:true});
+        }
+    }
+
+    handlePress(ref) {
+        if (ref === 'LogData') {
+        console.log(this.form.getData());
+        } else if (ref === 'LogValidationErrors') {
+        console.log(this.form.getValidationErrors());
+        }
+    }
 
     saveData() {
         console.log('>>ENTERED: saveData');
-        if (this.validateFormData()) {
+        let formData = this.form.getData();
+        if (this.validateFormData(formData)) {
+
             let tenantId = this.state.tenantId;
             if (!tenantId) {
-                alert('Failed to Save: invalid tenantId');
+                alert('Failed to Save: Invalid tenantId');
                 return;
             }
+
+            let now = new Date();
+            let fullName = formData.FullNameSection.fullName;
+            let primaryEmail = formData.EmailSection.primaryEmail;
+            let phoneNumber = formData.PhoneSection.phoneNumber;
+
+            let gender = formData.GenderSection.genderActionCell;
+            let birthday = formData.BirthdaySection.birthdayDatePicker;
+
             var data = JSON.stringify({
+                "fullname": fullName,
+                "phoneNumber": phoneNumber,
+                "email": primaryEmail,
+                "gender": gender,
+                "birthday": birthday, 
                 "active": "true",
                 "modified": now
             });
+
             this.saveFormData(tenantId, data, 'signup-lease-info');
         }
     }
+
+    validateFormData(formData){
+        console.log('>>ENTERED validateFormData');
+        console.log('>>> formData: ', formData);
+
+        if (!formData.FullNameSection) {
+            alert('Your Full Name is required');
+            return false;
+        }          
+
+        if (!formData.FullNameSection.fullName) {
+            alert('Your Full Name is required');
+            return false;
+        }     
+
+        if (!formData.EmailSection) {
+            alert('Your Email is required');
+            return false;
+        }             
+
+        if (!formData.EmailSection.primaryEmail) {
+            alert('Your Email is required');
+            return false;
+        }   
+
+        if (!formData.PhoneSection) {
+            alert('Your Phone Number is required');
+            return false;
+        }             
+
+        if (!formData.PhoneSection.phoneNumber) {
+            alert('Your Phone Number is required');
+            return false;
+        }            
+
+        return true;      
+    }    
 
     saveFormData(id, data, route) {
       if (!data) {
@@ -198,59 +209,6 @@ export class SignUpUserInfo extends Component {
       }).done();
     }    
 
-    validateFormData(){
-        console.log('>>ENTERED validateFormData');
-        // tenant_full_name
-        if (!this.state.formData.tenant_full_name) {
-            alert('Full Name is required');
-            return false;
-        }
-        if (this.state.formData.tenant_full_name.length < 7) {
-            alert('Invalid Full Name');
-            return false;
-        }  
-
-        // tenant_email
-        if (!this.state.formData.tenant_email) {
-            alert('Email Addressis required');
-            return false;
-        }
-        if (this.state.formData.tenant_email.length < 8) {
-            alert('Invalid Email Address');
-            return false;
-        }       
-
-        // tenant_phone_number
-        if (!this.state.formData.tenant_phone_number) {
-            alert('Phone Number is required');
-            return false;
-        }
-        if (this.state.formData.tenant_phone_number.length < 10) {
-            alert('Invalid Phone Number');
-            return false;
-        }     
-
-        // tenant_gender
-        if (!this.state.formData.tenant_gender) {
-            alert('Gender is required');
-            return false;
-        }
-
-        // tenant_birthday
-        if (!this.state.formData.tenant_birthday) {
-            alert('Birthday is required');
-            return false;
-        }              
-
-        return true;      
-    }
-
-    // resetForm(){
-    //     this.refs.registrationForm.refs.tenant_full_name.setValue("");
-    //     this.refs.registrationForm.refs.tenant_email.setValue("");
-    //     this.refs.registrationForm.refs.tenant_phone_number.setValue("");
-    // }
-
     renderNextButton() {
         if (this.state.validated){
         return(
@@ -273,157 +231,123 @@ export class SignUpUserInfo extends Component {
         }
     }
 
-    // onEmailValueChange() {
-    //     this.refs.registrationForm.refs.tenant_email.setValue("");
-    // }
 
-    handlePhoneNumberChange(){
-        console.log('>> ENTERED: handlePhoneNumberChange');
+    render() {
 
-        let value = this.state.formData.tenant_phone_number;
-
-        console.log('>> handlePhoneNumberChange: value', value);
-
-        if (!value || value.length<10) {
-            return;
-        }
-
-        let phoneFormatted = this.formatPhoneNumber(value);
-        console.log('phoneFormatted: ', phoneFormatted);
-        console.log('phoneFormatted.length: ', phoneFormatted.length);
-
-        if (phoneFormatted.length === 14){
-            this.refs.registrationForm.refs.tenant_phone_number.setValue(phoneFormatted);
-            console.log('dismissing keyboard');
-            Keyboard.dismiss();
-        }
-    }    
-
-    formatPhoneNumber(phone) {
-        let phoneFormatted = phone;
-        if (!phone || phone === 'undefined') return phone;
-        var phoneTest = new RegExp(/^((\+1)|1)? ?\(?(\d{3})\)?[ .-]?(\d{3})[ .-]?(\d{4})( ?(ext\.? ?|x)(\d*))?$/);
-        phone = phone.trim();
-        var results = phoneTest.exec(phone);
-        console.log(results);
-        if (results !== null && results.length > 8) {
-            phoneFormatted = "(" + results[3] + ") " + results[4] + "-" + results[5] + (typeof results[8] !== "undefined" ? " x" + results[8] : "");
-        }
-        return phoneFormatted;
-    }    
-
-    validateEmail(email) {
-        var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if(re.test(email)) return true;
-        return false;
-    }    
-
-    render(){
-        const title = 'Sign Up - Tenant Info';
+        const title = 'User Profile';
+        const forwardIcon = <Icon name={'ios-arrow-forward'} color={'gray'} size={20} />;
+        const alertIcon = <Icon name={'ios-alert'} color={'red'} size={20} />;
+        
         return (
             <Container  style={{backgroundColor: '#fff'}} >
                 <Header>
                     <Title style={{fontSize: 20}}>{title}</Title>
-                </Header>
+                </Header>            
+        <View style={{ flex: 1, backgroundColor: '#EFEFF4' }}>
 
-                <ScrollView keyboardShouldPersistTaps='always' style={{ height:200}}>
+        {this.renderNextButton()}
 
-                    {this.renderNextButton()}
+        <Form
+          ref={(ref) => { this.form = ref; }}
+          onPress={this.handlePress.bind(this)}
+          onChange={this.handleChange.bind(this)}
+        >
+            <Section
+                ref={'FullNameSection'}
+                title={'FULL NAME'}
+                helpText={'Enter your Full Legal Name'}
+            >
+                <TextInputCell
+                    ref="fullName"
+                    inputProps={{ placeholder: 'Your Full Name' }}
+                />   
+            </Section> 
 
-                    <Form 
-                        ref='registrationForm'
-                        onFocus={this.handleFormFocus.bind(this)}
-                        onChange={this.handleFormChange.bind(this)}
-                        label="Tenant Signup">
+            <Section
+                ref={'EmailSection'}
+                title={'EMAIL ADDRESS'}
+                helpText={'Enter the primary email address that you have given your Property Manager.'}
+            >
+                <TextInputCell
+                    ref="primaryEmail"
+                    validator={createValidator(emailValidator, { errorMessage: 'Invalid Email' })}
+                    inputProps={{ placeholder: 'Your Primary Email' }}
+                />   
+            </Section>   
 
-                        <Separator />
+            <Section
+                ref={'PhoneSection'}
+                title={'Phone Number'}
+                helpText={'Enter the primary phone number that you have given your Property Manager.'}
+            >
+                <TextInputCell
+                    ref="phoneNumber"
+                    inputProps={{ placeholder: 'Your Phone Number' }}
+                />   
+            </Section>               
 
-                        <InputField
-                            iconLeft={
-                                <WrappedIcon style={{marginLeft:10, alignSelf:'center', color:'#333'}} 
-                                    name='ios-person' 
-                                    size={30} />
-                            }
-                            ref='tenant_full_name' 
-                            value=''
-                            placeholder='Full Name'
-                            autoCapitalize='words'
-                            keyboardType='default'
-                            returnKeyType="next" 
-                            
-                        />
+            <Section
+                ref={'GenderSection'}
+                title={'GENDER'}
+                helpText={'Select your gender.'}
+            >
+                <ActionSheetCell
+                ref={'genderActionCell'}
+                title={'Your Gender'}
+                options={[' ',' Male', 'Female', 'Other']}
+                selectedValueIndex={0}
+                />
+            </Section>
 
-                        <InputField
-                            iconLeft={
-                                <WrappedIcon style={{marginLeft:10, alignSelf:'center', color:'#333'}} 
-                                    name='ios-mail' 
-                                    size={30} />
-                            }              
-                            ref='tenant_email'
-                            autoCapitalize='none'
-                            value=''
-                            placeholder='Your Email'
-                            keyboardType='email-address'
-                            returnKeyType="next"
-                            
-                      />
+            <Section
+                ref={'BirthdaySection'}
+                title={'BIRTHDAY'}
+                helpText={'Select your birthday (optional)'}
+            >
+                <DatePickerCell
+                ref={'birthdayDatePicker'}
+                title={'Your Birthday'}
+                datePickerProps={{ mode: 'date' }}
+                value={new Date('1/1/1970')}
+                getDateString={(date) => {
+                    const options = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    timeZone: 'UTC',
+                    timeZoneName: 'short',
+                    };
+                    return date.toLocaleDateString('en-US', options);
+                }}
+                />
+            </Section>
 
-                        <InputField
-                            iconLeft={
-                                <WrappedIcon style={{marginLeft:10, alignSelf:'center', color:'#333'}} 
-                                    name='ios-phone-portrait' 
-                                    size={30} />
-                            }                                       
-                            ref='tenant_phone_number'
-                            autoCapitalize='none'
-                            value=''
-                            placeholder='Your Phone Number'
-                            keyboardType='phone-pad'
-                            returnKeyType="next"
-                            onBlur={this.handlePhoneNumberChange()}
-                        />                        
 
-                        <Separator />
 
-                        <PickerField ref='tenant_gender'
-                            label='Gender'
-                            value=''
-                            options={{
-                                "": '',
-                                male: 'Male',
-                                female: 'Female'
-                            }}
-                            iconRight={
-                                [
-                                    <Icon key='ir1' style={{marginTop: 7, position:'absolute', right: 10}} name='ios-arrow-forward' size={30} />
-                                ]}                         
+          <Section
+            title={'DATA'}
+            ref={'dataSection'}
+          >
+            <ButtonCell
+              ref={'LogData'}
+              title={'Log Form Data'}
+              textAlign={'center'}
+              titleColor={'blue'}
+            />
+            <ButtonCell
+              ref={'LogValidationErrors'}
+              title={'Log Validation Errors'}
+              textAlign={'center'}
+              titleColor={'blue'}
+            />
+          </Section>
 
-                        />
-
-                        <Separator />
-
-                        <DatePickerField 
-                            ref='tenant_birthday'
-                            mode='date' 
-                            minimumDate={new Date('1/1/1900')}
-                            maximumDate={new Date('1/1/2099')}
-                            iconRight={[<Icon style={{alignSelf:'center', marginLeft:10}} name='ios-arrow-forward' size={30} />,
-                                        <Icon style={{alignSelf:'center', marginLeft:10}} name='ios-arrow-down' size={30} />
-                            ]}
-                            placeholder='Birthday'
-                        />
-
-                       
-
-                    </Form>
-
-        
-
-                </ScrollView>
-            </Container>
-        );
-    }
-
+        </Form>
+      </View>
+    </Container>
+    );
+  }
 }
 
 function bindActions(dispatch){

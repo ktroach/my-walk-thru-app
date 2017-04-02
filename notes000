@@ -1,0 +1,33 @@
+                            iconRight={
+                                [
+                                    <Icon key='ir1' style={{marginTop: 7, position:'absolute', right: 10}} name='ios-arrow-forward' size={30} />
+                                ]}
+
+                            validationFunction = {(value)=>{
+                                console.log('ENTERED: validationFunction:', value);
+                                if(value && value === 'Female'){
+                                    return true;
+                                } else {
+                                    return fale;
+                                }
+                            }}
+
+
+                            iconRight={
+                                <Icon name='ios-checkmark-circle-outline'
+                                    size={30}
+                                    style={[
+                                    {marginTop: 7, position:'absolute', right: 10, color:"#61d062" },
+                                    ((self)=>{
+                                        //i can change the style of the component related to the attibute of tenant_gender
+                                        if(!!(self.refs && self.refs.tenant_gender)){
+                                            if(!self.refs.tenant_gender.valid) return {color:'#d52222'}
+                                        }
+                                    }
+                                )(this)]}
+                                />
+                            }                                                               
+
+
+                                                        blurOnSubmit={false}
+                            onSubmitEditing={() => this.focusNextField('tenant_email')}
