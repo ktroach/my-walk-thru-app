@@ -47,12 +47,15 @@ export class SignUpUserInfo extends Component {
         super(props);
         this.state = {
             tenantId: '',
-            validated:  false
+            validated: false,
+            phoneFormatted: '',
+            loaded: false
         }
     } 
 
     componentDidMount() {
         this.getTenantId();
+        this.setState({loaded: true});
     }
 
     replaceRoute(route) {
@@ -94,10 +97,53 @@ export class SignUpUserInfo extends Component {
 
     handleChange(ref, change) {
         console.log('>>> handleChange: ', ref, change);
+
+        if(ref && ref !== '' && ref === 'phoneNumber'){
+            if(change && change.length>0){
+                this.formatPhone(change);
+            }            
+        }
+
         if(change && change !== ''){
             this.setState({validated:true});
         }
     }
+
+    formatPhone(value) {
+        // console.log('>> ENTERED: formatPhone');
+        // if(!value) return;
+        // let phoneFormatted = value;
+        // if(!this.state.loaded) return;
+        // let formData = this.form.getData();
+
+        // // console.log('>>> this.form: ', this.form);
+
+        // if (!formData) {
+        //     return;
+        // }         
+        // if (!formData.PhoneSection) {
+        //     return;
+        // }             
+        // if (!formData.PhoneSection.phoneNumber) {
+        //     return;
+        // }    
+        // let phone = formData.PhoneSection.phoneNumber;
+        // let phoneTest = new RegExp(/^((\+1)|1)? ?\(?(\d{3})\)?[ .-]?(\d{3})[ .-]?(\d{4})( ?(ext\.? ?|x)(\d*))?$/);
+        // phone = phone.trim();
+        // var results = phoneTest.exec(phone);
+        // // console.log(results);
+        // if (results !== null && results.length > 8) {
+        //     phoneFormatted = "(" + results[3] + ") " + results[4] + "-" + results[5] + (typeof results[8] !== "undefined" ? " x" + results[8] : "");
+        // }
+
+        // console.log('phoneFormatted: ', phoneFormatted);
+
+        // this.setState({phoneFormatted: phoneFormatted});
+
+        // console.log('>>> this.refs: ', this.refs);
+
+        // formData.PhoneSection.phoneNumber.setValue(phone);
+    }    
 
     handlePress(ref) {
         if (ref === 'LogData') {
@@ -232,6 +278,7 @@ export class SignUpUserInfo extends Component {
     }
 
 
+
     render() {
 
         const title = 'User Profile';
@@ -240,7 +287,11 @@ export class SignUpUserInfo extends Component {
         
         return (
             <Container  style={{backgroundColor: '#fff'}} >
+               
                 <Header>
+                    <Button transparent onPress={() => this.replaceRoute('signup-step0')}>
+                        <Icon name='ios-arrow-back' style={{fontSize: 30}} />
+                    </Button>                     
                     <Title style={{fontSize: 20}}>{title}</Title>
                 </Header>            
         <View style={{ flex: 1, backgroundColor: '#EFEFF4' }}>
@@ -260,6 +311,7 @@ export class SignUpUserInfo extends Component {
                 <TextInputCell
                     ref="fullName"
                     inputProps={{ placeholder: 'Your Full Name' }}
+                    autoCapitalize="words"
                 />   
             </Section> 
 
@@ -272,17 +324,22 @@ export class SignUpUserInfo extends Component {
                     ref="primaryEmail"
                     validator={createValidator(emailValidator, { errorMessage: 'Invalid Email' })}
                     inputProps={{ placeholder: 'Your Primary Email' }}
+                    keyboardType='email-address'
+                    autoCapitalize="none"
                 />   
             </Section>   
 
             <Section
                 ref={'PhoneSection'}
                 title={'Phone Number'}
-                helpText={'Enter the primary phone number that you have given your Property Manager.'}
+                helpText={'Enter the primary phone number that you have given your Property Manager.  You can enter it in this format: 8308321234'}
             >
                 <TextInputCell
                     ref="phoneNumber"
                     inputProps={{ placeholder: 'Your Phone Number' }}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    keyboardType='phone-pad'
                 />   
             </Section>               
 
@@ -292,10 +349,10 @@ export class SignUpUserInfo extends Component {
                 helpText={'Select your gender.'}
             >
                 <ActionSheetCell
-                ref={'genderActionCell'}
-                title={'Your Gender'}
-                options={[' ',' Male', 'Female', 'Other']}
-                selectedValueIndex={0}
+                    ref={'genderActionCell'}
+                    title={'Your Gender'}
+                    options={[' ',' Male', 'Female', 'Other']}
+                    selectedValueIndex={0}
                 />
             </Section>
 

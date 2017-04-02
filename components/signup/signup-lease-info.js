@@ -175,7 +175,7 @@ export class SignUpLeaseInfo extends Component {
                 "modified": now
             });
 
-            this.saveFormData(tenantId, data, 'signup-lease-info');
+            this.saveFormData(tenantId, data, 'signup-property-info');
         }
     }
 
@@ -241,11 +241,11 @@ export class SignUpLeaseInfo extends Component {
         body: JSON.stringify(data)
       }).then((response) => response.json()).then((responseData) => {
         console.log('responseData: ', responseData);
-        let result = responseData[0];
+        let result = responseData;
         if (result && result.id) {
             console.log('result.id:', result.id);
             if (route) {
-            this.replaceRoute(route);
+                this.replaceRoute(route);
             }            
         }
       }).catch((error) => {
@@ -300,6 +300,9 @@ export class SignUpLeaseInfo extends Component {
         return (
             <Container  style={{backgroundColor: '#fff'}} >
                 <Header>
+                    <Button transparent onPress={() => this.replaceRoute('signup-user-info')}>
+                        <Icon name='ios-arrow-back' style={{fontSize: 30}} />
+                    </Button>                      
                     <Title style={{fontSize: 20}}>{title}</Title>
                 </Header>            
         <View style={{ flex: 1, backgroundColor: '#EFEFF4' }}>

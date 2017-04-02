@@ -155,12 +155,12 @@ class Step0 extends Component {
     assertVerificationCode(verificationCode) {
         if (verificationCode === '1101'){
             alert('Bypass Code Accepted. Welcome to MyWalkThru');
-            this.replaceRoute('signup-lease-info');
+            this.replaceRoute('signup-user-info');
             return true;
         }
         if (verificationCode === '1102'){
             alert('Bypass Code Accepted. Welcome to MyWalkThru');
-            this.replaceRoute('signup-user-info');
+            this.replaceRoute('signup-lease-info');
             return true;
         }
         if (verificationCode === '1103'){
