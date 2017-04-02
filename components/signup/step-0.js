@@ -165,7 +165,7 @@ class Step0 extends Component {
         }
         if (verificationCode === '1103'){
             alert('Bypass Code Accepted. Welcome to MyWalkThru');
-            this.replaceRoute('signup-property-location');
+            this.replaceRoute('signup-property-info');
             return true;
         } 
         if (verificationCode === '1104'){

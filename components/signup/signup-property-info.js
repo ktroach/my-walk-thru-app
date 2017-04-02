@@ -142,7 +142,7 @@ export class SignUpPropertyInfo extends Component {
 
             let centralAir = formData.HeatingCoolingSection.centralAirSwitchCell;
             let centralHeat = formData.HeatingCoolingSection.centralHeatSwitchCell;
-            let forced = formData.HeatingCoolingSection.forcedSwitchCell;
+            let forcedAir = formData.HeatingCoolingSection.forcedSwitchCell;
             let windowUnit = formData.HeatingCoolingSection.windowUnitwitchCell;
 
             let stories = formData.StoriesSection.storiesActionCell;
@@ -151,13 +151,25 @@ export class SignUpPropertyInfo extends Component {
 
             var data = JSON.stringify({
                 "propertyType": fullName,
-                "bedrooms": bedrooms,
-                "bathrooms": bathrooms,
                 "street1": street1,
                 "street2": street2, 
                 "city": city,
                 "stateName": stateName,
                 "zip": zip,
+                "geocode": geocode,
+                "propertyType": propertyType,
+                "bedrooms": bedrooms,
+                "bathrooms": bathrooms,  
+                "dining": dining,  
+                "laundry": laundry,  
+                "family": family,  
+                "game": game,  
+                "centralAir": centralAir,  
+                "centralHeat": centralHeat,  
+                "forcedAir": forcedAir,  
+                "windowUnit": windowUnit,
+                "stories": stories,
+                "parking": parking,
                 "active": "true",
                 "modified": now
             });
@@ -170,35 +182,27 @@ export class SignUpPropertyInfo extends Component {
         console.log('>>ENTERED validateFormData');
         console.log('>>> formData: ', formData);
 
-        if (!formData.FullNameSection) {
-            alert('Your Full Name is required');
+        if (!formData.PropertyLocationSection) {
+            alert('Address is required');
             return false;
         }          
 
-        if (!formData.FullNameSection.fullName) {
-            alert('Your Full Name is required');
+        if (!formData.PropertyLocationSection.street1) {
+            alert('Street1 is required');
             return false;
         }     
-
-        if (!formData.EmailSection) {
-            alert('Your Email is required');
+        if (!formData.PropertyLocationSection.city) {
+            alert('City is required');
             return false;
-        }             
-
-        if (!formData.EmailSection.primaryEmail) {
-            alert('Your Email is required');
+        }    
+        if (!formData.PropertyLocationSection.stateName) {
+            alert('State is required');
+            return false;
+        } 
+        if (!formData.PropertyLocationSection.zip) {
+            alert('Zip Code is required');
             return false;
         }   
-
-        if (!formData.PhoneSection) {
-            alert('Your Phone Number is required');
-            return false;
-        }             
-
-        if (!formData.PhoneSection.phoneNumber) {
-            alert('Your Phone Number is required');
-            return false;
-        }            
 
         return true;      
     }    
@@ -258,10 +262,9 @@ export class SignUpPropertyInfo extends Component {
     }
 
 
-
     render() {
 
-        const title = 'User Profile';
+        const title = 'Property Info';
         const forwardIcon = <Icon name={'ios-arrow-forward'} color={'gray'} size={20} />;
         const alertIcon = <Icon name={'ios-alert'} color={'red'} size={20} />;
         
@@ -269,7 +272,7 @@ export class SignUpPropertyInfo extends Component {
             <Container  style={{backgroundColor: '#fff'}} >
                
                 <Header>
-                    <Button transparent onPress={() => this.replaceRoute('signup-step0')}>
+                    <Button transparent onPress={() => this.replaceRoute('signup-lease-info')}>
                         <Icon name='ios-arrow-back' style={{fontSize: 30}} />
                     </Button>                     
                     <Title style={{fontSize: 20}}>{title}</Title>
@@ -286,7 +289,7 @@ export class SignUpPropertyInfo extends Component {
             <Section
                 ref={'PropertyLocationSection'}
                 title={'LOCATION / ADDRESS'}
-                helpText={'Where is this property located?'}
+                helpText={'Enter the exact location of the Property.  GPS coordinates are optional.'}
             >
                 <TextInputCell
                     ref="street1"
@@ -378,7 +381,7 @@ export class SignUpPropertyInfo extends Component {
 
                 <TextInputCell
                     ref="geocode"
-                    inputProps={{ placeholder: 'Longitude/Latitude (optional)' }}
+                    inputProps={{ placeholder: 'GPS Coordinates (optional)' }}
                 />                                         
 
             </Section>  
