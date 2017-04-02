@@ -516,6 +516,10 @@ class CommentsAndPhotos extends Component {
         alert('Invalid parameter: data');
         return;
       }
+      if (!id) {
+        alert('Invalid parameter: id');
+        return;
+      }         
       let url = '';
       let now = new Date();
 
@@ -539,69 +543,6 @@ class CommentsAndPhotos extends Component {
       }).catch((error) => {
          console.error(error);
       }).done();
-
-        // if (!id) {
-        //   // POST data
-        //   url = Config.PROPERTY_ITEMS_API + '/';
-        //   let template = this.state.templateItem;
-        //   if (template){
-        //     let postData = {
-        //       "name": template.name,
-        //       "userId": this.state.userId,
-        //       "rank": template.rank,
-        //       "active": template.active,
-        //       "deleted": template.deleted,
-        //       "PropertyItemId": template.id,
-        //       "PropertyCategoryId": template.divisionid,
-        //       "cost": template.cost,
-        //       "selectedOption": template.selectedOption,
-        //       "allObservedSwitchIsOn": template.allObservedSwitchIsOn,
-        //       "images": data.images,
-        //       "comments": data.comments,
-        //       "created": now
-        //     };
-        //     // POST
-        //     fetch(url, {
-        //       method: 'post',
-        //       headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json',
-        //       },
-        //       body: JSON.stringify(postData)
-        //     }).then((response) => response.json()).then((responseData) => {
-        //        console.log('responseData: ', responseData);
-        //        if (route) {
-        //          this.replaceRoute(route);
-        //        }
-        //        //this.setState({comments: JSON.stringify(responseData)});
-        //     }).catch((error) => {
-        //        console.error(error);
-        //     }).done();
-        //   } else {
-        //     console.warn('templateItem not found');
-        //     alert('templateItem not found');
-        //     return;
-        //   }
-        // } else {
-        //   //PATCH data
-        //   url = Config.PROPERTY_ITEMS_API + '/' + id;
-        //   fetch(url, {
-        //     method: 'PATCH',
-        //     headers: {
-        //       'Accept': 'application/json',
-        //       'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(data)
-        //   }).then((response) => response.json()).then((responseData) => {
-        //      console.log('responseData: ', responseData);
-        //      if (route) {
-        //        this.replaceRoute(route);
-        //      }
-        //      //this.setState({comments: JSON.stringify(responseData)});
-        //   }).catch((error) => {
-        //      console.error(error);
-        //   }).done();
-        // }
     }
 
 

@@ -135,6 +135,9 @@ class Step0 extends Component {
             if (verificationCode.length > 3){
                 console.log('dismissing keyboard');
                 Keyboard.dismiss();
+                if(this.refs.pin_verfied_button){
+                    this.refs.pin_verfied_button.focus();
+                }
             }
         }
         this.setState({verificationCode: verificationCode});
@@ -150,12 +153,42 @@ class Step0 extends Component {
     }
 
     assertVerificationCode(verificationCode) {
-
-        if (verificationCode === '1129'){
+        if (verificationCode === '1101'){
+            alert('Bypass Code Accepted. Welcome to MyWalkThru');
+            this.replaceRoute('signup-lease-info');
+            return true;
+        }
+        if (verificationCode === '1102'){
             alert('Bypass Code Accepted. Welcome to MyWalkThru');
             this.replaceRoute('signup-user-info');
             return true;
         }
+        if (verificationCode === '1103'){
+            alert('Bypass Code Accepted. Welcome to MyWalkThru');
+            this.replaceRoute('signup-property-location');
+            return true;
+        } 
+        if (verificationCode === '1104'){
+            alert('Bypass Code Accepted. Welcome to MyWalkThru');
+            this.replaceRoute('signup-property-manager-info');
+            return true;
+        }  
+        if (verificationCode === '1105'){
+            alert('Bypass Code Accepted. Welcome to MyWalkThru');
+            this.replaceRoute('signup-property-photos');
+            return true;
+        }  
+        if (verificationCode === '1106'){
+            alert('Bypass Code Accepted. Welcome to MyWalkThru');
+            this.replaceRoute('signup-terms-conditions');
+            return true;
+        }      
+        if (verificationCode === '1107'){
+            alert('Bypass Code Accepted. Welcome to MyWalkThru');
+            this.replaceRoute('signup-validator-submittor');
+            return true;
+        }                                        
+
 
         let q = {"where": {"and": [{"pincode": verificationCode},{"active":{ "eq": "true"}}]}};
         let url = 'https://mywalkthruapi.herokuapp.com/api/v1/Tenants?filter=' + JSON.stringify(q);
@@ -170,14 +203,14 @@ class Step0 extends Component {
                     AsyncStorage.setItem("tenantId", result.id)
                         .then( () => {
                             alert('Welcome to MyWalkThru, ' + result.fullname + '!');
-                            this.replaceRoute('signup-user-info');
+                            this.replaceRoute('signup-lease-info');
                         }
                     ).done();
                 } else {
                     alert('Verification Failed: Please check with your Property Manager to get a new Invite Code.');
                 }
             } else {
-                alert('Invite Code entered has expired. Please check with your Property Manager to get a new Invite Code.');
+                alert('Invalid Invite Code or the Code has expired. Please check with your Property Manager to get a new Invite Code.');
                 // this.replaceRoute('signup-user-info');
             }
         }).done();
@@ -231,6 +264,11 @@ class Step0 extends Component {
                                 Enter the 4 digit Invite Code sent to you from your Property Manager
                             </Text>
                         </View>
+                        
+                        <View style={{paddingTop: 20}}>
+                            {this._renderButton()}
+                        </View>
+
                         <View style={{paddingTop: 20}}>
                             <TextInput
                                 style={{borderWidth: 1,
@@ -248,9 +286,7 @@ class Step0 extends Component {
                                 onChangeText={(verificationCode) => this.onVerificationCodeChanged(verificationCode)}
                             />
                         </View>                        
-                        <View style={{paddingTop: 20}}>
-                            {this._renderButton()}
-                        </View>
+
                        </View>
                     </Content>
                 </Image>
@@ -356,6 +392,7 @@ class Step0 extends Component {
       } else {
         return (
             <Button rounded block
+                ref='pin_verfied_button'
               style={{alignSelf: 'center',
                       marginTop: 10,
                       backgroundColor: '#ad241f',
