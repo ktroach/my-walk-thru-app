@@ -104,6 +104,12 @@ export class SignUpUserInfo extends Component {
             }            
         }
 
+        if(ref && ref !== '' && ref === 'phoneNumber'){
+            if(change && change.length === 10){
+                Keyboard.dismiss();
+            }            
+        }        
+
         if(change && change !== ''){
             this.setState({validated:true});
         }
@@ -277,10 +283,7 @@ export class SignUpUserInfo extends Component {
         }
     }
 
-
-
     render() {
-
         const title = 'User Profile';
         const forwardIcon = <Icon name={'ios-arrow-forward'} color={'gray'} size={20} />;
         const alertIcon = <Icon name={'ios-alert'} color={'red'} size={20} />;
@@ -323,9 +326,12 @@ export class SignUpUserInfo extends Component {
                 <TextInputCell
                     ref="primaryEmail"
                     validator={createValidator(emailValidator, { errorMessage: 'Invalid Email' })}
-                    inputProps={{ placeholder: 'Your Primary Email' }}
-                    keyboardType='email-address'
-                    autoCapitalize="none"
+                    inputProps={{ 
+                        placeholder: 'Your Primary Email', 
+                        keyboardType: 'email-address',
+                        autoCapitalize: "none",
+                        returnKeyType: 'done' 
+                    }}
                 />   
             </Section>   
 
@@ -336,10 +342,12 @@ export class SignUpUserInfo extends Component {
             >
                 <TextInputCell
                     ref="phoneNumber"
-                    inputProps={{ placeholder: 'Your Phone Number' }}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    keyboardType='phone-pad'
+                    inputProps={{ 
+                        placeholder: 'Your Phone Number',
+                        autoCapitalize: "none",
+                        autoCorrect: false,
+                        keyboardType: 'phone-pad'
+                    }}
                 />   
             </Section>               
 

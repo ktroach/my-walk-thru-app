@@ -97,22 +97,40 @@ export class SignUpPropertyInfo extends Component {
     handleChange(ref, change) {
         console.log('>>> handleChange: ', ref, change);
 
+        if(ref && ref !== '' && ref === 'zip'){
+            if(change && change.length === 5){
+                Keyboard.dismiss();
+            }            
+        }  
+
         if(change && change !== ''){
             this.setState({validated:true});
         }
+
+
     }
 
     handlePress(ref) {
         if (ref === 'LogData') {
-        console.log(this.form.getData());
+            console.log(this.form.getData());
         } else if (ref === 'LogValidationErrors') {
-        console.log(this.form.getValidationErrors());
+            console.log(this.form.getValidationErrors());
         }
     }
 
     saveData() {
         console.log('>>ENTERED: saveData');
+
+        if (!this.form) {
+            return;
+        }        
+
         let formData = this.form.getData();
+
+        if (!formData) {
+            return;
+        }
+
         if (this.validateFormData(formData)) {
 
             let tenantId = this.state.tenantId;
@@ -150,7 +168,7 @@ export class SignUpPropertyInfo extends Component {
             let parking = formData.ParkingSection.parkingActionCell;
 
             var data = JSON.stringify({
-                "propertyType": fullName,
+                "propertyType": propertyType,
                 "street1": street1,
                 "street2": street2, 
                 "city": city,
@@ -174,7 +192,7 @@ export class SignUpPropertyInfo extends Component {
                 "modified": now
             });
 
-            this.saveFormData(tenantId, data, 'signup-lease-info');
+            this.saveFormData(tenantId, data, 'signup-property-manager-info');
         }
     }
 
@@ -191,18 +209,46 @@ export class SignUpPropertyInfo extends Component {
             alert('Street1 is required');
             return false;
         }     
+
         if (!formData.PropertyLocationSection.city) {
             alert('City is required');
             return false;
         }    
+
         if (!formData.PropertyLocationSection.stateName) {
             alert('State is required');
             return false;
         } 
+
         if (!formData.PropertyLocationSection.zip) {
             alert('Zip Code is required');
             return false;
+        }  
+
+        if (!formData.PropertyTypeSection.propertyType) {
+            alert('Property Type is required');
+            return false;
+        }           
+
+        if (!formData.BedsBathsSection.bedroomsActionCell) {
+            alert('Property Type is required');
+            return false;
+        }  
+
+        if (!formData.BedsBathsSection.bathroomsActionCell) {
+            alert('Property Type is required');
+            return false;
         }   
+
+        if (!formData.StoriesSection.storiesActionCell) {
+            alert('Property Type is required');
+            return false;
+        } 
+
+        if (!formData.ParkingSection.parkingActionCell) {
+            alert('Property Type is required');
+            return false;
+        }                                
 
         return true;      
     }    
@@ -261,9 +307,7 @@ export class SignUpPropertyInfo extends Component {
         }
     }
 
-
     render() {
-
         const title = 'Property Info';
         const forwardIcon = <Icon name={'ios-arrow-forward'} color={'gray'} size={20} />;
         const alertIcon = <Icon name={'ios-alert'} color={'red'} size={20} />;
@@ -289,24 +333,39 @@ export class SignUpPropertyInfo extends Component {
             <Section
                 ref={'PropertyLocationSection'}
                 title={'LOCATION / ADDRESS'}
-                helpText={'Enter the exact location of the Property.  GPS coordinates are optional.'}
+                helpText={'Enter the exact location of the Property.'}
             >
                 <TextInputCell
                     ref="street1"
-                    inputProps={{ placeholder: 'Street 1' }}
-                    autoCapitalize="words"
+                    inputProps={{ 
+                        placeholder: 'Street 1', 
+                        autoCapitalize: 'words', 
+                        autoCorrect: false, 
+                        maxLength: 50,
+                        keyboardType: 'default' 
+                    }}
                 /> 
 
                 <TextInputCell
                     ref="street2"
-                    inputProps={{ placeholder: 'Street 2 (optional)' }}
-                    autoCapitalize="words"
+                    inputProps={{ 
+                        placeholder: 'Street 2 (optional)', 
+                        autoCapitalize: 'words', 
+                        autoCorrect: false, 
+                        maxLength: 50,
+                        keyboardType: 'default' 
+                    }}
                 />      
 
                 <TextInputCell
                     ref="city"
-                    inputProps={{ placeholder: 'City' }}
-                    autoCapitalize="words"
+                    inputProps={{ 
+                        placeholder: 'City', 
+                        autoCapitalize: 'words', 
+                        autoCorrect: false, 
+                        maxLength: 100,
+                        keyboardType: 'default' 
+                    }}
                 />                      
 
                 <ActionSheetCell
@@ -373,16 +432,14 @@ export class SignUpPropertyInfo extends Component {
 
                 <TextInputCell
                     ref="zip"
-                    inputProps={{ placeholder: 'Zip Code' }}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    keyboardType='phone-pad'
-                />          
-
-                <TextInputCell
-                    ref="geocode"
-                    inputProps={{ placeholder: 'GPS Coordinates (optional)' }}
-                />                                         
+                    inputProps={{ 
+                        placeholder: 'Zip Code', 
+                        autoCapitalize: "none", 
+                        autoCorrect: false, 
+                        maxLength: 5,
+                        keyboardType: 'number-pad' 
+                    }}
+                />                                             
 
             </Section>  
 
@@ -427,28 +484,28 @@ export class SignUpPropertyInfo extends Component {
             >
                 <SwitchCell
                     ref={'diningSwitchCell'}
-                    switchTintColor={'blue'}
+                    switchTintColor={'#8EC5AD'}
                     title={'Dining'}
                     titleColor={'black'}
                 />
 
                 <SwitchCell
                     ref={'laundrySwitchCell'}
-                    switchTintColor={'blue'}
+                    switchTintColor={'#8EC5AD'}
                     title={'Laundry'}
                     titleColor={'black'}
                 />     
 
                 <SwitchCell
                     ref={'familySwitchCell'}
-                    switchTintColor={'blue'}
+                    switchTintColor={'#8EC5AD'}
                     title={'Family'}
                     titleColor={'black'}
                 />   
 
                 <SwitchCell
                     ref={'gameSwitchCell'}
-                    switchTintColor={'blue'}
+                    switchTintColor={'#8EC5AD'}
                     title={'Game Room'}
                     titleColor={'black'}
                 />                   
@@ -463,21 +520,21 @@ export class SignUpPropertyInfo extends Component {
 
                 <SwitchCell
                     ref={'centralAirSwitchCell'}
-                    switchTintColor={'blue'}
+                    switchTintColor={'#8EC5AD'}
                     title={'Central Air'}
                     titleColor={'black'}
                 />  
 
                 <SwitchCell
                     ref={'centralHeatSwitchCell'}
-                    switchTintColor={'blue'}
+                    switchTintColor={'#8EC5AD'}
                     title={'Central Heat'}
                     titleColor={'black'}
                 />     
 
                 <SwitchCell
                     ref={'windowUnitwitchCell'}
-                    switchTintColor={'blue'}
+                    switchTintColor={'#8EC5AD'}
                     title={'Window Unit'}
                     titleColor={'black'}
                 />                                  
