@@ -203,7 +203,7 @@ class Step0 extends Component {
                     AsyncStorage.setItem("tenantId", result.id)
                         .then( () => {
                             alert('Welcome to MyWalkThru, ' + result.fullname + '!');
-                            this.replaceRoute('signup-lease-info');
+                            this.replaceRoute('signup-user-info');
                         }
                     ).done();
                 } else {

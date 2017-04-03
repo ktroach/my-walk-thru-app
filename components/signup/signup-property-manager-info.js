@@ -154,15 +154,16 @@ export class SignUpPropertyManagerInfo extends Component {
             let phoneNumber = formData.PhoneSection.phoneNumber;
 
             var data = JSON.stringify({
+                "pmType": pmType,
+                "pmName": pmName,
                 "pmCompanyName": companyName,
                 "pmPhoneNumber": phoneNumber,
                 "pmEmail": primaryEmail,
-                "pmType": pmType,
                 "active": "true",
                 "modified": now
             });
 
-            this.saveFormData(tenantId, data, 'signup-lease-info');
+            this.saveFormData(tenantId, data, 'signup-terms-conditions');
         }
     }
 
