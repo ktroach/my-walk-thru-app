@@ -12,7 +12,7 @@ var largeFont = fontSizeBase * 1.5;
 module.exports = StyleSheet.create({
     sidebar: {
         flex: 1,
-        backgroundColor: '#ecebeb',
+        backgroundColor: '#97CAE5',
         borderBottomColor: '#454545'
     },
     links: {

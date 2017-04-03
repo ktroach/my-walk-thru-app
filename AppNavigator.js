@@ -26,7 +26,8 @@ import SignUpLeaseInfo from './components/signup/signup-lease-info';
 import SignUpPropertyManagerInfo from './components/signup/signup-property-manager-info';
 import SignUpTermsConditions from './components/signup/signup-terms-conditions';
 import SignUpPropertyPhotos from './components/signup/signup-property-photos';
-import SignUpValidatorSubmittor from './components/signup/signup-validator-submittor';
+import SignUpComplete from './components/signup/signup-complete';
+import SignUpInstructions from './components/signup/signup-instructions';
 
 // Old Sign Up Routes (replace)
 import Step0 from './components/signup/step-0';
@@ -193,8 +194,10 @@ class AppNavigator extends Component {
                return <SignUpTermsConditions navigator={navigator} />;               
             case 'signup-property-photos':
                return <SignUpPropertyPhotos navigator={navigator} />;               
-            case 'signup-validator-submittor':
-               return <SignUpValidatorSubmittor navigator={navigator} />;               
+            case 'signup-complete':
+               return <SignUpComplete navigator={navigator} />;    
+            case 'signup-instructions':
+               return <SignUpInstructions navigator={navigator} />;                           
             case 'signup-step0':
                return <Step0 navigator={navigator} />;
             case 'signup-step1':

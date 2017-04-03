@@ -42,6 +42,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import CustomInput from './CustomInput';
 
+// import Confetti from 'react-native-confetti';
+
 export class SignUpUserInfo extends Component {
     constructor(props){
         super(props);
@@ -56,7 +58,19 @@ export class SignUpUserInfo extends Component {
     componentDidMount() {
         this.getTenantId();
         this.setState({loaded: true});
+
+        // if(this._confettiView) {
+        //     this._confettiView.startConfetti();
+        // }        
     }
+
+    // componentWillUnmount() {
+    //     if (this._confettiView)
+    //     {
+    //         this._confettiView.stopConfetti();
+    //     }
+    // }
+    
 
     replaceRoute(route) {
         this.props.replaceRoute(route);
@@ -266,7 +280,8 @@ export class SignUpUserInfo extends Component {
         return(
             <Button rounded block
                 style={{alignSelf: 'center',
-                    marginTop: 40,
+                    marginTop: 20,
+                    marginBottom: 20,
                     backgroundColor: '#ad241f',
                     borderRadius:90,
                     width: 300,
@@ -289,15 +304,20 @@ export class SignUpUserInfo extends Component {
         const alertIcon = <Icon name={'ios-alert'} color={'red'} size={20} />;
         
         return (
+
             <Container  style={{backgroundColor: '#fff'}} >
+                
                
                 <Header>
-                    <Button transparent onPress={() => this.replaceRoute('signup-step0')}>
+                    <Button transparent onPress={() => this.replaceRoute('signup-instructions')}>
                         <Icon name='ios-arrow-back' style={{fontSize: 30}} />
                     </Button>                     
                     <Title style={{fontSize: 20}}>{title}</Title>
                 </Header>            
-        <View style={{ flex: 1, backgroundColor: '#EFEFF4' }}>
+
+        <View style={{ flex: 1, backgroundColor: '#9DD6EB' }}>
+
+            
 
         {this.renderNextButton()}
 
@@ -387,26 +407,6 @@ export class SignUpUserInfo extends Component {
                 }}
                 />
             </Section>
-
-
-
-          <Section
-            title={'DATA'}
-            ref={'dataSection'}
-          >
-            <ButtonCell
-              ref={'LogData'}
-              title={'Log Form Data'}
-              textAlign={'center'}
-              titleColor={'blue'}
-            />
-            <ButtonCell
-              ref={'LogValidationErrors'}
-              title={'Log Validation Errors'}
-              textAlign={'center'}
-              titleColor={'blue'}
-            />
-          </Section>
 
         </Form>
       </View>

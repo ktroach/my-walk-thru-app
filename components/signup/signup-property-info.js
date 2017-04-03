@@ -230,25 +230,25 @@ export class SignUpPropertyInfo extends Component {
             return false;
         }           
 
-        if (!formData.BedsBathsSection.bedroomsActionCell) {
-            alert('Property Type is required');
-            return false;
-        }  
+        // if (!formData.BedsBathsSection.bedroomsActionCell) {
+        //     alert('Number of Bedrooms is required');
+        //     return false;
+        // }  
 
-        if (!formData.BedsBathsSection.bathroomsActionCell) {
-            alert('Property Type is required');
-            return false;
-        }   
+        // if (!formData.BedsBathsSection.bathroomsActionCell) {
+        //     alert('Number of Bathrooms is required');
+        //     return false;
+        // }   
 
-        if (!formData.StoriesSection.storiesActionCell) {
-            alert('Property Type is required');
-            return false;
-        } 
+        // if (!formData.StoriesSection.storiesActionCell) {
+        //     alert('Number of Stories is required');
+        //     return false;
+        // } 
 
-        if (!formData.ParkingSection.parkingActionCell) {
-            alert('Property Type is required');
-            return false;
-        }                                
+        // if (!formData.ParkingSection.parkingActionCell) {
+        //     alert('Parking selection is required');
+        //     return false;
+        // }                                
 
         return true;      
     }    
@@ -290,7 +290,8 @@ export class SignUpPropertyInfo extends Component {
         return(
             <Button rounded block
                 style={{alignSelf: 'center',
-                    marginTop: 40,
+                    marginTop: 20,
+                    marginBottom: 20,
                     backgroundColor: '#ad241f',
                     borderRadius:90,
                     width: 300,
@@ -321,7 +322,8 @@ export class SignUpPropertyInfo extends Component {
                     </Button>                     
                     <Title style={{fontSize: 20}}>{title}</Title>
                 </Header>            
-        <View style={{ flex: 1, backgroundColor: '#EFEFF4' }}>
+
+        <View style={{ flex: 1, backgroundColor: '#9DD6EB' }}>
 
         {this.renderNextButton()}
 
@@ -330,6 +332,20 @@ export class SignUpPropertyInfo extends Component {
           onPress={this.handlePress.bind(this)}
           onChange={this.handleChange.bind(this)}
         >
+
+            <Section
+                ref={'PropertyTypeSection'}
+                title={'PROPERTY TYPE'}
+                helpText={'Select the type of Property you are leasing.'}
+            >
+                <ActionSheetCell
+                    ref={'propertyTypeActionCell'}
+                    title={'Property Type'}
+                    options={[' ', 'Single Family', 'Condo/Townhome', 'Apartment', 'Mobile Home', 'Farm/Ranch', 'Multi Family', 'Other']}
+                    selectedValueIndex={0}
+                />
+            </Section> 
+
             <Section
                 ref={'PropertyLocationSection'}
                 title={'LOCATION / ADDRESS'}
@@ -443,18 +459,7 @@ export class SignUpPropertyInfo extends Component {
 
             </Section>  
 
-            <Section
-                ref={'PropertyTypeSection'}
-                title={'PROPERTY TYPE'}
-                helpText={'Select the type of Property you are leasing.'}
-            >
-                <ActionSheetCell
-                    ref={'propertyTypeActionCell'}
-                    title={'Property Type'}
-                    options={[' ', 'Single Family', 'Condo/Townhome', 'Apartment', 'Mobile Home', 'Farm/Ranch', 'Multi Family', 'Other']}
-                    selectedValueIndex={0}
-                />
-            </Section> 
+
 
             <Section
                 ref={'BedsBathsSection'}
@@ -464,14 +469,14 @@ export class SignUpPropertyInfo extends Component {
                 <ActionSheetCell
                     ref={'bedroomsActionCell'}
                     title={'Bedrooms'}
-                    options={[' ', '1', '2', '3', '4', '5+', 'Studio']}
+                    options={[' ','1','2','3','4','5+', 'Studio']}
                     selectedValueIndex={0}
                 />
 
                 <ActionSheetCell
                     ref={'bathroomsActionCell'}
                     title={'Bathrooms'}
-                    options={[' ', '1', '2', '3', '4', '5+']}
+                    options={[' ', '½','1', '1½', '2', '2½', '3', '3½', '4', '4½', '5+']}
                     selectedValueIndex={0}
                 /> 
 
@@ -548,7 +553,7 @@ export class SignUpPropertyInfo extends Component {
             >
                 <ActionSheetCell
                     ref={'storiesActionCell'}
-                    title={'Stories'}
+                    title={'Select number of Stories'}
                     options={[' ', 'Single Story', 'Multiple Stories']}
                     selectedValueIndex={0}
                 />
@@ -562,30 +567,12 @@ export class SignUpPropertyInfo extends Component {
             >
                 <ActionSheetCell
                     ref={'storiesActionCell'}
-                    title={'Stories'}
+                    title={'Select Parking option'}
                     options={[' ', '1+ Car Garage', '3+ Car Garage', 'Carport']}
                     selectedValueIndex={0}
                 />
             </Section>              
 
-
-          <Section
-            title={'DATA'}
-            ref={'dataSection'}
-          >
-            <ButtonCell
-              ref={'LogData'}
-              title={'Log Form Data'}
-              textAlign={'center'}
-              titleColor={'blue'}
-            />
-            <ButtonCell
-              ref={'LogValidationErrors'}
-              title={'Log Validation Errors'}
-              textAlign={'center'}
-              titleColor={'blue'}
-            />
-          </Section>
 
         </Form>
       </View>

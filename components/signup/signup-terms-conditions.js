@@ -53,7 +53,8 @@ export class SignUpTermsConditions extends Component {
         this.state = {
             tenantId: '',
             validated:  false,
-            responseData: {}
+            responseData: {},
+            termscolor: '#333'
         }
     } 
 
@@ -102,6 +103,15 @@ export class SignUpTermsConditions extends Component {
 
         if(change && change !== ''){
             this.setState({validated:true});
+            this.setState({termscolor: 'green'});
+
+            if(ref && ref === 'acceptTermsSwitchCell'){
+                if (change === true){
+                    this.setState({termscolor: 'green'});
+                } else {
+                    this.setState({termscolor: 'red'});
+                }
+            }            
         }
     }
 
@@ -111,6 +121,33 @@ export class SignUpTermsConditions extends Component {
         } else if (ref === 'LogValidationErrors') {
         console.log(this.form.getValidationErrors());
         }
+    }
+
+    patchData(url, data, cb) {
+      if (!url) {
+        alert('Invalid parameter: url');
+        return;
+      }            
+      if (!data) {
+        alert('Invalid parameter: data');
+        return;
+      }
+      let now = new Date();
+      fetch(url, {
+        method: 'PATCH',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      }).then((response) => response.json()).then((responseData) => {
+        console.log('responseData: ', responseData);
+        let res = responseData;
+        cb(null, res);
+      }).catch((error) => {
+         console.error(error);
+         cb(error, null);
+      }).done();        
     }
 
     saveData() {
@@ -147,6 +184,9 @@ export class SignUpTermsConditions extends Component {
         }    
 
         let values = responseData;
+
+        console.log('>>>>> values: ', values);
+
         let userId = shortid.generate();
         let signUpDate = moment().format();
         let now = new Date();
@@ -282,6 +322,36 @@ export class SignUpTermsConditions extends Component {
             "details": []
         });
 
+        var patchData = JSON.stringify(
+        {
+            "fullName": values_fullName,
+            "phoneNumber": values_phoneNumber,
+            "termsAcceptedOn": values_termsAcceptedOn,
+            "modified": now,
+            "property": {
+                "propertyType": values_propertyType,
+                "leaseBegins": values_leaseBegin,
+                "leaseEnds": values_leaseEnd,
+                "addressLine": addressLine,
+                "address1": values_street1,
+                "address2": values_street2,
+                "city": values_city,
+                "state": values_stateName,
+                "zip": values_zip,
+                "photoUrl": "",
+                "numberOfBedRooms": values_bedrooms,
+                "numberOfBathRooms": values_bathrooms,
+                "leaseReason": values_leaseReason
+            },
+            "propertyManager": {
+                "landlordType": values_pmType,
+                "company": values_pmCompanyName,
+                "landLordName": values_pmName,
+                "landLordPhone": values_pmPhoneNumber,
+                "landLordEmail": values_pmEmail
+            }
+        });        
+
         console.log('data: ', data);
 
         fetch(url, {
@@ -291,23 +361,34 @@ export class SignUpTermsConditions extends Component {
                 },
             body: data
         }).then((response) => response.json()).then((responseData) => {
+
             console.log('createUserAccount--RESPONSEDATA: ', responseData);
 
-            if(responseData.error){
-                alert(responseData.error.message);
-                return;
-            }
+            // if (responseData.error && 
+            //     responseData.error.message){
+            //     console.log('>>> responseData.error.message..',responseData.error.message);
+                
+            //     if(responseData.error.name==='ValidationError'){
+            //         console.log('>>> PATCHING DATA...');
+            //         this.patchData(url, patchData, function(err, res){
+            //             if (err) {console.log(err);} else {
+            //                 console.log('>>> PATCH DATA RESULT: ', res);
+            //             }
+            //         });
+            //     }
+            // }
 
             try {
 
                 if (!responseData) {
                     alert('Sorry, there was a problem Signing Up.');
-                    //  Toast.show({
-                    //   text: 'Sorry, there was a problem Signing Up.',
-                    //   position: 'bottom',
-                    //   buttonText: 'Okay'
-                    // });
+                    
                 } else {
+
+                    if(!AsyncStorage){
+                        this.replaceRoute('signup-complete');
+                    }
+
                     AsyncStorage.setItem("signUpDate", now)
                     .then( () =>
                         {
@@ -319,7 +400,7 @@ export class SignUpTermsConditions extends Component {
 
                                     alert('Thank you for Signing Up! ');
 
-                                    this.replaceRoute('home');
+                                    this.replaceRoute('signup-complete');
 
                                 }
                                 ).done();
@@ -332,6 +413,8 @@ export class SignUpTermsConditions extends Component {
 
             } catch(err){
                 console.log('>> createUserAccount failed: ', err);
+
+                this.replaceRoute('signup-complete');
             }
 
         }).done();        
@@ -393,7 +476,8 @@ export class SignUpTermsConditions extends Component {
         return(
             <Button rounded block
                 style={{alignSelf: 'center',
-                    marginTop: 40,
+                    marginTop: 20,
+                    marginBottom: 20,
                     backgroundColor: '#ad241f',
                     borderRadius:90,
                     width: 300,
@@ -410,6 +494,10 @@ export class SignUpTermsConditions extends Component {
         }
     }
 
+    openTermsConditions() {
+        Linking.openURL('http://www.mywalkthru.com/');
+    }
+
     render() {
         const title = 'Terms and Conditions';
         const forwardIcon = <Icon name={'ios-arrow-forward'} color={'gray'} size={20} />;
@@ -423,7 +511,8 @@ export class SignUpTermsConditions extends Component {
                     </Button>                      
                     <Title style={{fontSize: 20}}>{title}</Title>
                 </Header>            
-        <View style={{ flex: 1, backgroundColor: '#EFEFF4' }}>
+
+        <View style={{ flex: 1, backgroundColor: '#9DD6EB' }}>
 
         {this.renderNextButton()}
 
@@ -432,6 +521,22 @@ export class SignUpTermsConditions extends Component {
           onPress={this.handlePress.bind(this)}
           onChange={this.handleChange.bind(this)}
         >
+
+          <Section
+            ref={'readTermsSection'}
+            title={'TERMS and CONDITIONS'}
+            helpText={'Read the Terms and Conditions for using the app.'}
+          >
+
+            <TextInputCell
+              ref={'MultiLineTextInput'}
+              inputProps={{ multiline: true, color: this.state.termscolor, editable: false }}
+              cellHeight={200}
+              value={"Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms. These Terms apply to all visitors, users and others who access or use the Service.By accessing or using the Service you agree to be bound by these Terms. If you disagree with any part of the terms then you may not access the Service. This Terms of Service was created with (TermsFeed).Accounts.When you create an account with us, you must provide us information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account on our Service.You are responsible for safeguarding the password that you use to access the Service and for any activities or actions under your password, whether your password is with our Service or a third-party service.You agree not to disclose your password to any third party. You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.Links To Other Web Sites.Our Service may contain links to third-party web sites or services that are not owned or controlled by My Walk Thru.My Walk Thru has no control over, and assumes no responsibility for, the content, privacy policies, or practices of any third party web sites or services. You further acknowledge and agree that My Walk Thru shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such web sites or services. We strongly advise you to read the terms and conditions and privacy policies of any third-party web sites or services that you visit.Termination. We may terminate or suspend access to our Service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms. All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability. We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms. Upon termination, your right to use the Service will immediately cease. If you wish to terminate your account, you may simply discontinue using the Service. All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability. Governing Law. These Terms shall be governed and construed in accordance with the laws of Texas, United States, without regard to its conflict of law provisions. Our failure to enforce any right or provision of these Terms will not be considered a waiver of those rights. If any provision of these Terms is held to be invalid or unenforceable by a court, the remaining provisions of these Terms will remain in effect. These Terms constitute the entire agreement between us regarding our Service, and supersede and replace any prior agreements we might have between us regarding the Service. Changes. We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will try to provide at least 30 days notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion. By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, please stop using the Service. Contact Us. If you have any questions about these Terms, please contact us."}
+            />          
+
+
+          </Section>
 
           <Section
             ref={'termsSection'}
@@ -447,23 +552,7 @@ export class SignUpTermsConditions extends Component {
           </Section>
 
 
-          <Section
-            title={'DATA'}
-            ref={'dataSection'}
-          >
-            <ButtonCell
-              ref={'LogData'}
-              title={'Log Form Data'}
-              textAlign={'center'}
-              titleColor={'blue'}
-            />
-            <ButtonCell
-              ref={'LogValidationErrors'}
-              title={'Log Validation Errors'}
-              textAlign={'center'}
-              titleColor={'blue'}
-            />
-          </Section>
+
 
         </Form>
       </View>

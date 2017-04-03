@@ -258,7 +258,8 @@ export class SignUpLeaseInfo extends Component {
         return(
             <Button rounded block
                 style={{alignSelf: 'center',
-                    marginTop: 40,
+                    marginTop: 20,
+                    marginBottom: 20,
                     backgroundColor: '#ad241f',
                     borderRadius:90,
                     width: 300,
@@ -305,7 +306,8 @@ export class SignUpLeaseInfo extends Component {
                     </Button>                      
                     <Title style={{fontSize: 20}}>{title}</Title>
                 </Header>            
-        <View style={{ flex: 1, backgroundColor: '#EFEFF4' }}>
+
+        <View style={{ flex: 1, backgroundColor: '#9DD6EB' }}>
 
         {this.renderNextButton()}
 
@@ -376,23 +378,6 @@ export class SignUpLeaseInfo extends Component {
             />
           </Section>
 
-          <Section
-            title={'DATA'}
-            ref={'dataSection'}
-          >
-            <ButtonCell
-              ref={'LogData'}
-              title={'Log Form Data'}
-              textAlign={'center'}
-              titleColor={'blue'}
-            />
-            <ButtonCell
-              ref={'LogValidationErrors'}
-              title={'Log Validation Errors'}
-              textAlign={'center'}
-              titleColor={'blue'}
-            />
-          </Section>
 
         </Form>
       </View>

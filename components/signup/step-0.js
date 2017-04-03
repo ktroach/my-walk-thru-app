@@ -131,15 +131,24 @@ class Step0 extends Component {
     }    
 
     onVerificationCodeChanged(verificationCode) {
+
         if (verificationCode){
-            if (verificationCode.length > 3){
+
+            if (verificationCode.length === 4){
                 console.log('dismissing keyboard');
-                Keyboard.dismiss();
-                if(this.refs.pin_verfied_button){
-                    this.refs.pin_verfied_button.focus();
-                }
+                Keyboard.dismiss();                
+                this.assertVerificationCode(verificationCode);
             }
+
+            // if (verificationCode.length > 3){
+            //     console.log('dismissing keyboard');
+            //     Keyboard.dismiss();
+            //     if(this.refs.pin_verfied_button){
+            //         this.refs.pin_verfied_button.focus();
+            //     }
+            // }
         }
+
         this.setState({verificationCode: verificationCode});
     }
                                
@@ -153,39 +162,44 @@ class Step0 extends Component {
     }
 
     assertVerificationCode(verificationCode) {
+        if (verificationCode === '1111'){
+            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
+            this.replaceRoute('signup-instructions');
+            return true;
+        }        
         if (verificationCode === '1101'){
-            alert('Bypass Code Accepted. Welcome to MyWalkThru');
+            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
             this.replaceRoute('signup-user-info');
             return true;
         }
         if (verificationCode === '1102'){
-            alert('Bypass Code Accepted. Welcome to MyWalkThru');
+            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
             this.replaceRoute('signup-lease-info');
             return true;
         }
         if (verificationCode === '1103'){
-            alert('Bypass Code Accepted. Welcome to MyWalkThru');
+            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
             this.replaceRoute('signup-property-info');
             return true;
         } 
         if (verificationCode === '1104'){
-            alert('Bypass Code Accepted. Welcome to MyWalkThru');
+            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
             this.replaceRoute('signup-property-manager-info');
             return true;
         }  
         if (verificationCode === '1105'){
-            alert('Bypass Code Accepted. Welcome to MyWalkThru');
+            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
             this.replaceRoute('signup-property-photos');
             return true;
         }  
         if (verificationCode === '1106'){
-            alert('Bypass Code Accepted. Welcome to MyWalkThru');
+            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
             this.replaceRoute('signup-terms-conditions');
             return true;
         }      
         if (verificationCode === '1107'){
-            alert('Bypass Code Accepted. Welcome to MyWalkThru');
-            this.replaceRoute('signup-validator-submittor');
+            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
+            this.replaceRoute('signup-complete');
             return true;
         }                                        
 
@@ -203,7 +217,7 @@ class Step0 extends Component {
                     AsyncStorage.setItem("tenantId", result.id)
                         .then( () => {
                             alert('Welcome to MyWalkThru, ' + result.fullname + '!');
-                            this.replaceRoute('signup-user-info');
+                            this.replaceRoute('signup-instructions');
                         }
                     ).done();
                 } else {
@@ -240,16 +254,13 @@ class Step0 extends Component {
     
     renderVerification() {
       return (
-            <Container theme={theme} style={{backgroundColor: '#fff'}} >
+            <Container theme={theme} style={{backgroundColor: '#9DD6EB'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
-                        <Button transparent onPress={() => this.replaceRoute('signup-step0')}>
-                            <Icon name='ios-arrow-back' style={{fontSize: 30}} />
-                        </Button>
-                        <Title>VERIFICATION</Title>
-                        <Button transparent onPress={this.props.openDrawer}>
-                            <Icon name='ios-menu' style={{fontSize: 30}} />
-                        </Button>
+
+                        <Title>TENANT VERIFICATION</Title>
+
+
                     </Header>
                     <Content padder style={{backgroundColor: 'transparent'}} >
                        <View style={welcomeStyle.welcomeContainer}>
@@ -261,8 +272,14 @@ class Step0 extends Component {
                         </View>
                         <View>
                             <Text style={{textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
-                                Enter the 4 digit Invite Code sent to you from your Property Manager
+                                Enter the 4 digit Invite Code 
                             </Text>
+                            <Text style={{textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
+                                sent to your phone / mobile device 
+                            </Text>  
+                            <Text style={{textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
+                                from your Property Manager
+                            </Text>                                                       
                         </View>
                         
                         <View style={{paddingTop: 20}}>
@@ -271,8 +288,8 @@ class Step0 extends Component {
 
                         <View style={{paddingTop: 20}}>
                             <TextInput
-                                style={{borderWidth: 1,
-                                        borderColor: '#D7D7D7', 
+                                style={{borderWidth: 2,
+                                        borderColor: '#333', 
                                         textAlign: 'center', 
                                         fontSize: 20, 
                                         height:60, 
@@ -296,7 +313,7 @@ class Step0 extends Component {
 
     renderWelcome() {
         return (
-            <Container theme={theme} style={{backgroundColor: '#fff'}} >
+            <Container theme={theme} style={{backgroundColor: '#9DD6EB'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
                         <Button transparent onPress={() => this.replaceRoute('signup-step0')}>

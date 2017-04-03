@@ -29,9 +29,9 @@ module.exports = {
     // marginBottom: 10,
   },
   welcomeImage: {
-    marginTop: 50,
-    width: 300,
-    height: 400
+    marginTop: 25,
+    width: 200,
+    height: 200
   },
   getStartedContainer: {
     alignItems: 'center',
