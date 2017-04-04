@@ -54,7 +54,8 @@
     "rx": "^4.1.0",
     "shortid": "^2.2.6",
     "tcomb-form-native": "^0.6.4",
-    "tipsi-stripe": "^2.0.0"
+    "tipsi-stripe": "^2.0.0",
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
     "babel-preset-react-native": "^1.9.1",

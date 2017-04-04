@@ -86,9 +86,9 @@ class SideBar extends Component {
             <Content style={styles.sidebar} >
                <Image source={require('../../assets/images/house02.jpg')} style={{resizeMode: 'cover', opacity: 1.0}}>
 
-                   <Thumbnail size={620} style={{resizeMode: 'contain', marginTop: 10, opacity: 1.0}} source={require('../../assets/images/logo.png')} />
+                   <Thumbnail size={500} style={{resizeMode: 'contain', marginTop: 7}} source={require('../../assets/images/logo.png')} />
 
-                   <List style={{paddingTop: 20}}>
+                   <List style={{paddingTop: 1}}>
                         <ListItem button onPress={() => this.navigateTo('home')} iconLeft style={styles.links} >
                           <Icon style={styles.sidebarIcon} name='ios-home-outline' />
                           <Text style={styles.text}>Home</Text>
@@ -97,6 +97,14 @@ class SideBar extends Component {
                          <Icon style={styles.sidebarIcon} name='ios-list-box-outline' />
                          <Text style={styles.text}>Continue WalkThru</Text>
                        </ListItem>
+                       <ListItem button onPress={() => this.navigateTo('signup-lease-info')} iconLeft style={styles.links} >
+                           <Icon style={styles.sidebarIcon} name='ios-folder-outline' />
+                           <Text style={styles.text}>Lease Info</Text>
+                       </ListItem>                       
+                       <ListItem button onPress={() => this.navigateTo('signup-property-manager-info')} iconLeft style={styles.links} >
+                           <Icon style={styles.sidebarIcon} name='ios-folder-outline' />
+                           <Text style={styles.text}>Property Manager</Text>
+                       </ListItem>                       
                        <ListItem button onPress={() => this.navigateTo('signup-property-info')} iconLeft style={styles.links} >
                            <Icon style={styles.sidebarIcon} name='ios-folder-outline' />
                            <Text style={styles.text}>Property Info</Text>
@@ -118,18 +126,44 @@ class SideBar extends Component {
         return (
            <Content style={styles.sidebar} >
 
-             <Image source={require('../../assets/images/3d-house-1.png')} style={{resizeMode: 'cover', opacity: 0.8}}>
+             {/*<Image source={require('../../assets/images/3d-house-1.png')} style={{resizeMode: 'cover', opacity: 1.8}}>*/}
 
                   <Thumbnail size={500} style={{resizeMode: 'contain', marginTop: 7}} source={require('../../assets/images/logo.png')} />
-
-                  <List style={{paddingTop: 1}}>
-                         <ListItem button onPress={() => this.navigateTo('signup-step0')} iconLeft style={styles.links} >
+                
+                  <List style={{paddingTop: 1, height: 1000}}>
+                         {/*<ListItem button onPress={() => this.navigateTo('signup-step0')} iconLeft style={styles.links} >
                              <Icon style={styles.sidebarIcon} name='ios-happy-outline' />
                              <Text style={styles.text}>Welcome</Text>
-                         </ListItem>                     
-                   </List>
+                         </ListItem>      */}
 
-               </Image>
+                       <ListItem button onPress={() => this.navigateTo('home')} iconLeft style={styles.links} >
+                          <Icon style={styles.sidebarIcon} name='ios-home-outline' />
+                          <Text style={styles.text}>Home</Text>
+                        </ListItem>
+                       <ListItem button onPress={() => this.navigateTo('categories')} iconLeft style={styles.links} >
+                         <Icon style={styles.sidebarIcon} name='ios-list-box-outline' />
+                         <Text style={styles.text}>Continue WalkThru</Text>
+                       </ListItem>
+                       <ListItem button onPress={() => this.navigateTo('signup-lease-info')} iconLeft style={styles.links} >
+                           <Icon style={styles.sidebarIcon} name='ios-folder-outline' />
+                           <Text style={styles.text}>Lease Info</Text>
+                       </ListItem>                       
+                       <ListItem button onPress={() => this.navigateTo('signup-property-manager-info')} iconLeft style={styles.links} >
+                           <Icon style={styles.sidebarIcon} name='ios-folder-outline' />
+                           <Text style={styles.text}>Property Manager</Text>
+                       </ListItem>                       
+                       <ListItem button onPress={() => this.navigateTo('signup-property-info')} iconLeft style={styles.links} >
+                           <Icon style={styles.sidebarIcon} name='ios-folder-outline' />
+                           <Text style={styles.text}>Property Info</Text>
+                       </ListItem>
+                       <ListItem button onPress={() => this.navigateTo('signup-property-photos')} iconLeft style={styles.links} >
+                           <Icon style={styles.sidebarIcon} name='ios-photos-outline' />
+                           <Text style={styles.text}>Property Photos</Text>
+                       </ListItem>                                    
+                   </List>
+                 
+
+               {/*</Image>*/}
             </Content>
         );
     }

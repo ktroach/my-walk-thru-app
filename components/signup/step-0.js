@@ -40,22 +40,41 @@ class Step0 extends Component {
            authenticated: false,
            verificationCode: '',
            loaded: true,
-           verified: false
+           verified: false,
+           build: ''
       };
    }
 
    componentDidMount() {
-     if (this.userVerified()) {
-        console.log('user authenticated'); 
-        if (this.haveTheySignedUp()) {
-            console.log('user is signed up');
+        this.fetchBuildNumber();
+        if (this.userVerified()) {
+            console.log('user authenticated'); 
+            if (this.haveTheySignedUp()) {
+                console.log('user is signed up');
+            } else {
+                console.log('user has not signed up yet');
+            }
         } else {
-            console.log('user has not signed up yet');
-        }
-     } else {
-         console.log('user not verified: verificationCode not stored'); 
-     } 
+            console.log('user not verified: verificationCode not stored'); 
+        } 
    }
+
+   fetchBuildNumber(){
+        console.log('>>> ENTERED: fetchBuildNumber');
+        let query = 'https://mywalkthruapi.herokuapp.com/api/v1/Builds/58e3fb37322c8f1cd9a1de2c';
+        console.log('query: ', query);
+        fetch(query).then((response) => response.json()).then((responseData) => {
+            let build = responseData;
+            console.log('>>> build:', build);
+            if (build && 
+                build.buildNumber &&
+                build.version ) {
+                this.setState({build: build});
+            } else {
+                console.log('build not found...');
+            }
+        }).done();
+   }   
 
    userVerified() {
      try {
@@ -277,7 +296,7 @@ class Step0 extends Component {
                         </View>
                         <View>
                             <Text style={{color: '#0066cc', textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
-                                Enter the 4 digit Invite Code 
+                                Enter the 4-digit Invite Code 
                             </Text>
                             <Text style={{color: '#0066cc', textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
                                 sent to your phone / mobile device 
@@ -310,13 +329,16 @@ class Step0 extends Component {
                         </View>                        
 
                        </View>
+
+                       
                     </Content>
 
-                    <View>
-                        <Text style={{color: '#333', textAlign: 'left', fontSize: 8, paddingBottom: 10, marginLeft: 10}}>
-                            Build: 0230-49203940-29340990-32341
-                        </Text>  
+                    <View style={{alignSelf: 'center'}}>
+                        <Text style={{color: '#333', textAlign: 'left', fontSize: 10, paddingBottom: 10, marginLeft: 10}}>
+                             MyWalkThru.com © 2017, Build: {this.state.build.buildNumber}, Version: {this.state.build.version}
+                        </Text>                          
                     </View>
+
                 </Image>
             </Container>
       );

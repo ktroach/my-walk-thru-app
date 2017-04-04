@@ -6,7 +6,7 @@ var { StyleSheet, Platform } = React;
 
 var fontSizeBase = 14;
 // var largeFont = fontSizeBase * 2.0;
-var largeFont = fontSizeBase * 1.5;
+var largeFont = fontSizeBase * 1.2;
 
 // #232323
 module.exports = StyleSheet.create({
@@ -16,8 +16,8 @@ module.exports = StyleSheet.create({
         borderBottomColor: '#454545'
     },
     links: {
-        paddingTop: 10,
-        paddingBottom: 10,
+        paddingTop: 5,
+        paddingBottom: 5,
         // borderBottomColor: '#454545'
     },
     sidebarIcon: {

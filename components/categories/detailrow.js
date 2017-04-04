@@ -18,7 +18,8 @@ import {
    StatusBar,
    Switch,
    ScrollView,
-   KeyboardAvoidingView
+   KeyboardAvoidingView,
+   Dimensions
 } from 'react-native';
 import Expo, {
    Components,
@@ -131,7 +132,13 @@ class DetailRow extends React.Component {
                        {this.renderSegmentControl(this.state.item)}
                     </CardItem>
                     <CardItem header>
-                       <Text>Comments/Photos</Text>
+                       <Text style={{
+                              paddingVertical: 5, 
+                              paddingHorizontal: 5, 
+                              color: '#333', 
+                              fontSize: 18, 
+                              fontWeight: 'bold'
+                          }}>Summary of Attention Needed</Text>
                     </CardItem>
                     <CardItem>
                       {this.maybeRenderSummaryPhotosComments()}
@@ -160,8 +167,12 @@ class DetailRow extends React.Component {
      if (!summaryPhoto) {
        return;
      }
+
+     var screenWidth = Dimensions.get('window').width;
+
      return (
-       <View style={{
+
+       /*<View style={{
          marginTop: 10,
          width: 500,
          borderRadius: 3,
@@ -171,45 +182,69 @@ class DetailRow extends React.Component {
          shadowOffset: {width: 4, height: 4},
          shadowRadius: 5,
          alignSelf: 'center'
-       }}>
+       }}>*/
 
-         <KeyboardAvoidingView behavior={this.state.behavior} style={{backgroundColor: '#fafbfc'}}>
+         <ScrollView behavior={this.state.behavior} style={{backgroundColor: '#fafbfc'}}>
+           
            <Text
-             style={{paddingVertical: 5, paddingHorizontal: 5, color: '#333', fontSize: 18, fontWeight: 'bold'}}>
+             style={{
+                paddingVertical: 5, 
+                paddingHorizontal: 5, 
+                color: '#333', 
+                fontSize: 16, 
+                fontWeight: 'bold'
+            }}>
             Summary Comment
            </Text>
 
            <Textarea
-              placeholder=''
+              placeholder='Type a summary comment...'
               keyboardType='default'
-              autoCapitalize='none'
+              autoCapitalize='sentences' 
+              autoCorrect={false}
+              maxLength={1000}
+              clearButtonMode='while-editing'
               returnKeyType='done'
-              style={{fontSize: 14, backgroundColor: '#fff', color: '#333', height: 100, overflow: 'scroll'}}
+              style={{
+                fontSize: 14, 
+                backgroundColor: '#fff', 
+                color: '#333', 
+                height: 100, 
+                overflow: 'scroll'
+              }}
               onChangeText={this.updateSummaryComments.bind(this)}
               onBlur={this.saveSummaryComments()}
               value={this.state.summaryComments}>
            </Textarea>
 
-         </KeyboardAvoidingView>
-
-          <Text
-             style={{paddingVertical: 5, paddingHorizontal: 5, color: '#333', fontSize: 18, fontWeight: 'bold'}}>
-            Summary Photo
-           </Text>
-         <View style={{ flex: 1,
+           <Text
+              style={{
+                paddingVertical: 5, 
+                paddingHorizontal: 5, 
+                color: '#333', 
+                fontSize: 16, 
+                fontWeight: 'bold'
+              }}>
+              Summary Photo
+            </Text>
+            <View style={{ flex: 1,
                         justifyContent: 'center',
                         alignItems: 'center',
                         backgroundColor: '#fafbfc',}}>
              <Image
                source={{uri: summaryPhoto}}
-               style={{width: 300, height: 200}}
+               style={{width: screenWidth *.8, height: 200}}
              />
 
-        </View>
+            </View>           
+
+         </ScrollView>
+
+ 
 
 
 
-       </View>
+      //  </View>
      );
    }
 
