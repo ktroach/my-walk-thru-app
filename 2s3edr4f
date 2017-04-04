@@ -1,0 +1,10 @@
+
+           <Button rounded block
+              style={{alignSelf: 'center',
+                   marginTop: 5,
+                   backgroundColor: '#ad241f',
+                   borderRadius:90,
+                   width: 100,
+                   height:65}} onPress={() => this.saveSummaryComments()}>
+               <Text style={{fontSize: 16, fontWeight: 'bold', color: '#fff'}}>Save Comment</Text>
+           </Button>

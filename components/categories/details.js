@@ -141,14 +141,14 @@ class CategoryDetails extends React.Component {
           
               <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                    <Header>
-                      <Button onPress={() => this.replaceRoute('categories')}>
-                          <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
+                      <Button transparent onPress={() => this.replaceRoute('categories')}>
+                          <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32, color: '#fff'}} />
                       </Button>
 
                        <Title style={{fontSize: 20}}>{this.state.toolbarTitle}</Title>
 
-                       <Button onPress={this.props.openDrawer} >
-                           <Icon name='ios-add-outline' style={{fontSize: 30, lineHeight: 32}} />
+                       <Button transparent onPress={this.props.openDrawer} >
+                           <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32, color: '#fff'}} />
                        </Button>
                    </Header>
 

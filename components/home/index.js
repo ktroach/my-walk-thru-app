@@ -24,6 +24,8 @@ import { Container, Header, Title, Content, Button, Icon, List, ListItem, Text }
 import theme from '../../themes/form-theme';
 import styles from './styles';
 
+import * as Progress from 'react-native-progress';
+
 class Home extends Component {
     constructor(props) {
         super(props);
@@ -32,9 +34,26 @@ class Home extends Component {
             termsAcceptedOn: "",
             leaseBeginsOn: "",
             deadlineDate: "",
-            daysLeft: ""
+            daysLeft: "",
+            progress: 0,
+            indeterminate: true
        };
     }
+  
+    animate() {
+      let progress = 0;
+      this.setState({ progress });
+      setTimeout(() => {
+        this.setState({ indeterminate: false });
+        setInterval(() => {
+          progress += Math.random() / 5;
+          if (progress > 1) {
+            progress = 1;
+          }
+          this.setState({ progress });
+        }, 1000);
+      }, 3000);
+    }    
 
     replaceRoute(route) {
         this.props.replaceRoute(route);
@@ -111,16 +130,30 @@ class Home extends Component {
         //  alert('deadlineDate:', deadlineDate);
       }
 
+      // this.animate();
+
     }
+
+// <View style={styles.progressContainer}>
+// <View style={styles.circles}>
+// <Progress.Circle
+//   style={styles.progress}
+//   progress={this.state.progress}
+//   indeterminate={this.state.indeterminate}
+//   showsText={true}
+// />
+// </View>
+// </View> 
 
     render() {
       return (
           <Container theme={theme} style={{backgroundColor: '#fff'}}>
               <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                    <Header>
-                       <Button transparent onPress={() => this.replaceRoute('signup-step0')}>
-                           <Icon name='ios-arrow-back' style={{fontSize: 30}} />
-                       </Button>
+
+                       <Button transparent>
+                           <Icon name='ios-happy-outline' style={{fontSize: 30, lineHeight: 32}} />
+                       </Button>                     
 
                        <Title>Home</Title>
 
@@ -128,25 +161,68 @@ class Home extends Component {
                            <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
                        </Button>
                    </Header>
+                   
 
                    <Content padder style={{backgroundColor: 'transparent'}}>
+
+                        <View style={styles.progressContainer}>
+                          <Text style={{color:'rgba(0, 122, 255, 1)', fontWeight: 'bold', fontSize: 20}}>YOU HAVE </Text>
+                          <View style={styles.circles}>
+                            <Progress.Pie
+                              style={styles.progress}
+                              progress={0.25} 
+                              size={200}
+                              showsText={true}
+                            />
+                          </View>
+                          <Text style={{color:'rgba(0, 122, 255, 1)', fontWeight: 'bold', fontSize: 20}}> {this.getDaysLeft()} DAYS LEFT</Text>
+                        </View>                      
+
+                        <View style={{marginTop: 20}}>
+                        <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>COMPLETED</Text>
                          <List>
-                            <ListItem iconLeft >
-                               <Icon name='ios-checkmark-circle-outline'/>
-                               <Text>Completed Sign Up</Text>
-                               <Text style={{fontWeight: '400'}} note>{this.state.termsAcceptedOn}</Text>
-                            </ListItem>
-                            <ListItem iconLeft >
-                               <Icon name='ios-megaphone'/>
-                               <Text>You have {this.getDaysLeft()} days left to complete your Walk Thru.</Text>
-                               <Text style={{fontWeight: '400'}} note>{this.state.deadlineDate}</Text>
+                            <ListItem iconRight >
+                               <Icon name='ios-checkmark-circle-outline' style={{color:'green'}} />
+                               <Text style={{fontWeight: 'bold', color:'green'}} >Completed Sign Up</Text>
                             </ListItem>
                         </List>
+                        </View>
 
+                        <View style={{marginTop: 20}}>
+                        <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>IN PROGRESS</Text>
+                         <List>
+                            <ListItem iconRight>
+                              <Icon name='ios-arrow-forward' style={{color:'rgba(0, 122, 255, 1)'}} />
+                              <Text style={{fontWeight: 'bold', color:'rgba(0, 122, 255, 1)'}} onPress={() => this.replaceRoute('signup-property-photos')}>Take a Photo of the Front of the Property</Text>
+                            </ListItem>
+                            <ListItem iconRight>
+                              <Icon name='ios-arrow-forward' style={{color:'rgba(0, 122, 255, 1)'}} />
+                              <Text style={{fontWeight: 'bold', color:'rgba(0, 122, 255, 1)'}} 
+                                    onPress={() => this.replaceRoute('categories')}>
+                                Continue your Walkthru on the Property</Text>
+                            </ListItem>                            
+                            <ListItem iconRight>
+                              <Icon name='ios-arrow-forward' style={{color:'rgba(0, 122, 255, 1)'}} />
+                              <Text style={{fontWeight: 'bold', color:'rgba(0, 122, 255, 1)'}}  onPress={() => this.replaceRoute('submittal')}>Submit your Walkthru for approval</Text>
+                            </ListItem>                             
+                        </List>           
+                        </View>                          
 
-                        <Text style={{color:'#fff', fontWeight: 'bold'}}>STEPS LEFT TO COMPLETE:</Text>
+                        {/*
 
-                        
+                        <View style={{marginTop: 10}}>
+                        <Text style={{color:'#333', fontWeight: 'bold'}}>PENDING</Text>
+                         <List>
+                            <ListItem iconRight>
+                              <Icon name='ios-arrow-forward' style={{color:'rgba(0, 122, 255, 1)'}} />
+                              <Text style={{fontWeight: 'bold', color:'rgba(0, 122, 255, 1)'}} onPress={() => this.replaceRoute('signup-property-photos')}>Take a Photo of the Front of the Property</Text>
+                            </ListItem>
+                            <ListItem iconRight>
+                              <Icon name='ios-arrow-forward' style={{color:'rgba(0, 122, 255, 1)'}} />
+                              <Text style={{fontWeight: 'bold', color:'rgba(0, 122, 255, 1)'}}  onPress={() => this.replaceRoute('submittal')}>Submit your Walkthru for approval</Text>
+                            </ListItem>                            
+                        </List>           
+                        </View>                            
 
                         <Button rounded block
                           style={{alignSelf: 'center',
@@ -168,9 +244,7 @@ class Home extends Component {
                                   height:65}}
                           onPress={() => this.replaceRoute('categories')}>
                             <Text style={{color:'#fff', fontWeight: 'bold'}}>CONTINUE YOUR WALKTHRU</Text>
-                        </Button>
-
-                        {/*
+                        </Button>                        
                           <Button rounded block
                              style={{alignSelf: 'center',
                                   marginTop: 40,
@@ -181,8 +255,6 @@ class Home extends Component {
                             onPress={() => this.replaceRoute('categories')}>
                               <Text>WALKTHRU PROGRESS CHARTS</Text>
                           </Button>
-                          */}
-
 
                        <Button rounded block
                           style={{alignSelf: 'center',
@@ -193,9 +265,16 @@ class Home extends Component {
                                height:65}}
                          onPress={() => this.replaceRoute('submittal')}>
                            <Text style={{color:'#fff', fontWeight: 'bold'}}>SUBMIT WALKTHRU FOR APPROVAL</Text>
-                       </Button>
+                       </Button>                          
+                          */}
+
+
+
 
                    </Content>
+
+
+
               </Image>
           </Container>
       );

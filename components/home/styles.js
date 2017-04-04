@@ -24,7 +24,17 @@ module.exports = StyleSheet.create({
     text: {
         marginBottom: 10,
         fontSize: 18
-    }
+    },
+    progressContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+       
+    },
+    progress: {
+        margin: 5,
+    },    
 });
 
 //

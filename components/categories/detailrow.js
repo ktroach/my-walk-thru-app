@@ -122,7 +122,7 @@ class DetailRow extends React.Component {
                 <Title style={{fontSize: 20, color: '#333'}}>{this.state.item.name}</Title>
             </Header>
 
-            <View padder style={{backgroundColor: '#fff'}} >
+            <View padder style={{backgroundColor: '#fafbfc'}} >
                 <Card transparent foregroundColor="#000">
                     <CardItem header>
                        <Text>Condition</Text>
@@ -162,8 +162,8 @@ class DetailRow extends React.Component {
      }
      return (
        <View style={{
-         marginTop: 30,
-         width: 333,
+         marginTop: 10,
+         width: 500,
          borderRadius: 3,
          elevation: 2,
          shadowColor: 'rgba(0,0,0,1)',
@@ -172,33 +172,42 @@ class DetailRow extends React.Component {
          shadowRadius: 5,
          alignSelf: 'center'
        }}>
-         <View style={{width: 300, borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
+
+         <KeyboardAvoidingView behavior={this.state.behavior} style={{backgroundColor: '#fafbfc'}}>
+           <Text
+             style={{paddingVertical: 5, paddingHorizontal: 5, color: '#333', fontSize: 18, fontWeight: 'bold'}}>
+            Summary Comment
+           </Text>
+
+           <Textarea
+              placeholder=''
+              keyboardType='default'
+              autoCapitalize='none'
+              returnKeyType='done'
+              style={{fontSize: 14, backgroundColor: '#fff', color: '#333', height: 100, overflow: 'scroll'}}
+              onChangeText={this.updateSummaryComments.bind(this)}
+              onBlur={this.saveSummaryComments()}
+              value={this.state.summaryComments}>
+           </Textarea>
+
+         </KeyboardAvoidingView>
+
+          <Text
+             style={{paddingVertical: 5, paddingHorizontal: 5, color: '#333', fontSize: 18, fontWeight: 'bold'}}>
+            Summary Photo
+           </Text>
+         <View style={{ flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: '#fafbfc',}}>
              <Image
                source={{uri: summaryPhoto}}
                style={{width: 300, height: 200}}
              />
-         </View>
-         <KeyboardAvoidingView behavior={this.state.behavior} style={{backgroundColor: '#fff'}}>
-           <Text
-             style={{paddingVertical: 5, paddingHorizontal: 5, color: '#fff', fontSize: 14, fontWeight: '500'}}>
-             Brief Description
-           </Text>
-           <Textarea
-              placeholder=""
-              style={{backgroundColor: '#fff', color: '#333', height: 100, overflow: 'scroll', borderWidth: 1,  borderColor: '#C8C7CC'}}
-              onChangeText={this.updateSummaryComments.bind(this)}
-              value={this.state.summaryComments}>
-           </Textarea>
-           <Button rounded block
-              style={{alignSelf: 'center',
-                   marginTop: 5,
-                   backgroundColor: '#ad241f',
-                   borderRadius:90,
-                   width: 300,
-                   height:65}} onPress={() => this.saveSummaryComments()}>
-               <Text style={{fontSize: 16, fontWeight: 'bold', color: '#fff'}}>Save Comment</Text>
-           </Button>
-         </KeyboardAvoidingView>
+
+        </View>
+
+
 
        </View>
      );

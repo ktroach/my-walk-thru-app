@@ -257,7 +257,7 @@ class CommentsAndPhotos extends Component {
         const title = this.state.categoryName + ' - ' + this.state.item.name;
 
         return (
-            <Container theme={theme} style={{backgroundColor: '#333'}} >
+            <Container theme={theme} style={{backgroundColor: '#fafbfc'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
 
                     <Header>

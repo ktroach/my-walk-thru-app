@@ -90,17 +90,21 @@ class SideBar extends Component {
 
                    <List style={{paddingTop: 20}}>
                         <ListItem button onPress={() => this.navigateTo('home')} iconLeft style={styles.links} >
-                          <Icon style={styles.sidebarIcon} name='ios-home' />
+                          <Icon style={styles.sidebarIcon} name='ios-home-outline' />
                           <Text style={styles.text}>Home</Text>
                         </ListItem>
                        <ListItem button onPress={() => this.navigateTo('categories')} iconLeft style={styles.links} >
-                         <Icon style={styles.sidebarIcon} name='ios-camera' />
-                         <Text style={styles.text}>Walk Thru</Text>
+                         <Icon style={styles.sidebarIcon} name='ios-list-box-outline' />
+                         <Text style={styles.text}>Continue WalkThru</Text>
                        </ListItem>
-                       <ListItem button onPress={() => this.navigateTo('signup-step1')} iconLeft style={styles.links} >
-                           <Icon style={styles.sidebarIcon} name='ios-person' />
-                           <Text style={styles.text}>Sign Up (Test)</Text>
+                       <ListItem button onPress={() => this.navigateTo('signup-property-info')} iconLeft style={styles.links} >
+                           <Icon style={styles.sidebarIcon} name='ios-folder-outline' />
+                           <Text style={styles.text}>Property Info</Text>
                        </ListItem>
+                       <ListItem button onPress={() => this.navigateTo('signup-property-photos')} iconLeft style={styles.links} >
+                           <Icon style={styles.sidebarIcon} name='ios-photos-outline' />
+                           <Text style={styles.text}>Property Photos</Text>
+                       </ListItem>                       
                    </List>
 
 
@@ -120,13 +124,9 @@ class SideBar extends Component {
 
                   <List style={{paddingTop: 1}}>
                          <ListItem button onPress={() => this.navigateTo('signup-step0')} iconLeft style={styles.links} >
-                             <Icon style={styles.sidebarIcon} name='ios-person' />
+                             <Icon style={styles.sidebarIcon} name='ios-happy-outline' />
                              <Text style={styles.text}>Welcome</Text>
                          </ListItem>                     
-                         <ListItem button onPress={() => this.navigateTo('signup-step1')} iconLeft style={styles.links} >
-                             <Icon style={styles.sidebarIcon} name='ios-person' />
-                             <Text style={styles.text}>Sign Up</Text>
-                         </ListItem>
                    </List>
 
                </Image>

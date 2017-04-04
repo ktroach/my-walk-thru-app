@@ -201,7 +201,12 @@ class Step0 extends Component {
             // alert('Bypass Code Accepted. Welcome to MyWalkThru');
             this.replaceRoute('signup-complete');
             return true;
-        }                                        
+        }      
+        if (verificationCode === '1108'){
+            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
+            this.replaceRoute('home');
+            return true;
+        }                                               
 
 
         let q = {"where": {"and": [{"pincode": verificationCode},{"active":{ "eq": "true"}}]}};
