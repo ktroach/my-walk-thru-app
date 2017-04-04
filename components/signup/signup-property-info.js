@@ -141,31 +141,104 @@ export class SignUpPropertyInfo extends Component {
 
             let now = new Date();
 
-            let street1 = formData.PropertyLocationSection.street1;
-            let street2 = formData.PropertyLocationSection.street2;
-            let city = formData.PropertyLocationSection.city;
-            let stateName = formData.PropertyLocationSection.stateActionCell;
-            let zip = formData.PropertyLocationSection.zip;
-            let geocode = formData.PropertyLocationSection.geocode;            
+            if (!formData){
+                alert('Failed to Save: Invalid tenantId');
+                return;                
+            }
 
-            let propertyType = formData.PropertyTypeSection.propertyTypeActionCell;
+            let street1 = '';
+            let street2 = '';
+            let city  = '';
+            let stateName = '';
+            let zip  = '';
+            let geocode = '';           
 
-            let bedrooms = formData.BedsBathsSection.bedroomsActionCell;
-            let bathrooms = formData.BedsBathsSection.bathroomsActionCell;
+            let propertyType = '';
 
-            let dining = formData.RoomsSection.diningSwitchCell;
-            let laundry = formData.RoomsSection.laundrySwitchCell;
-            let family = formData.RoomsSection.familySwitchCell;
-            let game = formData.RoomsSection.gameSwitchCell;
+            let bedrooms = '';
+            let bathrooms = '';
 
-            let centralAir = formData.HeatingCoolingSection.centralAirSwitchCell;
-            let centralHeat = formData.HeatingCoolingSection.centralHeatSwitchCell;
-            let forcedAir = formData.HeatingCoolingSection.forcedSwitchCell;
-            let windowUnit = formData.HeatingCoolingSection.windowUnitwitchCell;
+            let dining = '';
+            let laundry = '';
+            let family = '';
+            let game = '';
 
-            let stories = formData.StoriesSection.storiesActionCell;
+            let centralAir = '';
+            let centralHeat  = '';
+            let forcedAir = '';
+            let windowUnit = '';
 
-            let parking = formData.ParkingSection.parkingActionCell;
+            let stories = '';
+
+            let parking = '';           
+
+            if (formData.PropertyLocationSection){
+                if (formData.PropertyLocationSection.street1) street1 = formData.PropertyLocationSection.street1;
+                if (formData.PropertyLocationSection.street2) street2 = formData.PropertyLocationSection.street2;
+                if (formData.PropertyLocationSection.city) city = formData.PropertyLocationSection.city;
+                if (formData.PropertyLocationSection.stateName) stateName = formData.PropertyLocationSection.stateActionCell;
+                if (formData.PropertyLocationSection.zip) zip = formData.PropertyLocationSection.zip;
+                // if (formData.PropertyLocationSection.geocode) geocode = formData.PropertyLocationSection.geocode;
+            }
+            
+            if (formData.PropertyTypeSection){
+                if (formData.PropertyTypeSection.propertyType) propertyType = formData.PropertyTypeSection.propertyTypeActionCell;
+            }
+
+            if (formData.BedsBathsSection){
+                if (formData.BedsBathsSection.bedroomsActionCell) bedrooms = formData.BedsBathsSection.bedroomsActionCell;
+                if (formData.BedsBathsSection.bathroomsActionCell) bathrooms = formData.BedsBathsSection.bathroomsActionCell;
+            }
+
+            if (formData.RoomsSection){
+                if (formData.RoomsSection.diningSwitchCell) dining = formData.RoomsSection.diningSwitchCell;
+                if (formData.RoomsSection.laundrySwitchCell) laundry = formData.RoomsSection.laundrySwitchCell;
+                if (formData.RoomsSection.familySwitchCell) family = formData.RoomsSection.familySwitchCell;
+                if (formData.RoomsSection.gameSwitchCell) game = formData.RoomsSection.gameSwitchCell;
+            }
+
+            if (formData.HeatingCoolingSection){
+                if (formData.HeatingCoolingSection.centralAirSwitchCell) centralAir = formData.HeatingCoolingSection.centralAirSwitchCell;
+                if (formData.HeatingCoolingSection.centralHeatSwitchCell) centralHeat = formData.HeatingCoolingSection.centralHeatSwitchCell;
+                if (formData.HeatingCoolingSection.forcedSwitchCell) forcedAir = formData.HeatingCoolingSection.forcedSwitchCell;
+                if (formData.HeatingCoolingSection.windowUnitwitchCell) windowUnit = formData.HeatingCoolingSection.windowUnitwitchCell;
+            }
+
+            if (formData.StoriesSection){
+                if (formData.StoriesSection.storiesActionCell) stories = formData.StoriesSection.storiesActionCell;
+            }
+            
+            if (formData.ParkingSection){
+                if (formData.ParkingSection.parkingActionCell) parking = formData.ParkingSection.parkingActionCell;
+            }
+
+            if (!propertyType || propertyType.length===0){
+                propertyType = 'Single Family';
+            }            
+            
+            if (!bedrooms || bedrooms.length===0){
+                bedrooms = '3';
+            }
+
+            if (!bathrooms || bathrooms.length===0){
+                bathrooms = '2';
+            } 
+
+            if (!stories || stories.length===0){
+                stories = 'Single Story';
+            }    
+
+            if (!parking || parking.length===0){
+                parking = '1+ Car Garage';
+            }  
+
+            if (!centralAir || centralAir.length===0){
+                centralAir = 'true';
+            }           
+
+            if (!centralHeat || centralHeat.length===0){
+                centralHeat = 'true';
+            }                                                     
 
             var data = JSON.stringify({
                 "propertyType": propertyType,
@@ -200,6 +273,11 @@ export class SignUpPropertyInfo extends Component {
         console.log('>>ENTERED validateFormData');
         console.log('>>> formData: ', formData);
 
+        if (!formData) {
+            alert('Input is required');
+            return false;
+        }           
+
         if (!formData.PropertyLocationSection) {
             alert('Address is required');
             return false;
@@ -225,30 +303,35 @@ export class SignUpPropertyInfo extends Component {
             return false;
         }  
 
-        // if (!formData.PropertyTypeSection.propertyType) {
-        //     alert('Property Type is required');
-        //     return false;
-        // }           
+        if (!formData.PropertyTypeSection ||
+            !formData.PropertyTypeSection.propertyType) {
+            alert('Property Type is required');
+            return false;
+        }           
 
-        // if (!formData.BedsBathsSection.bedroomsActionCell) {
-        //     alert('Number of Bedrooms is required');
-        //     return false;
-        // }  
+        if (!formData.BedsBathsSection ||
+            !formData.BedsBathsSection.bedroomsActionCell) {
+            alert('Number of Bedrooms is required');
+            return false;
+        }  
 
-        // if (!formData.BedsBathsSection.bathroomsActionCell) {
-        //     alert('Number of Bathrooms is required');
-        //     return false;
-        // }   
+        if (!formData.BedsBathsSection|| 
+            !formData.BedsBathsSection.bathroomsActionCell) {
+            alert('Number of Bathrooms is required');
+            return false;
+        }   
 
-        // if (!formData.StoriesSection.storiesActionCell) {
-        //     alert('Number of Stories is required');
-        //     return false;
-        // } 
+        if (!formData.StoriesSection || 
+            !formData.StoriesSection.storiesActionCell) {
+            alert('Number of Stories is required');
+            return false;
+        } 
 
-        // if (!formData.ParkingSection.parkingActionCell) {
-        //     alert('Parking selection is required');
-        //     return false;
-        // }                                
+        if (!formData.ParkingSection || 
+            !formData.ParkingSection.parkingActionCell) {
+            alert('Parking selection is required');
+            return false;
+        }                                
 
         return true;      
     }    

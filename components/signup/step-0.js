@@ -276,13 +276,13 @@ class Step0 extends Component {
                            />
                         </View>
                         <View>
-                            <Text style={{textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
+                            <Text style={{color: '#0066cc', textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
                                 Enter the 4 digit Invite Code 
                             </Text>
-                            <Text style={{textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
+                            <Text style={{color: '#0066cc', textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
                                 sent to your phone / mobile device 
                             </Text>  
-                            <Text style={{textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
+                            <Text style={{color: '#0066cc', textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
                                 from your Property Manager
                             </Text>                                                       
                         </View>
@@ -294,7 +294,7 @@ class Step0 extends Component {
                         <View style={{paddingTop: 20}}>
                             <TextInput
                                 style={{borderWidth: 2,
-                                        borderColor: '#333', 
+                                        borderColor: '#0066cc', 
                                         textAlign: 'center', 
                                         fontSize: 20, 
                                         height:60, 
@@ -311,6 +311,12 @@ class Step0 extends Component {
 
                        </View>
                     </Content>
+
+                    <View>
+                        <Text style={{color: '#333', textAlign: 'left', fontSize: 8, paddingBottom: 10, marginLeft: 10}}>
+                            Build: 0230-49203940-29340990-32341
+                        </Text>  
+                    </View>
                 </Image>
             </Container>
       );

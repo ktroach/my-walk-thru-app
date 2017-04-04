@@ -95,7 +95,7 @@ class CategoryRow extends React.Component {
             <TouchableOpacity  style={styles.card} onPress={() => this.navigateTo('subcategories')}>
                <CardItem style={styles.cardHeader}  header  onPress={() => this.navigateTo('subcategories')}>
                    <Thumbnail circular size={50} source={require('../../assets/images/house.png')} />
-                   <H3 style={{ color: '#333', fontWeight:'bold' }}>{name}</H3>
+                   <H3 style={{ color: '#333', fontWeight:'bold', marginLeft: 8, marginTop: 5 }}>{name}</H3>
 
                    <Text style={styles.arrow}><Icon name="ios-arrow-forward" style={{ color: '#333'}} /></Text>
                </CardItem>

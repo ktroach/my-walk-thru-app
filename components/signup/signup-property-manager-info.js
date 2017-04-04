@@ -147,9 +147,17 @@ export class SignUpPropertyManagerInfo extends Component {
             }
 
             let now = new Date();
+            let companyName = '';
+
             let pmType = formData.PMTypeSection.pmTypeActionCell;
             let pmName = formData.PMNameSection.propertyManagerName;
-            let companyName = formData.CompanyNameSection.companyName;
+
+            if (formData && 
+                formData.CompanyNameSection && 
+                formData.CompanyNameSection.companyName) {
+                companyName = formData.CompanyNameSection.companyName;
+            }
+            
             let primaryEmail = formData.EmailSection.primaryEmail;
             let phoneNumber = formData.PhoneSection.phoneNumber;
 

@@ -54,9 +54,15 @@ var styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#9DD6EB',
   },  
+  slide5: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#97CAE5',
+  },    
   text: {
-    color: '#fff',
-    fontSize: 24,
+    color: '#0066cc',
+    fontSize: 20,
     fontWeight: 'bold',
   }
 });
@@ -137,7 +143,18 @@ export class SignUpInstructions extends Component {
                     <Text style={styles.text}>about the Property, your Lease, and You :)</Text>
                 </View>
 
+
                 <View style={styles.slide4}>
+
+                    <Image
+                        source={require('../../assets/images/logo.png')}
+                        style={{width: 200, height: 200}}
+                    />
+
+                    <Text style={styles.text}>It will only take a few minutes...</Text>
+                </View>                
+
+                <View style={styles.slide5}>
                     <Image
                         source={require('../../assets/images/logo.png')}
                         style={{width: 200, height: 200}}

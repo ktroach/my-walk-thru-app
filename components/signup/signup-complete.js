@@ -67,8 +67,8 @@ var styles = StyleSheet.create({
     backgroundColor: '#9DD6EB',
   },  
   text: {
-    color: '#fff',
-    fontSize: 24,
+    color: '#0066cc',
+    fontSize: 20,
     fontWeight: 'bold',
   }
 });

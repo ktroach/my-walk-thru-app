@@ -291,14 +291,7 @@ class CommentsAndPhotos extends Component {
 
                         <View style={{marginTop: 15}}>
 
-                          <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
-                              <Image
-                                source={{uri: this.state.image}}
-                                style={{width: 250, height: 250}}
-                              />
-                          </View>
-
-                          <View style={{backgroundColor: '#333', marginTop: 15}}>
+                         <View style={{backgroundColor: '#333', marginTop: 15}}>
 
                             <Text
                               style={{paddingVertical: 10, paddingHorizontal: 10, color: '#fff', fontSize: 14, fontWeight: '500'}}>
@@ -310,13 +303,26 @@ class CommentsAndPhotos extends Component {
                           <View style={{marginTop: 15}}>
 
                             <Textarea
-                               autoFocus = {true}
-                               style={{height: 100, backgroundColor: '#fff', color: '#333', borderWidth: 1,  borderColor: '#333'}}
-                               onChangeText={this.updateCloseUpComments.bind(this)}
-                               value={this.state.closeUpComments}>
+                                autoFocus = {true}
+                                placeholder=''
+                                keyboardType='default'
+                                autoCapitalize='none'
+                                returnKeyType='done'                               
+                                style={{height: 100, backgroundColor: '#fff', color: '#333', borderWidth: 1,  borderColor: '#333'}}
+                                onChangeText={this.updateCloseUpComments.bind(this)}
+                                value={this.state.closeUpComments}>
                             </Textarea>
 
+                          </View>                          
+
+                          <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
+                              <Image
+                                source={{uri: this.state.image}}
+                                style={{width: 250, height: 250}}
+                              />
                           </View>
+
+ 
 
 
 

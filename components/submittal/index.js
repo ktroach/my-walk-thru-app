@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Image, Linking, ActivityIndicator, TouchableOpacity, Platform, AsyncStorage } from 'react-native';
+import { Image, Linking, ActivityIndicator, TouchableOpacity, Platform, AsyncStorage, WebView } from 'react-native';
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -194,9 +194,6 @@ class Submittal extends Component {
 
                     <Content padder style={{backgroundColor: 'transparent'}}>
 
-
-
-
                         <View style={styles.box}>
                             <Card foregroundColor='#000'>
                                 <CardItem header>
@@ -247,7 +244,7 @@ class Submittal extends Component {
 
                                 <CardItem style={{height: 200}}>
                                   <View style={{flex: 1}}>
-                                      <Text>By Signing, you Agree that your WalkThru has been Completed:</Text>
+                                      <Text>By Signing, you authorize a copy of this property review to go to my landlord/property manager:</Text>
                                       <SignaturePad onError={this._signaturePadError}
                                                     onChange={this._signaturePadChange}
                                                     style={{flex: 1, backgroundColor: 'white'}}/>
@@ -278,9 +275,17 @@ class Submittal extends Component {
 
 
 
+
+
+
                         </View>
 
-
+                    <View style={{flex: 1, width: 500, height: 800}}>
+                        <WebView
+                            source={{uri: 'http://mysitedesign.mypmw.com/mywalkthru/home01'}}
+                            style={{marginTop: 20}}
+                        />                        
+                    </View>
 
 
 
