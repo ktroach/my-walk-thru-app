@@ -137,18 +137,8 @@ class Home extends Component {
                                <Text style={{fontWeight: '400'}} note>{this.state.termsAcceptedOn}</Text>
                             </ListItem>
                             <ListItem iconLeft >
-                               <Icon name='ios-checkmark-circle-outline'/>
-                               <Text>Lease Begins</Text>
-                               <Text style={{fontWeight: '400'}} note>{this.state.leaseBeginsOn}</Text>
-                            </ListItem>
-                            <ListItem iconLeft >
                                <Icon name='ios-megaphone'/>
                                <Text>You have {this.getDaysLeft()} days left to complete your Walk Thru.</Text>
-                               <Text style={{fontWeight: '400'}} note>{this.state.deadlineDate}</Text>
-                            </ListItem>
-                            <ListItem iconLeft >
-                               <Icon name='ios-person'/>
-                               <Text>You have until {this.getDueDate()} to complete your Walk Thru. </Text>
                                <Text style={{fontWeight: '400'}} note>{this.state.deadlineDate}</Text>
                             </ListItem>
                         </List>

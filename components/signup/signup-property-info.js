@@ -225,10 +225,10 @@ export class SignUpPropertyInfo extends Component {
             return false;
         }  
 
-        if (!formData.PropertyTypeSection.propertyType) {
-            alert('Property Type is required');
-            return false;
-        }           
+        // if (!formData.PropertyTypeSection.propertyType) {
+        //     alert('Property Type is required');
+        //     return false;
+        // }           
 
         // if (!formData.BedsBathsSection.bedroomsActionCell) {
         //     alert('Number of Bedrooms is required');

@@ -44,7 +44,7 @@ import Expo, {
 
 import { RNS3 } from 'react-native-aws3';
 
-import imagePicker from 'react-native-image-picker';
+// import imagePicker from 'react-native-image-picker';
 
 // import imagePicker from 'react-native-customized-image-picker';
 

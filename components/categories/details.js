@@ -338,7 +338,6 @@ class CategoryDetails extends React.Component {
                      onRefresh={this._onRefresh}
                   />
                }
-               renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
                enableEmptySections={true}
                dataSource={this.state.dataSource}
                renderRow={this.renderRow.bind(this)}
