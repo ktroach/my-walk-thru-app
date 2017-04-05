@@ -271,6 +271,8 @@ export class SignUpTermsConditions extends Component {
         if (values.pmPhoneNumber) values_pmPhoneNumber = values.pmPhoneNumber;
         if (values.pmEmail) values_pmEmail = values.pmEmail;
 
+        let userType = 'Tenant';
+
         var data = JSON.stringify(
         {
             "userId": userId,
@@ -278,7 +280,7 @@ export class SignUpTermsConditions extends Component {
             "fullName": values_fullName,
             "username": userId,
             "phoneNumber": values_phoneNumber,
-            "usertype": "Tenant",
+            "usertype": userType,
             "email": values_emailAddress,
             "password": "p@ss1word",
             "preferred_contact_method": "SMS",
@@ -359,7 +361,7 @@ export class SignUpTermsConditions extends Component {
                 headers: {
                 "Content-type": "application/json; charset=UTF-8"
                 },
-            body: data
+            body: patchData
         }).then((response) => response.json()).then((responseData) => {
 
             console.log('createUserAccount--RESPONSEDATA: ', responseData);

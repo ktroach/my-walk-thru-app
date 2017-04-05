@@ -107,11 +107,17 @@ class Step0 extends Component {
 
     render(){
       if (this.state.loaded){
+          // been verified? if theres a signUpDate then we know they have been verified.  
+          // theyre already logged-in to the app and get the welcome message ..
+          // if the signUpDate is saved in storage on the device render the welcome message 
          if (this.state.signUpDate && this.state.signUpDate.length>0) {
             return (
                this.renderWelcome()
             );
          } else {
+          // no signUpDate means no welcome message so do the verification screen ..
+          // if they complete signup we is save signupDate on the device and render the welcome message              
+          // otherwise verification 
             return (
                this.renderVerification()
             );
@@ -236,7 +242,8 @@ class Step0 extends Component {
             if (result && result.id) {
                 console.log('result.id:', result.id);
                 this.setState({verified: true});
-                this.deactivateCode(result.id);
+                // leave code active until final approval 
+                // this.deactivateCode(result.id);
                 if (result.fullname) {
                     AsyncStorage.setItem("tenantId", result.id)
                         .then( () => {
@@ -254,27 +261,28 @@ class Step0 extends Component {
         }).done();
     }    
 
-    deactivateCode(id){
-        let url = 'https://mywalkthruapi.herokuapp.com/api/v1/Tenants/' + id;
-        let now = new Date();
-        var data = JSON.stringify({
-            "active": "false",
-            "modified": now
-        });
-        fetch(url, {
-            method: 'PATCH',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        }).then((response) => response.json()).then((responseData) => {
-            console.log('verificationCode deactivated');
-            // console.log('responseData: ', responseData);
-        }).catch((error) => {
-            console.error(error);
-        }).done();      
-    }
+    // todo: move to final approval
+    // deactivateCode(id){
+    //     let url = 'https://mywalkthruapi.herokuapp.com/api/v1/Tenants/' + id;
+    //     let now = new Date();
+    //     var data = JSON.stringify({
+    //         "active": "false",
+    //         "modified": now
+    //     });
+    //     fetch(url, {
+    //         method: 'PATCH',
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify(data)
+    //     }).then((response) => response.json()).then((responseData) => {
+    //         console.log('verificationCode deactivated');
+    //         // console.log('responseData: ', responseData);
+    //     }).catch((error) => {
+    //         console.error(error);
+    //     }).done();      
+    // }
     
     renderVerification() {
       return (
@@ -282,7 +290,7 @@ class Step0 extends Component {
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
 
-                        <Title>TENANT VERIFICATION</Title>
+                        <Title>USER VERIFICATION</Title>
 
 
                     </Header>
@@ -299,10 +307,10 @@ class Step0 extends Component {
                                 Enter the 4-digit Invite Code 
                             </Text>
                             <Text style={{color: '#0066cc', textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
-                                sent to your phone / mobile device 
+                                you recieved on your 
                             </Text>  
                             <Text style={{color: '#0066cc', textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
-                                from your Property Manager
+                                Phone / Mobile Device / Email
                             </Text>                                                       
                         </View>
                         
@@ -373,6 +381,13 @@ class Step0 extends Component {
                          </View>
                        </View>
                     </Content>
+
+                    <View style={{alignSelf: 'center'}}>
+                        <Text style={{color: '#333', textAlign: 'left', fontSize: 10, paddingBottom: 10, marginLeft: 10}}>
+                             MyWalkThru.com © 2017, Build: {this.state.build.buildNumber}, Version: {this.state.build.version}
+                        </Text>                          
+                    </View>
+
                 </Image>
             </Container>
         )

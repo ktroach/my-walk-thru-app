@@ -119,7 +119,7 @@ class DetailRow extends React.Component {
              shadowRadius: 5,
             }}>
 
-            <Header style={{backgroundColor: '#fff'}}>
+            <Header style={{backgroundColor: '#fafbfc'}}>
                 <Title style={{fontSize: 20, color: '#333'}}>{this.state.item.name}</Title>
             </Header>
 
@@ -209,7 +209,7 @@ class DetailRow extends React.Component {
                 fontSize: 14, 
                 backgroundColor: '#fff', 
                 color: '#333', 
-                height: 100, 
+                height: 50, 
                 overflow: 'scroll'
               }}
               onChangeText={this.updateSummaryComments.bind(this)}
@@ -631,7 +631,7 @@ class DetailRow extends React.Component {
           item: item
        },
        {
-         label: 'Needs Attention',
+         label: '📷 Needs Attention',
          value: 'Needs Attention',
          item: item
        },
@@ -661,7 +661,7 @@ class DetailRow extends React.Component {
 
       return (
         <View style={{marginTop: 10, backgroundColor: 'white'}}>
-          <SegmentedControls
+          <SegmentedControls          
             options={options}
             onSelection={this.setSelectedOption.bind(this)}
             selectedIndex={selectedIndex}

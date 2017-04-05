@@ -168,6 +168,7 @@ export class SignUpPropertyInfo extends Component {
             let forcedAir = '';
             let windowUnit = '';
 
+
             let stories = '';
 
             let parking = '';           
@@ -304,7 +305,7 @@ export class SignUpPropertyInfo extends Component {
         }  
 
         if (!formData.PropertyTypeSection ||
-            !formData.PropertyTypeSection.propertyType) {
+            !formData.PropertyTypeSection.propertyTypeActionCell) {
             alert('Property Type is required');
             return false;
         }           
@@ -649,7 +650,7 @@ export class SignUpPropertyInfo extends Component {
                 helpText={'Select what type of parking is provided'}
             >
                 <ActionSheetCell
-                    ref={'storiesActionCell'}
+                    ref={'parkingActionCell'}
                     title={'Select Parking option'}
                     options={[' ', '1+ Car Garage', '3+ Car Garage', 'Carport']}
                     selectedValueIndex={0}
