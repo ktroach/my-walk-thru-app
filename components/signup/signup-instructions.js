@@ -10,6 +10,7 @@ import { popRoute } from '../../actions/route';
 import { pushNewRoute, replaceRoute } from '../../actions/route';
 
 import {
+    AsyncStorage,    
     AppRegistry,
     StyleSheet,
     Text,
@@ -114,7 +115,9 @@ export class SignUpInstructions extends Component {
             <Swiper style={styles.wrapper} showsButtons={true} loop={false}>
                 <View style={styles.slide1}>
 
-                     <Confetti ref={(node) => this._confettiView = node}/> 
+                     <Confetti ref={(node) => this._confettiView = node} 
+                         confettiCount={200} 
+                         timeOut={10} /> 
                    
                     <Image
                         source={require('../../assets/images/logo.png')}

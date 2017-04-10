@@ -12,6 +12,7 @@ import { popRoute } from '../../actions/route';
 import { pushNewRoute, replaceRoute } from '../../actions/route';
 
 import {
+    AsyncStorage,    
     AppRegistry,
     StyleSheet,
     Text,
@@ -81,10 +82,10 @@ export class SignUpPropertyInfo extends Component {
      } catch(err){
          console.log('Failed to get tenantId: ' + err);
 
-         //REMOVE!!!
-         let tenantId = '58decc07583ad3e4bab8b0ce';
-         console.log('REMOVE!!! USING TEST TENANTID...')
-         this.setState({tenantId: tenantId});
+        //  //REMOVE!!!
+        //  let tenantId = '58decc07583ad3e4bab8b0ce';
+        //  console.log('REMOVE!!! USING TEST TENANTID...')
+        //  this.setState({tenantId: tenantId});
 
      }       
    }    
@@ -543,8 +544,6 @@ export class SignUpPropertyInfo extends Component {
 
             </Section>  
 
-
-
             <Section
                 ref={'BedsBathsSection'}
                 title={'BEDROOMS / BATHROOMS'}
@@ -553,14 +552,14 @@ export class SignUpPropertyInfo extends Component {
                 <ActionSheetCell
                     ref={'bedroomsActionCell'}
                     title={'Bedrooms'}
-                    options={[' ','1','2','3','4','5+', 'Studio']}
+                    options={[' ','1','2','3','4','5+']}
                     selectedValueIndex={0}
                 />
 
                 <ActionSheetCell
                     ref={'bathroomsActionCell'}
                     title={'Bathrooms'}
-                    options={[' ', '½','1', '1½', '2', '2½', '3', '3½', '4', '4½', '5+']}
+                    options={[' ', '1', '1½', '2', '2½', '3', '3½', '4', '4½', '5+']}
                     selectedValueIndex={0}
                 /> 
 
@@ -652,7 +651,7 @@ export class SignUpPropertyInfo extends Component {
                 <ActionSheetCell
                     ref={'parkingActionCell'}
                     title={'Select Parking option'}
-                    options={[' ', '1+ Car Garage', '3+ Car Garage', 'Carport']}
+                    options={[' ', '1+ Car Garage', '3+ Car Garage', 'Carport', 'Driveway', 'Circle Driveway', 'Other']}
                     selectedValueIndex={0}
                 />
             </Section>              

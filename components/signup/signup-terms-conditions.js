@@ -12,6 +12,7 @@ import { popRoute } from '../../actions/route';
 import { pushNewRoute, replaceRoute } from '../../actions/route';
 
 import {
+    AsyncStorage,
     AppRegistry,
     StyleSheet,
     Text,
@@ -54,7 +55,8 @@ export class SignUpTermsConditions extends Component {
             tenantId: '',
             validated:  false,
             responseData: {},
-            termscolor: '#333'
+            termscolor: '#333',
+            tenantInfo: []
         }
     } 
 
@@ -79,17 +81,19 @@ export class SignUpTermsConditions extends Component {
         AsyncStorage.getItem("tenantId")
         .then( (tenantId) =>
               {
+                console.log('>>>>>>> GOT tenantId from AsyncStorage! ', tenantId);
                 this.setState({tenantId: tenantId});
               }
         )
         .done();
      } catch(err){
-         console.log('Failed to get tenantId: ' + err);
 
-         //REMOVE!!!
-         let tenantId = '58decc07583ad3e4bab8b0ce';
-         console.log('REMOVE!!! USING TEST TENANTID...')
-         this.setState({tenantId: tenantId});
+         console.log('>>>>>>> FAILED to GET tenantId from AsyncStorage! : ' + err);
+
+        //  //REMOVE!!!
+        //  let tenantId = '58decc07583ad3e4bab8b0ce';
+        //  console.log('REMOVE!!! USING TEST TENANTID...')
+        //  this.setState({tenantId: tenantId});
 
      }       
    }    
@@ -152,10 +156,18 @@ export class SignUpTermsConditions extends Component {
 
     saveData() {
         console.log('>>ENTERED: saveData');
+
         let formData = this.form.getData();
+
+        if (!formData) {
+            alert('Invalid formData');
+            return;
+        }        
+
         if (this.validateFormData(formData)) {
 
             let tenantId = this.state.tenantId;
+
             if (!tenantId) {
                 alert('Failed to Save: Invalid tenantId');
                 return;
@@ -163,266 +175,425 @@ export class SignUpTermsConditions extends Component {
 
             let now = new Date();
             let termsAccepted = formData.termsSection.acceptTermsSwitchCell;
+            let userId = shortid.generate();
 
             var data = JSON.stringify({
+                "userId": userId, 
                 "termsAccepted": termsAccepted,
                 "termsAcceptedOn": now,
                 "active": "true",
                 "modified": now
             });
 
-            this.saveFormData(tenantId, data, '');
+            this.saveFormData(tenantId, userId, data, '');
         }
     }
 
-    createUserAccount(tenantId, responseData){
-        console.log('>>ENTERED: createUserAccount');
-        // let responseData = this.state.responseData;
-        if (!responseData || responseData.length === 0) {
-            alert('Failed to Create User Account: Invalid data');
-            return;
-        }    
-
-        let values = responseData;
-
-        console.log('>>>>> values: ', values);
-
-        let userId = shortid.generate();
-        let signUpDate = moment().format();
-        let now = new Date();
-        let url = Config.USERS_API + '/';
-
-        let leaseBeginDate = values.leaseBegin;        
-
-        let addressLine = '';
-
-        let values_fullName = '';
-        let values_emailAddress = '';
-        let values_phoneNumber = '';
-        let values_termsAcceptedOn = '';
-        let values_propertyType = '';
-        let values_leaseBegin = '';
-        let values_leaseEnd = '';
-
-        let values_street1 = '';
-        let values_street2 = '';
-        let values_city = '';
-        let values_stateName = '';
-        let values_zip = '';
-
-        let values_bedrooms = '';
-        let values_bathrooms = '';
-        let values_leaseReason = '';
-
-        let values_pmType = '';
-        let values_pmCompanyName = '';
-        let values_pmName = '';
-        let values_pmPhoneNumber = '';
-        let values_pmEmail = '';
-
-
-        if (values && 
-            values.street1 && 
-            values.city && 
-            values.stateName && 
-            values.zip
-        ) {
-            addressLine = values.street1 + " " + values.city + ", " + values.stateName + " " + values.zip;
-        }
-
-        if (values && 
-            values.fullName 
-        ) {
-            values_fullName = values.fullName;
-        }        
+    buildUserAccountModel(tenantId, userId, cb) {
+        let fn = '>>> buildUserAccountModel ';
+        let mappedModel = {};
+        let values = {};
         
-        if (values && 
-            values.email 
-        ) {
-            values_emailAddress = values.email;
-            if (values_emailAddress === 'Kjjjj'){
-                values_emailAddress = 'test@test.it';
+        console.log('[ENTERED]', fn, '>>> tenantId: ', tenantId, '>>> userId: ', userId);
+
+        if (!tenantId){
+            alert('Error: Missing tenantId');
+            return;
+        }  
+
+        if (!userId){
+            alert('Error: Missing userId');
+            return;
+        }                
+
+        let now = moment().format();
+
+        let user = {
+            userType: '',
+            userId: userId,
+            password: shortid.generate(),
+            tenantId: tenantId,
+            signUpDate: now.toString(),
+            termsAccepted: true ,
+            termsAcceptedOn: now.toString(),                
+            fullName: '' ,
+            phoneNumber: '' ,
+            email: '' ,
+            gender: '' ,
+            birthday: '' ,        
+            leaseReason: '' ,
+            leaseBegin: '' ,
+            leaseEnd: '' ,
+            propertyType: '' ,
+            addressLine: '' ,
+            street1: '' ,
+            street2: '' ,
+            city: '' ,
+            stateName: '' ,
+            zip: '' ,
+            geocode: '' ,
+            bedrooms: '' ,
+            bathrooms: '' ,
+            dining: false ,
+            laundry: false ,
+            family: false ,
+            game: false ,
+            centralAir: false ,
+            centralHeat: false ,
+            forcedAir: false ,
+            windowUnit: false ,
+            stories: '' ,
+            parking: '' ,
+            pmType: '' ,
+            pmCompanyName: '' ,
+            pmName: '' ,
+            pmPhoneNumber: '' ,
+            pmEmail: ''   
+        }      
+
+        console.log(fn, '>>> invoking: fetchTenant');
+
+        this.fetchTenant(tenantId, function(err,res) {
+            if (err){
+                console.log(fn, '>>> Error: Failed to fetch tenant info: ', err);
+                return;
+            } else {
+                if(res){
+                    console.log(fn, '>>> fetched tenant info: ', res);
+
+                    if (!res || res.length===0){
+                        alert('Error: No values were provided in onboarding screens');
+                        return;
+                    }
+
+                    // note: tenant model 
+                    values = res;
+
+
+                    if (values.userType) user.userType = values.userType;
+
+
+
+                    if (values.fullName) user.fullName = values.fullName;
+                    if (values.email) user.email = values.email;
+                    if (values.phoneNumber) user.phoneNumber = values.phoneNumber;
+                    if (values.gender) user.gender = values.gender;
+                    if (values.birthday) user.birthday = values.birthday;
+
+
+
+                    if (values.leaseReason) user.leaseReason = values.leaseReason;
+                    if (values.leaseBegin) user.leaseBegin = values.leaseBegin;
+                    if (values.leaseEnd) user.leaseEnd = values.leaseEnd;                    
+
+
+
+                    if (values.propertyType) user.propertyType = values.propertyType;
+                    if (values.street1) user.street1 = values.street1;
+                    if (values.street2) user.street2 = values.street2;
+                    if (values.city) user.city = values.city;
+                    if (values.stateName) user.stateName = values.stateName;
+                    if (values.zip) user.zip = values.zip;
+
+
+
+                    if (user.street1 && user.city && user.state && user.zip){
+                        user.addressLine = user.street1 + ' ' + user.street2 + ' ' + user.city + ', ' + user.stateName + ' ' + user.zip;
+                    }
+
+                    if (values.geocode) user.geocode = values.geocode;
+
+                    if (values.bedrooms) user.bedrooms = values.bedrooms;
+                    if (values.bathrooms) user.bathrooms = values.bathrooms;
+
+
+
+                    if (values.dining) user.dining = values.dining;
+                    if (values.laundry) user.laundry = values.laundry;
+                    if (values.family) user.family = values.family;
+                    if (values.game) user.game = values.game;
+
+                    if (values.centralAir) user.centralAir = values.centralAir;
+                    if (values.centralHeat) user.centralHeat = values.centralHeat;
+                    if (values.forcedAir) user.forcedAir = values.forcedAir;
+                    if (values.windowUnit) user.windowUnit = values.windowUnit;
+
+                    if (values.stories) user.stories = values.stories;
+                    if (values.parking) user.parking = values.parking;                   
+
+                    if (values.pmType) user.pmType = values.pmType;
+                    if (values.pmCompanyName) user.pmCompanyName = values.pmCompanyName;
+                    if (values.pmName) user.pmName = values.pmName;
+                    if (values.pmPhoneNumber) user.pmPhoneNumber = values.pmPhoneNumber;
+                    if (values.pmEmail) user.pmEmail = values.pmEmail;
+
+                    let mappedModel = {
+                        "id": shortid.generate(),
+                        "tenantId": tenantId,
+                        "userId": userId,
+                        "email": shortid.generate()+"@me.com",
+                        "password": shortid.generate(),
+                        "username": shortid.generate(),
+                        "usertype": user.userType,  
+                        "status": "active",
+                        "fullName": user.fullName,
+                        "phoneNumber": user.phoneNumber,
+                        "preferred_contact_method": "SMS",
+                        "allow_sms_alerts": "true",
+                        "allow_emails": "true",
+                        "allow_data_usage": "true",
+                        "deleted": "false",
+                        "notes": "",
+                        "signatureUrl": "",
+                        "termsAcceptedOn": user.termsAcceptedOn,
+                        "report": {
+                            "title": "MyWalkThru Report (Tenant Copy)",
+                            "reportDate": "",
+                            "reportId": ""
+                        },
+                        "property": {
+                            "propertyType": user.propertyType,
+                            "addressLine": user.addressLine,
+                            "address1": user.street1,
+                            "address2": user.street2,
+                            "city": user.city,
+                            "state": user.stateName,
+                            "zip": user.zip,
+                            "photoUrl": "https://mywalkthru-pm-files.s3.amazonaws.com/photos%2FHyFcYY5nl___ry53ctchl.jpg",
+                            "dateObserved": "",
+                            "bedrooms": user.bedrooms,
+                            "bathrooms": user.bathrooms,
+
+                            "dining": user.dining,
+                            "laundry": user.laundry,
+                            "family": user.family,
+                            "game": user.game,
+                            "centralAir": user.centralAir,
+                            "centralHeat": user.centralHeat,
+                            "forcedAir": user.forcedAir,
+                            "windowUnit": user.windowUnit,
+                            "stories": user.stories,
+                            "parking": user.parking,
+
+                            "leaseReason": user.leaseReason,
+                            "leaseBegins": user.leaseBegin,
+                            "leaseEnds": user.leaseEnd                            
+                        },
+                        "propertyManager": {
+                            "landlordType": user.pmType,
+                            "company": user.pmCompanyName,
+                            "landLordName": user.pmName,
+                            "landLordPhone": user.pmPhoneNumber,
+                            "landLordEmail": user.pmEmail
+                        },
+                        "summary": [],
+                        "details": []
+                    }; 
+
+                    cb(null, mappedModel);
+
+                } else {
+                    console.log(fn, '>>> Error: Failed to fetch tenant info: ');
+                    return cb('didnt work', null);
+                }
             }
-        }           
+        }); 
 
-        values_termsAcceptedOn = now;
+        return mappedModel;
+    }
+  
 
-        // if (values && 
-        //     values.email 
-        // ) {
-        //     values_emailAddress = values.email;
-        // }           
-
-        if (values.propertyType) values_propertyType = values.propertyType;
-        if (values.leaseBegin) values_leaseBegin = values.leaseBegin;
-        if (values.leaseEnd) values_leaseEnd = values.leaseEnd;
-        if (values.street1) values_street1 = values.street1;
-        if (values.street2) values_street2 = values.street2;
-        if (values.city) values_city = values.city;
-        if (values.stateName) values_stateName = values.stateName;
-        if (values.zip) values_zip = values.zip;
-        if (values.phoneNumber) values_phoneNumber = values.phoneNumber;
-        if (values.bedrooms) values_bedrooms = values.bedrooms;
-        if (values.bathrooms) values_bathrooms = values.bathrooms;
-        if (values.leaseReason) values_leaseReason = values.leaseReason;
-        if (values.pmType) values_pmType = values.pmType;
-        if (values.pmCompanyName) values_pmCompanyName = values.pmCompanyName;
-        if (values.pmName) values_pmName = values.pmName;
-        if (values.pmPhoneNumber) values_pmPhoneNumber = values.pmPhoneNumber;
-        if (values.pmEmail) values_pmEmail = values.pmEmail;
-
-        let userType = 'Tenant';
-
-        var data = JSON.stringify(
-        {
-            "userId": userId,
+    createTestUser(tenantId, userId, cb){
+        let u = {
+            "id": shortid.generate(),
             "tenantId": tenantId,
-            "fullName": values_fullName,
-            "username": userId,
-            "phoneNumber": values_phoneNumber,
-            "usertype": userType,
-            "email": values_emailAddress,
-            "password": "p@ss1word",
+            "userId": userId,
+            "email": "james"+shortid.generate()+"@me.com",
+            "password": "p@"+shortid.generate(),
+            "username": shortid.generate(),
+            "usertype": "Tenant",  
+            "status": "active",
+            "tenantId": "58decc07583ad3e4bab8b0ce",
+            "fullName": "James Smith",
+            "phoneNumber": "2135648970",
             "preferred_contact_method": "SMS",
             "allow_sms_alerts": "true",
             "allow_emails": "true",
             "allow_data_usage": "true",
-            "status": "active",
             "deleted": "false",
             "notes": "",
             "signatureUrl": "",
-            "termsAcceptedOn": values_termsAcceptedOn,
-            "created": now,
+            "termsAcceptedOn": "2017-04-03T22:38:29.808Z",
             "report": {
-                "title": "MyWalkThru Report",
-                "reportDate": "",
-                "reportId": ""
+            "title": "MyWalkThru Report (Tenant Copy)",
+            "reportDate": "",
+            "reportId": ""
             },
             "property": {
-                "propertyType": values_propertyType,
-                "leaseBegins": values_leaseBegin,
-                "leaseEnds": values_leaseEnd,
-                "addressLine": addressLine,
-                "address1": values_street1,
-                "address2": values_street2,
-                "city": values_city,
-                "state": values_stateName,
-                "zip": values_zip,
-                "photoUrl": "",
-                "numberOfBedRooms": values_bedrooms,
-                "numberOfBathRooms": values_bathrooms,
-                "leaseReason": values_leaseReason
+            "propertyType": "Single Family",
+            "leaseBegins": "2017-04-08T22:26:16.506Z",
+            "leaseEnds": "2018-04-04T22:26:16.506Z",
+            "addressLine": "123 Me Street, Coopers, TX 99999",
+            "address1": "123 Me Street",
+            "address2": "",
+            "city": "Coopers",
+            "state": "TX",
+            "zip": "78123",
+            "photoUrl": "https://mywalkthru-pm-files.s3.amazonaws.com/photos%2FHyFcYY5nl___ry53ctchl.jpg",
+            "dateObserved": "2017-03-30T13:40:03.399Z",
+            "bedrooms": "4",
+            "bathrooms": "2½",
+            "leaseReason": " First Time Lease"
             },
             "propertyManager": {
-                "landlordType": values_pmType,
-                "company": values_pmCompanyName,
-                "landLordName": values_pmName,
-                "landLordPhone": values_pmPhoneNumber,
-                "landLordEmail": values_pmEmail
+            "landlordType": "Individual",
+            "company": "Real Testing Properties, Inc. ",
+            "landLordName": "Slick Williams, III",
+            "landLordPhone": "8765432109",
+            "landLordEmail": "slickw@test.it"
             },
             "summary": [],
             "details": []
-        });
+        };  
+        cb(null, u);
+    }    
 
-        var patchData = JSON.stringify(
-        {
-            "fullName": values_fullName,
-            "phoneNumber": values_phoneNumber,
-            "termsAcceptedOn": values_termsAcceptedOn,
-            "modified": now,
-            "property": {
-                "propertyType": values_propertyType,
-                "leaseBegins": values_leaseBegin,
-                "leaseEnds": values_leaseEnd,
-                "addressLine": addressLine,
-                "address1": values_street1,
-                "address2": values_street2,
-                "city": values_city,
-                "state": values_stateName,
-                "zip": values_zip,
-                "photoUrl": "",
-                "numberOfBedRooms": values_bedrooms,
-                "numberOfBathRooms": values_bathrooms,
-                "leaseReason": values_leaseReason
-            },
-            "propertyManager": {
-                "landlordType": values_pmType,
-                "company": values_pmCompanyName,
-                "landLordName": values_pmName,
-                "landLordPhone": values_pmPhoneNumber,
-                "landLordEmail": values_pmEmail
-            }
-        });        
+    createUserAccount(tenantId, userId, cb) { 
+        let fn = '>>> createUserAccount ';
 
-        console.log('data: ', data);
+        console.log('[ENTERED]', fn, '>>> tenantId: ', tenantId, '>>> userId: ', userId);
 
-        fetch(url, {
-                method: 'post',
-                headers: {
-                "Content-type": "application/json; charset=UTF-8"
-                },
-            body: patchData
-        }).then((response) => response.json()).then((responseData) => {
+        // this.createTestUser(tenantId, userId, function(err, res){
+        //     if (res) data = res;
+        // });
 
-            console.log('createUserAccount--RESPONSEDATA: ', responseData);
+        let data = {};
 
-            // if (responseData.error && 
-            //     responseData.error.message){
-            //     console.log('>>> responseData.error.message..',responseData.error.message);
-                
-            //     if(responseData.error.name==='ValidationError'){
-            //         console.log('>>> PATCHING DATA...');
-            //         this.patchData(url, patchData, function(err, res){
-            //             if (err) {console.log(err);} else {
-            //                 console.log('>>> PATCH DATA RESULT: ', res);
-            //             }
-            //         });
-            //     }
-            // }
+        this.buildUserAccountModel(tenantId, userId, function(err, res){
+            if (res) data = res;
+            console.log(fn, '>>> data: ', data);
 
-            try {
+            if (!data || data.length === 0) {
+                alert('Failed to create user: invalid data');
+                return;
+            }    
+            
+            let url = Config.USERS_API + '/';
 
-                if (!responseData) {
-                    alert('Sorry, there was a problem Signing Up.');
+            fetch(url, {
+                    method: 'post',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+            }).then((response) => response.json()).then((user) => {
+
+                console.log(fn, '>>> user: ', user);
+
+
+                // try {
                     
-                } else {
+                    if (user && user.error) {
 
-                    if(!AsyncStorage){
-                        this.replaceRoute('signup-complete');
-                    }
+                        console.log('ooops :(');
 
-                    AsyncStorage.setItem("signUpDate", now)
-                    .then( () =>
-                        {
-                            AsyncStorage.setItem("userId", userId)
-                            .then( () => {
+                        if (user.error.message){
+                            alert('Sorry, there was a problem Signing Up. ' + user.error.message);
+                        } else {
+                            alert('Sorry, there was a problem Signing Up.');
+                        }
 
-                                AsyncStorage.setItem("leaseBeginDate", leaseBeginDate)
+                        // Houston, we have a problem. go back to square one
+                        // this.replaceRoute('signup-step0');                    
+
+                    } else {
+
+                        let d = new Date();
+                        let signUpDate = '';
+                        let leaseBeginDate = '';
+
+                        if (user.signUpDate) {
+                            signUpDate = user.signUpDate.toString();
+                        } else {
+                            signUpDate = d.toString();
+                        }
+
+                        if (user.leaseBegin) {
+                            leaseBeginDate = user.leaseBegin.toString();
+                        } else {
+                            leaseBeginDate = d.toString();
+                        }       
+
+                        if (!AsyncStorage){
+                            alert('Please use this screen on an acutal device that supports AsyncStorage.');
+                            return;
+                        }             
+
+                        // alert('Thank you for Signing Up!');
+
+                        // this.replaceRoute('signup-complete');
+
+
+                        // console.log(fn, '>>> signUpDate: ', signUpDate);
+                        // console.log(fn, '>>> leaseBeginDate: ', leaseBeginDate);
+                        // console.log(fn, '>>> userId, user.userId: ', userId, user.userId);
+
+                        // this.createTestUser(signUpDate, leaseBeginDate, userId, function(cb){
+
+                        //         alert('Thank you for Signing Up! ');
+                        //         this.replaceRoute('signup-complete');                                
+
+                        // });
+
+                        AsyncStorage.setItem("signUpDate", signUpDate)
+                        .then( () =>
+                            {
+                                AsyncStorage.setItem("userId", userId)
                                 .then( () => {
 
-                                    alert('Thank you for Signing Up! ');
+                                    AsyncStorage.setItem("leaseBeginDate", leaseBeginDate)
+                                    .then( () => {
 
-                                    this.replaceRoute('signup-complete');
 
+
+                                    }
+                                    ).done();
                                 }
                                 ).done();
                             }
-                            ).done();
-                        }
-                    )
-                    .done( );
-                }
+                        )
+                        .done( );
+                    }
 
-            } catch(err){
-                console.log('>> createUserAccount failed: ', err);
+                // } catch(err){
 
-                this.replaceRoute('signup-complete');
-            }
+                //     console.log('>> createUserAccount failed: ', err);
 
-        }).done();        
+                //     let message = err.message;
 
+                //     if (message){
+                //         alert('Sorry, there was a problem Signing Up. ' + message);
+                //     }else{
+                //         alert('Sorry, there was a problem Signing Up.');
+                //     }
+
+                //     // Houston, we have a problem. go back to square one
+                //     // this.replaceRoute('signup-step0');
+                // }
+
+            }).done();        
+
+
+        });
+
+        this.replaceRoute('signup-complete'); 
+
+        alert('Thank you for Signing Up!');
 
     }
+
+
 
     validateFormData(formData){
         console.log('>>ENTERED validateFormData');
@@ -436,42 +607,52 @@ export class SignUpTermsConditions extends Component {
         return true;      
     }    
 
-    saveFormData(id, data, route) {
-      if (!data) {
-        alert('Invalid parameter: data');
-        return;
-      }
-      if (!id) {
-        alert('Invalid parameter: id');
-        return;
-      }      
-      let url = 'https://mywalkthruapi.herokuapp.com/api/v1/Tenants/' + id;
-      let now = new Date();
-      fetch(url, {
-        method: 'PATCH',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-      }).then((response) => response.json()).then((responseData) => {
-        console.log('responseData: ', responseData);
-        
-        this.setState({responseData: responseData});
+    saveFormData(id, userId, data, route) {
+        console.log('>>>>> ENTERED: saveFormData...');
+        if (!data) {
+            alert('Invalid parameter: data');
+            return;
+        }
+        if (!id) {
+            alert('Invalid parameter: id');
+            return;
+        }      
+        let url = 'https://mywalkthruapi.herokuapp.com/api/v1/Tenants/' + id;
+        let now = new Date();
+        fetch(url, {
+            method: 'PATCH',
+            headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        }).then((response) => response.json()).then((responseData) => {
+            console.log('>>>>> saveFormData responseData: ', responseData);
 
-        this.createUserAccount(id, responseData);
+            this.createUserAccount(id, userId, function(err, res){
+                if (err){
+                    console.log(err);
+                } else {
+                    console.log(res);
+                }
+            });
 
-        // let result = responseData;
-        // if (result && result.id) {
-        //     console.log('result.id:', result.id);
-        //     if (route) {
-        //         this.replaceRoute(route);
-        //     }            
-        // }
-      }).catch((error) => {
-         console.error(error);
-      }).done();
+        }).catch((error) => {
+            console.error(error);
+        }).done();
     }    
+
+    fetchTenant(id, cb){
+        console.log('>>>>> ENTERED: fetchTenant...');
+        let url = 'https://mywalkthruapi.herokuapp.com/api/v1/Tenants/' + id;
+        fetch(url).then((response) => response.json()).then((responseData) => {
+            console.log('fetchTenant => responseData', responseData);
+            cb(null, responseData);
+        }).catch((error) => {
+            console.error(error);
+            cb(error, null);
+        }).done();      
+    }      
 
     renderNextButton() {
         if (this.state.validated){

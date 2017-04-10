@@ -31,8 +31,9 @@ import Config from '../../config'
 
 import PhotoBrowser from 'react-native-photo-browser';
 
-
 import { RNS3 } from 'react-native-aws3';
+
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 class CommentsAndPhotos extends Component {
    constructor(props) {
@@ -273,8 +274,10 @@ class CommentsAndPhotos extends Component {
                     </Header>
 
                     <Content padder style={{backgroundColor: 'transparent'}} >
-
+                    {/* Modal View triggered */}
+                    {/* Start ScrollView */}
                     <View style={{marginTop: 15}}>
+                    {/* Start Modal */}
                       <Modal
                         animationType={"slide"}
                         transparent={false}
@@ -282,14 +285,18 @@ class CommentsAndPhotos extends Component {
                         onRequestClose={() => {alert("Modal has been closed.")}}
                         >
 
-                       <View style={{marginTop: 15}}>
+                       <KeyboardAwareScrollView style={{marginTop: 15}}>
 
-                         <Button rounded block style={{backgroundColor: '#ad241f'}}
-                             onPress={() => this.saveCloseUp()}>
-                             <Text style={{color:'#fff', fontWeight: 'bold'}}>Save Close Up</Text>
-                         </Button>
+
 
                         <View style={{marginTop: 15}}>
+
+                          <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
+                              <Image
+                                source={{uri: this.state.image}}
+                                style={{width: 250, height: 250}}
+                              />
+                          </View>                          
 
                          <View style={{backgroundColor: '#333', marginTop: 15}}>
 
@@ -306,8 +313,7 @@ class CommentsAndPhotos extends Component {
                                 autoFocus = {true}
                                 placeholder=''
                                 keyboardType='default'
-                                autoCapitalize='none'
-                                returnKeyType='done'                               
+                                autoCapitalize='sentences'                             
                                 style={{height: 100, backgroundColor: '#fff', color: '#333', borderWidth: 1,  borderColor: '#333'}}
                                 onChangeText={this.updateCloseUpComments.bind(this)}
                                 value={this.state.closeUpComments}>
@@ -315,22 +321,14 @@ class CommentsAndPhotos extends Component {
 
                           </View>                          
 
-                          <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
-                              <Image
-                                source={{uri: this.state.image}}
-                                style={{width: 250, height: 250}}
-                              />
-                          </View>
-
- 
-
-
-
                         </View>
 
+                         <Button rounded block style={{backgroundColor: '#ad241f'}}
+                             onPress={() => this.saveCloseUp()}>
+                             <Text style={{color:'#fff', fontWeight: 'bold'}}>Save Close Up</Text>
+                         </Button>
 
-
-                       </View>
+                       </KeyboardAwareScrollView>
 
                        <View style={{marginTop: 10}}>
 
@@ -339,8 +337,10 @@ class CommentsAndPhotos extends Component {
                        </View>
 
                       </Modal>
+                      {/*End Modal*/}
 
                     </View>
+                    {/* End ScrollView*/}
 
                         <Card transparent foregroundColor="#000">
                             <CardItem header>
@@ -355,12 +355,18 @@ class CommentsAndPhotos extends Component {
                             </CardItem>
 
                             <CardItem>
+                              {this._maybeRenderComments()}
+                            </CardItem>                               
+
+                            <CardItem>
                               {this._maybeRenderImage()}
                             </CardItem>
 
                             <CardItem>
                               {this._maybeRenderPhotos()}
                            </CardItem>
+
+                        
                         </Card>
 
                     </Content>
@@ -368,6 +374,67 @@ class CommentsAndPhotos extends Component {
                 </Image>
             </Container>
         )
+    }
+
+    _maybeRenderComments() {
+      let comments = '';
+      if(!this.state.images){
+        return(
+          <View>
+            <Text style={{color:'#333', fontSize: 14, fontWeight: 'bold'}}>Take close up photos to add some comments...</Text>
+          </View>
+        );
+      } else {
+        let imgs = this.state.images;
+        if(imgs.length > 0){
+          for(let i=0;i<imgs.length;i++){
+            let ts = '';
+            let tsf = '';
+            if (imgs[i].timestamp){
+              ts = imgs[i].timestamp;
+              let d = new Date(ts);
+              if(d){
+                // tsf = d.toDateString() + ' ' + d.toTimeString();
+                tsf= moment(d.toISOString()).format('MM/DD/YYYY h:mm a');
+              }
+            }
+            if(tsf){
+              comments = comments + tsf + ' : ' + imgs[i].caption + '\r\n';
+            } else {
+              comments = comments + imgs[i].caption + '\r\n';
+            }
+          }
+        }
+
+        if(comments && comments.length>0){
+          return(
+               <View>  
+                  <View>
+                    <Text style={{color:'#333', fontSize: 14, fontWeight: 'bold'}}>Take close up photos to add more comments...</Text>
+                  </View>     
+                  <View>         
+                  <Textarea 
+                      disabled 
+                      editable={false} 
+                      placeholder=''                            
+                      style={{
+                        height: 100, 
+                        backgroundColor: '#fff', 
+                        color: '#333', 
+                        borderWidth: 1,  
+                        borderColor: '#333',
+                        fontSize: 14
+                      }}
+                      value={comments}>
+                  </Textarea>
+                  </View>  
+              </View>  
+          );
+        }
+
+
+      }
+
     }
 
     _takePhoto = async () => {
@@ -598,7 +665,7 @@ class CommentsAndPhotos extends Component {
           shadowOffset: {width: 4, height: 4},
           shadowRadius: 5,
         }}>
-          <Text>Close Up Saved</Text>
+          <Text>{new Date().toISOString()}</Text>
           <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
               <Image
                 source={{uri: image}}

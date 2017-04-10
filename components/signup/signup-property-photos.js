@@ -10,6 +10,7 @@ import { popRoute } from '../../actions/route';
 import { pushNewRoute, replaceRoute } from '../../actions/route';
 
 import {
+    AsyncStorage,    
     AppRegistry,
     StyleSheet,
     Text,
@@ -105,10 +106,10 @@ export class SignUpComplete extends Component {
      } catch(err){
          console.log('Failed to get tenantId: ' + err);
 
-         //REMOVE!!!
-         let tenantId = '58decc07583ad3e4bab8b0ce';
-         console.log('REMOVE!!! USING TEST TENANTID...')
-        //  this.setState({tenantId: tenantId});
+        //  //REMOVE!!!
+        //  let tenantId = '58decc07583ad3e4bab8b0ce';
+        //  console.log('REMOVE!!! USING TEST TENANTID...')
+        // //  this.setState({tenantId: tenantId});
 
          return tenantId;
 

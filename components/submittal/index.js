@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Image, Linking, ActivityIndicator, TouchableOpacity, Platform, AsyncStorage, WebView } from 'react-native';
+import { Image, Linking, ActivityIndicator, TouchableOpacity, Platform, AsyncStorage, WebView, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -86,7 +86,7 @@ class Submittal extends Component {
       }
 
       if (!this.state.firstChecked) {
-        alert('Please check the confirmation circle to proceed.');
+        alert('Please confirm you want to proceed.');
         return;
       }
 
@@ -177,6 +177,7 @@ class Submittal extends Component {
     renderSubmittalForm() {
       const checkboxStyle = { margin: 5 }
       const {data} = this.state;
+      var screenWidth = Dimensions.get('window').width;
         return (
             <Container theme={theme} style={{backgroundColor: '#fff'}}>
                <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
@@ -194,6 +195,22 @@ class Submittal extends Component {
 
                     <Content padder style={{backgroundColor: 'transparent'}}>
 
+                        
+
+                    <View style={{flex: 1, width: 500, height: 800}}>
+                        <WebView
+                            source={{uri: 'https://mywalkthruapi.herokuapp.com/api/v1/Reports/pdfExport/S1u55bQpx'}}
+                            style={{width: screenWidth *.9, height: 800}}
+                        />                        
+                    </View>                         
+
+                    {/*<View style={{flex: 1, width: 500, height: 800}}>
+                        <WebView
+                            source={{uri: 'https://mywalkthruapi.herokuapp.com/payment/'}}
+                            style={{width: screenWidth *.9, height: 800}}
+                        />                        
+                    </View>                        */}
+
                         <View style={styles.box}>
                             <Card foregroundColor='#000'>
                                 <CardItem header>
@@ -209,13 +226,13 @@ class Submittal extends Component {
                                     ></Checkbox>
                                 </CardItem>
 
-                                <CardItem header>
+                                {/*<CardItem header>
                                     <Text onPress={() => this.openLink()}>Tap HERE to Read the Checklist</Text>
                                 </CardItem>
 
                                 <CardItem header>
                                     <Text onPress={() => this.openLink()}>Tap HERE to View Pending Items</Text>
-                                </CardItem>
+                                </CardItem>*/}
 
 
 
@@ -242,12 +259,15 @@ class Submittal extends Component {
                                 </CardItem>
                                 */}
 
+                                <CardItem>
+                                    <Text>By Signing, you authorize a copy of this property review to go to my landlord/property manager:</Text>
+                                </CardItem>                                    
+
                                 <CardItem style={{height: 200}}>
-                                  <View style={{flex: 1}}>
-                                      <Text>By Signing, you authorize a copy of this property review to go to my landlord/property manager:</Text>
+                                  <View style={{flex: 1, borderWidth: 1,  borderColor: '#333'}}>
                                       <SignaturePad onError={this._signaturePadError}
                                                     onChange={this._signaturePadChange}
-                                                    style={{flex: 1, backgroundColor: 'white'}}/>
+                                                    style={{flex: 1, backgroundColor: '#fff', borderWidth: 1,  borderColor: '#333'}}/>
                                   </View>
                                 </CardItem>
 
@@ -280,12 +300,7 @@ class Submittal extends Component {
 
                         </View>
 
-                    <View style={{flex: 1, width: 500, height: 800}}>
-                        <WebView
-                            source={{uri: 'http://mysitedesign.mypmw.com/mywalkthru/home01'}}
-                            style={{marginTop: 20}}
-                        />                        
-                    </View>
+
 
 
 

@@ -54,19 +54,23 @@ class TopCategories extends Component {
            category: {},
            categoryCount: 0,
            user: {},
-           userId: 'rJirzIMsx'
+           userId: ''
       };
    }
 
-   componentDidMount() {
+   componentWillMount() {
      AsyncStorage.getItem("userId")
      .then( (userId) =>
            {
-              return this.setState({userId: userId})
+               console.log('>>>AsyncStorage>>>userId', userId);
+               
+               this.setState({userId: userId});
+
+               this.fetchAll(userId);
            }
      )
      .done();
-      this.fetchAll();
+      
    }
 
    replaceRoute(route) {
@@ -153,8 +157,14 @@ class TopCategories extends Component {
       );
     }
 
-    fetchAll () {
-      var url = 'https://mywalkthruapi.herokuapp.com/api/v1/PropertyCategories?filter={"where": {"and": [{"active": "true"},{"userId":{ "eq": "'+this.state.userId+'"}}]}}';
+    // Important: Sort order is controlled by Loopback defualt order by property on the persisted model.
+    fetchAll (userId) {
+
+      var url = 'https://mywalkthruapi.herokuapp.com/api/v1/PropertyCategories?filter={"where": {"and": [{"active": "true"},{"userId":{ "eq": "'+userId+'"}}]}}';
+
+      console.log('>>>top>>>fetchAll>>>url:', url);
+      console.log('>>>top>>>fetchAll>>>userId:', userId);
+
       fetch(url).then((response) => response.json()).then((responseData) => {
             this.setState({
                categories: responseData,
@@ -182,7 +192,7 @@ class TopCategories extends Component {
 
     render() {
       if (this.state.isRefreshing) {
-          this.fetchAll();
+          this.fetchAll(userId);
       }
       if (!this.state.loaded) {
           return this.renderLoadingView();

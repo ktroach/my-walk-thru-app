@@ -41,16 +41,18 @@ class Step0 extends Component {
            verificationCode: '',
            loaded: true,
            verified: false,
-           build: ''
+           build: '',
+           tenantId: ''
+
       };
    }
 
-   componentDidMount() {
+   componentWillMount() {
         this.fetchBuildNumber();
-        if (this.userVerified()) {
-            console.log('user authenticated'); 
-            if (this.haveTheySignedUp()) {
-                console.log('user is signed up');
+        if (this.haveTheySignedUp()) {
+            console.log('user is signed up');
+            if (this.userVerified()) {
+                console.log('user authenticated'); 
             } else {
                 console.log('user has not signed up yet');
             }
@@ -61,7 +63,7 @@ class Step0 extends Component {
 
    fetchBuildNumber(){
         console.log('>>> ENTERED: fetchBuildNumber');
-        let query = 'https://mywalkthruapi.herokuapp.com/api/v1/Builds/58e3fb37322c8f1cd9a1de2c';
+        let query = 'https://mywalkthruapi.herokuapp.com/api/v1/Builds/58e55cc261405659dd6ccdc8';
         console.log('query: ', query);
         fetch(query).then((response) => response.json()).then((responseData) => {
             let build = responseData;
@@ -82,7 +84,7 @@ class Step0 extends Component {
         .then( (tenantId) =>
               {
                 this.setState({tenantId: tenantId});
-                return true;
+                
               }
         )
         .done();
@@ -98,7 +100,15 @@ class Step0 extends Component {
             AsyncStorage.getItem("signUpDate")
             .then( (signUpDate) =>
                 {
-                    return this.setState({signUpDate: signUpDate})
+                    // if they dont have a signUpDate yet, then 
+                    // we need to handle that appropriately...
+                    if (!signUpDate){
+                        console.log('not signed up on this device');
+                    } else {
+                        let sud = signUpDate.toString();
+                        this.setState({signUpDate: sud});
+                        this.replaceRoute('home');
+                    }
                 }
             )
             .done();
@@ -174,7 +184,12 @@ class Step0 extends Component {
             // }
         }
 
-        this.setState({verificationCode: verificationCode});
+        try {
+            this.setState({verificationCode: verificationCode});
+        }catch(error){
+            console.log(error);
+        }
+        
     }
                                
     verifyUser() {
@@ -229,6 +244,39 @@ class Step0 extends Component {
         }      
         if (verificationCode === '1108'){
             // alert('Bypass Code Accepted. Welcome to MyWalkThru');
+
+            // let signUpDate = '';
+            // let userId = '';
+            // let leaseBeginDate = '';
+
+            // let now = new Date();
+
+            // signupDate = now.toDateString();
+            // leaseBeginDate = now.toDateString();
+            // userId = 'HkAEemNpe';
+
+            // AsyncStorage.setItem("signUpDate", signUpDate)
+            // .then( () =>
+            //     {
+            //         AsyncStorage.setItem("userId", userId)
+            //         .then( () => {
+
+            //             AsyncStorage.setItem("leaseBeginDate", leaseBeginDate)
+            //             .then( () => {
+
+            //                 this.replaceRoute('home');
+
+
+            //             }
+            //             ).done();
+            //         }
+            //         ).done();
+            //     }
+            // )
+            // .done( );
+            
+
+
             this.replaceRoute('home');
             return true;
         }                                               

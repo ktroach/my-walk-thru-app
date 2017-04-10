@@ -12,6 +12,7 @@ import { popRoute } from '../../actions/route';
 import { pushNewRoute, replaceRoute } from '../../actions/route';
 
 import {
+    AsyncStorage,
     AppRegistry,
     StyleSheet,
     Text,
@@ -51,12 +52,21 @@ export class SignUpUserInfo extends Component {
             tenantId: '',
             validated: false,
             phoneFormatted: '',
-            loaded: false
+            loaded: false,
+            tenant: {
+                fullName: '',
+                email: '',
+                phoneNumber: ''
+            }
         }
     } 
 
-    componentDidMount() {
+    componentWillMount(){
         this.getTenantId();
+    }
+
+    componentDidMount() {
+        // this.getTenantId();
         this.setState({loaded: true});
 
         // if(this._confettiView) {
@@ -64,12 +74,12 @@ export class SignUpUserInfo extends Component {
         // }        
     }
 
-    // componentWillUnmount() {
-    //     if (this._confettiView)
-    //     {
-    //         this._confettiView.stopConfetti();
-    //     }
-    // }
+    componentWillUnmount() {
+        // if (this._confettiView)
+        // {
+        //     this._confettiView.stopConfetti();
+        // }
+    }
     
 
     replaceRoute(route) {
@@ -85,24 +95,46 @@ export class SignUpUserInfo extends Component {
     }  
 
    getTenantId() {
+     let fn = '>>> getTenantId ';
+     console.log(fn, '>>> ENTERED');
      try {
         AsyncStorage.getItem("tenantId")
         .then( (tenantId) =>
               {
                 this.setState({tenantId: tenantId});
+                this.fetchTenant(tenantId, function(err, res){
+                    if (!err){
+                        console.log('cool');
+                        // console.log('>>>> this.state.tenant:', this.state.tenant);
+                    }
+                });
               }
         )
         .done();
      } catch(err){
-         console.log('Failed to get tenantId: ' + err);
+         console.log(fn, '>>> Failed to get tenantId: ' + err);
 
-         //REMOVE!!!
-         let tenantId = '58decc07583ad3e4bab8b0ce';
-         console.log('REMOVE!!! USING TEST TENANTID...')
-         this.setState({tenantId: tenantId});
+        //  //REMOVE!!!
+        //  let tenantId = '58decc07583ad3e4bab8b0ce';
+        //  console.log('REMOVE!!! USING TEST TENANTID...')
+        //  this.setState({tenantId: tenantId});
 
      }       
-   }    
+   }   
+
+    fetchTenant(id, cb){
+        let fn = '>>> fetchTenant ';
+        console.log(fn, '>>> ENTERED');
+        let url = 'https://mywalkthruapi.herokuapp.com/api/v1/Tenants/' + id;
+        fetch(url).then((response) => response.json()).then((tenant) => {
+            console.log(fn, '>>> tenant: ', tenant);
+            this.setState({tenant: tenant});
+            cb(null, tenant);
+        }).catch((error) => {
+            console.error(fn, '>>> error: ', error);
+            cb(error, null);
+        }).done();      
+    }      
 
     onValidationError(ref, message) {
         console.log(ref, message);
@@ -301,7 +333,7 @@ export class SignUpUserInfo extends Component {
     render() {
         const title = 'User Profile';
         const forwardIcon = <Icon name={'ios-arrow-forward'} color={'gray'} size={20} />;
-        const alertIcon = <Icon name={'ios-alert'} color={'red'} size={20} />;
+        const alertIcon = <Icon name={'ios-alert'} color={'red'} size={20} />;        
         
         return (
 
@@ -345,6 +377,7 @@ export class SignUpUserInfo extends Component {
             >
                 <TextInputCell
                     ref="primaryEmail"
+                    value={this.state.tenantId}
                     validator={createValidator(emailValidator, { errorMessage: 'Invalid Email' })}
                     inputProps={{ 
                         placeholder: 'Your Primary Email', 

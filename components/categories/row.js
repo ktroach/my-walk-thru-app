@@ -78,27 +78,51 @@ class CategoryRow extends React.Component {
       // Start description details
       var description = '';
       if (!this.props.category.description || this.props.category.description === 'undefined') {
-         description = '10 Areas, 0 Comments, 0 Photos';
+         description = '';
       } else {
-         description=this.props.category.description;
+         description = this.props.category.description;
       }
       if (description && description.length > 100) {
          description=description.subString(20) + '...';
       }
       // End description details
 
+      // var icon = '../../assets/images/house.png';
+      // if (name.indexOf('Bedroom'>0)){
+      //   icon = '../../assets/images/beds.png';
+      // }
+      //  else if (name.indexOf('Bath'>0)){
+      //   icon = '../../assets/images/baths.png';
+      // } else {
+      //   icon = '../../assets/images/beds.png';
+      // }
+
+      // const icon = <Thumbnail circular size={50} source={require('../../assets/images/beds.png')} />;
+
       return (
+        
          <View style={{
              borderWidth: 2,
              borderColor: '#C8C7CC'
             }}>
             <TouchableOpacity  style={styles.card} onPress={() => this.navigateTo('subcategories')}>
                <CardItem style={styles.cardHeader}  header  onPress={() => this.navigateTo('subcategories')}>
-                   <Thumbnail circular size={50} source={require('../../assets/images/house.png')} />
+
+                   {/*<Thumbnail circular size={50} source={require(icon)} />*/}
+
+                   <Thumbnail circular size={50} source={require('../../assets/images/beds.png')} />
+
                    <H3 style={{ color: '#333', fontWeight:'bold', marginLeft: 8, marginTop: 5 }}>{name}</H3>
 
                    <Text style={styles.arrow}><Icon name="ios-arrow-forward" style={{ color: '#333'}} /></Text>
                </CardItem>
+               {/*<CardItem style={styles.cardItem}   onPress={() => this.navigateTo('subcategories')}>
+                  <List>
+                       <ListItem style={{borderBottomWidth: 0}}>
+                           <Text style={{color: '#333'}}>{description}</Text>
+                       </ListItem>
+                  </List>
+               </CardItem>               */}
                {/*
                <CardItem style={styles.cardItem}   onPress={() => this.navigateTo('subcategories')}>
                   <List>

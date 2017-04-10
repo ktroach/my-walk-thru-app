@@ -12,6 +12,7 @@ import { popRoute } from '../../actions/route';
 import { pushNewRoute, replaceRoute } from '../../actions/route';
 
 import {
+    AsyncStorage,    
     AppRegistry,
     StyleSheet,
     Text,
@@ -83,10 +84,10 @@ export class SignUpPropertyManagerInfo extends Component {
      } catch(err){
          console.log('Failed to get tenantId: ' + err);
 
-         //REMOVE!!!
-         let tenantId = '58decc07583ad3e4bab8b0ce';
-         console.log('REMOVE!!! USING TEST TENANTID...')
-         this.setState({tenantId: tenantId});
+        //  //REMOVE!!!
+        //  let tenantId = '58decc07583ad3e4bab8b0ce';
+        //  console.log('REMOVE!!! USING TEST TENANTID...')
+        //  this.setState({tenantId: tenantId});
 
      }       
    }    
@@ -213,6 +214,8 @@ export class SignUpPropertyManagerInfo extends Component {
     }    
 
     saveFormData(id, data, route) {
+        console.log('>>ENTERED: saveFormData');
+        
       if (!data) {
         alert('Invalid parameter: data');
         return;
@@ -231,7 +234,7 @@ export class SignUpPropertyManagerInfo extends Component {
         },
         body: JSON.stringify(data)
       }).then((response) => response.json()).then((responseData) => {
-        console.log('responseData: ', responseData);
+        console.log('>>> saveFormData responseData: ', responseData);
         let result = responseData;
         if (result && result.id) {
             console.log('result.id:', result.id);
