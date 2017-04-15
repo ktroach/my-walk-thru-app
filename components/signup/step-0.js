@@ -245,39 +245,43 @@ class Step0 extends Component {
         if (verificationCode === '1108'){
             // alert('Bypass Code Accepted. Welcome to MyWalkThru');
 
-            // let signUpDate = '';
-            // let userId = '';
-            // let leaseBeginDate = '';
+            let signUpDate = '';
+            let leaseBeginDate = '';
+            let userId = '';
 
-            // let now = new Date();
+            let now = new Date();
 
-            // signupDate = now.toDateString();
-            // leaseBeginDate = now.toDateString();
-            // userId = 'HkAEemNpe';
+            signUpDate = now.toDateString();
+            leaseBeginDate = now.toDateString();
+            userId = 'HkAEemNpe';
 
-            // AsyncStorage.setItem("signUpDate", signUpDate)
-            // .then( () =>
-            //     {
-            //         AsyncStorage.setItem("userId", userId)
-            //         .then( () => {
+            AsyncStorage.setItem("signUpDate", signUpDate)
+            .then( () =>
+                {
+                    console.log('Adding storage item: signUpDate');
 
-            //             AsyncStorage.setItem("leaseBeginDate", leaseBeginDate)
-            //             .then( () => {
+                    AsyncStorage.setItem("userId", userId)
+                    .then( () => {
 
-            //                 this.replaceRoute('home');
+                        console.log('Adding storage item: signUpDate');
 
+                        AsyncStorage.setItem("leaseBeginDate", leaseBeginDate)
+                        .then( () => {
 
-            //             }
-            //             ).done();
-            //         }
-            //         ).done();
-            //     }
-            // )
-            // .done( );
-            
+                            console.log('Adding storage item: signUpDate');
+
+                            this.replaceRoute('home');
 
 
-            this.replaceRoute('home');
+                        }
+                        ).done();
+                    }
+                    ).done();
+                }
+            )
+            .done( );
+
+            // this.replaceRoute('home');
             return true;
         }                                               
 

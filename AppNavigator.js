@@ -18,6 +18,9 @@ import SideBar from './components/sideBar';
 // Home
 import Home from './components/home/';
 
+// Report
+import Report from './components/report/';
+
 // New Sign Up Routes (replace old signup routes)
 import SignUpUserInfo from './components/signup/signup-user-info';
 import SignUpPropertyInfo from './components/signup/signup-property-info';
@@ -28,6 +31,7 @@ import SignUpTermsConditions from './components/signup/signup-terms-conditions';
 import SignUpPropertyPhotos from './components/signup/signup-property-photos';
 import SignUpComplete from './components/signup/signup-complete';
 import SignUpInstructions from './components/signup/signup-instructions';
+import SignUpResetDemo from './components/signup/signup-reset-demo';
 
 // Old Sign Up Routes (replace)
 import Step0 from './components/signup/step-0';
@@ -178,6 +182,8 @@ class AppNavigator extends Component {
         switch (route.id) {
             case 'home':
                return <Home navigator={navigator} />;
+            case 'report':
+               return <Report navigator={navigator} />;               
             case 'submittal':
                return <Submittal navigator={navigator} />;
             case 'signup-user-info':
@@ -191,7 +197,9 @@ class AppNavigator extends Component {
             case 'signup-property-manager-info':
                return <SignUpPropertyManagerInfo navigator={navigator} />;               
             case 'signup-terms-conditions':
-               return <SignUpTermsConditions navigator={navigator} />;               
+               return <SignUpTermsConditions navigator={navigator} />;             
+            case 'signup-reset-demo':
+               return <SignUpResetDemo navigator={navigator} />;                  
             case 'signup-property-photos':
                return <SignUpPropertyPhotos navigator={navigator} />;               
             case 'signup-complete':

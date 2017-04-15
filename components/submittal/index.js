@@ -36,7 +36,9 @@ class Submittal extends Component {
             firstChecked: false,
             data: null,
             signature: null,
-            userId: ''
+            userId: '',
+            loaded: false,
+            reportUrl: ''
        };
     }
 
@@ -44,11 +46,26 @@ class Submittal extends Component {
       AsyncStorage.getItem("userId")
       .then( (userId) =>
             {
-               return this.setState({userId: userId})
+                this.setState({loaded: true});
+                return this.setState({userId: 'rktoMB4Tl'});
             }
       )
       .done();
     }
+
+    renderLoadingView() {
+      return (
+         <Content style={styles.sidebar} >
+             <Image source={require('../../assets/images/house02.jpg')} style={styles.container} >
+                 <ActivityIndicator
+                    animating={!this.state.loaded}
+                    style={[styles.activityIndicator, {height: 80}]}
+                    size="large"
+                />
+             </Image>
+         </Content>
+      );
+    }    
 
     popRoute() {
         this.props.popRoute();
@@ -80,20 +97,22 @@ class Submittal extends Component {
     submitWalkThru(){
       // alert('Creating Walkthru Report...');
 
-      if(!this.state.userId){
-        alert('UserId is invalid');
-        return;
-      }
+      this.setState({loaded: false});
 
-      if (!this.state.firstChecked) {
-        alert('Please confirm you want to proceed.');
-        return;
-      }
+    //   if(!this.state.userId){
+    //     alert('UserId is invalid');
+    //     return;
+    //   }
 
-      if (!this.state.signature) {
-        alert('Please sign off on your Walkthru to proceed');
-        return;
-      }
+    //   if (!this.state.firstChecked) {
+    //     alert('Please confirm you want to proceed.');
+    //     return;
+    //   }
+
+    //   if (!this.state.signature) {
+    //     alert('Please sign off on your Walkthru to proceed');
+    //     return;
+    //   }
 
       this.setState({updating: true, processStatus: 'Creating Walkthru Report...'});
 
@@ -101,7 +120,8 @@ class Submittal extends Component {
       // var data = {userId: this.state.userId};
 
       let completionDate = moment().format();
-      var now = new Date();
+      let now = new Date();
+      let reportUrl = '';
 
       // console.log('data: ', data);
 
@@ -111,34 +131,47 @@ class Submittal extends Component {
              "Content-type": "application/json"
            }
       }).then((response) => response.json()).then((responseData) => {
-        //  console.log('RESPONSEDATA: ', responseData);
 
-          if (!responseData) {
-             alert('Sorry, there was a problem Submitting your Walkthru');
-          } else {
-            AsyncStorage.setItem("completionDate", completionDate)
-            .then( () =>
-                {
-                    alert('Thank you for Completing your Walkthru ('+completionDate+')');
-                    this.replaceRoute('home');
-                }
-            )
-            .done( );
-          }
+            console.log('RESPONSEDATA: ', responseData);
+            alert(responseData);
 
+            if (!responseData) {
+                alert('Sorry, there was a problem Submitting your Walkthru');
+            } else {
+
+                this.setState({loaded: true});
+                this.setState({reportUrl: responseData.reportUrl});
+
+                AsyncStorage.setItem("reportUrl", responseData.reportUrl)
+                .then( () => 
+                    {
+                        AsyncStorage.setItem("completionDate", completionDate)
+                        .then( () => 
+                            {
+                                alert('Thank you for Completing your Walkthru ('+completionDate+')');
+                                this.replaceRoute('report');    
+                            }
+                        )
+                        .done( );
+                    }
+                )
+                .done( );                
+            }
+            
       }).done();
 
       // this.replaceRoute('home');
     }
 
     render() {
-       if (this.state.updating) {
+       if (!this.state.loaded) {
           return this.renderLoadingView();
+       } else {
+            return this.renderSubmittalForm();
        }
-       return this.renderSubmittalForm();
     }
 
-    renderLoadingView() {
+    /*renderLoadingView() {
        return (
          <Container theme={theme} style={{backgroundColor: '#333'}}>
             <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
@@ -163,7 +196,7 @@ class Submittal extends Component {
              </Image>
          </Container>
        );
-    }
+    }*/
 
     _signaturePadError = (error) => {
       console.error(error);
@@ -194,15 +227,14 @@ class Submittal extends Component {
                     </Header>
 
                     <Content padder style={{backgroundColor: 'transparent'}}>
-
-                        
-
+                     
+{/*
                     <View style={{flex: 1, width: 500, height: 800}}>
                         <WebView
                             source={{uri: 'https://mywalkthruapi.herokuapp.com/api/v1/Reports/pdfExport/S1u55bQpx'}}
                             style={{width: screenWidth *.9, height: 800}}
                         />                        
-                    </View>                         
+                    </View>                         */}
 
                     {/*<View style={{flex: 1, width: 500, height: 800}}>
                         <WebView

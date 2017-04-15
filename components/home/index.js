@@ -36,7 +36,8 @@ class Home extends Component {
             deadlineDate: "",
             daysLeft: "",
             progress: 0,
-            indeterminate: true
+            indeterminate: true,
+            progressValue: 0.10
        };
     }
   
@@ -128,6 +129,9 @@ class Home extends Component {
          deadlineDate = moment(leaseBeginsOn, "DD.MM.YYYY");
          deadlineDate.add(5, 'days');
         //  alert('deadlineDate:', deadlineDate);
+
+
+
       }
 
       // this.animate();
@@ -170,9 +174,10 @@ class Home extends Component {
                           <View style={styles.circles}>
                             <Progress.Pie
                               style={styles.progress}
-                              progress={0.25} 
+                              progress={this.state.progressValue} 
                               size={200}
-                              showsText={true}
+                              showsText={true} 
+                              color='green'
                             />
                           </View>
                           <Text style={{color:'rgba(0, 122, 255, 1)', fontWeight: 'bold', fontSize: 20}}> {this.getDaysLeft()} DAYS LEFT</Text>
