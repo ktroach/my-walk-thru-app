@@ -302,9 +302,23 @@ export class SignUpComplete extends Component {
                         />
                                             
                         <Text style={styles.text}>Awesome! You are Signed Up!</Text>
+
+                            <Button rounded block
+                                style={{alignSelf: 'center',
+                                    marginTop: 40,
+                                    backgroundColor: '#ad241f',
+                                    borderRadius:90,
+                                    width: 200,
+                                    height:40}}
+                                    onPress={() => {
+                                        this.proceedToHome();
+                                    }}
+                                >
+                                <Text style={{color:'#fff', fontWeight: 'bold'}}>Start</Text>
+                            </Button>                            
                     </View>
 
-                    <View style={styles.slide2}>
+                    {/*<View style={styles.slide2}>
 
                         <Image
                             source={require('../../assets/images/logo.png')}
@@ -327,9 +341,9 @@ export class SignUpComplete extends Component {
                         <Text style={styles.text}>Now, you can start your Walkthru!</Text>
 
                 
-                    </View>
+                    </View>*/}
 
-                    <View style={styles.slide4}>
+                    {/*<View style={styles.slide4}>
                         
                         <Image
                             source={require('../../assets/images/logo.png')}
@@ -367,7 +381,7 @@ export class SignUpComplete extends Component {
                                 >
                                 <Text style={{color:'#fff', fontWeight: 'bold'}}>Skip, for now...</Text>
                             </Button>                                              
-                    </View>                    
+                    </View>                    */}
 
                 </Swiper> 
 

@@ -47,7 +47,7 @@ class Submittal extends Component {
       .then( (userId) =>
             {
                 this.setState({loaded: true});
-                return this.setState({userId: 'rktoMB4Tl'});
+                return this.setState({userId: userId});
             }
       )
       .done();

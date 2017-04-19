@@ -69,13 +69,15 @@ class Home extends Component {
     }
 
     getDaysLeft() {
-      var now = new Date();
+      let now = new Date();
       // var start = moment(start).add(-2, 'days');
-      var start = new Date();
-
+      let start = new Date();
+      
       if (this.state.leaseBeginsOn) {
         start = this.state.leaseBeginsOn;
       }
+
+      
 
       var end = moment(start).add(5, 'days');
 
@@ -116,19 +118,22 @@ class Home extends Component {
           this.setState({"termsAcceptedOn": termsAcceptedOn});
       }).then(res => {});
 
-      AsyncStorage.getItem("leaseBegins").then((leaseBeginsOn) => {
-          this.setState({"leaseBeginsOn": leaseBeginsOn});
+      AsyncStorage.getItem("leaseBeginDate").then((leaseBeginDate) => {
+          leaseBeginsOn = leaseBeginDate;
+          this.setState({"leaseBeginsOn": leaseBeginDate});
       }).then(res => {});
 
       if (leaseBeginsOn) {
          // daysLeft = moment(termsAcceptedOn).add(5, 'days').calendar();
 
          daysLeft = moment().add(5, 'days').calendar();
-        //  alert('daysLeft:', daysLeft);
+         
+         alert('daysLeft:', daysLeft);
 
          deadlineDate = moment(leaseBeginsOn, "DD.MM.YYYY");
          deadlineDate.add(5, 'days');
-        //  alert('deadlineDate:', deadlineDate);
+
+         alert('deadlineDate:', deadlineDate);
 
 
 
@@ -204,12 +209,12 @@ class Home extends Component {
                               <Icon name='ios-arrow-forward' style={{color:'rgba(0, 122, 255, 1)'}} />
                               <Text style={{fontWeight: 'bold', color:'rgba(0, 122, 255, 1)'}} 
                                     onPress={() => this.replaceRoute('categories')}>
-                                Continue your Walkthru on the Property</Text>
+                                Start your Walkthru on the Property</Text>
                             </ListItem>                            
-                            <ListItem iconRight>
+                            {/*<ListItem iconRight>
                               <Icon name='ios-arrow-forward' style={{color:'rgba(0, 122, 255, 1)'}} />
                               <Text style={{fontWeight: 'bold', color:'rgba(0, 122, 255, 1)'}}  onPress={() => this.replaceRoute('submittal')}>Submit your Walkthru for approval</Text>
-                            </ListItem>                             
+                            </ListItem>                             */}
                         </List>           
                         </View>                          
 

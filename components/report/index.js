@@ -92,7 +92,7 @@ class Report extends Component {
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
-                        <Title>Tenant Walkthru Report</Title>
+                        <Title>Walkthru Report</Title>
 
                         <Button transparent onPress={this.props.openDrawer}>
                             <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />

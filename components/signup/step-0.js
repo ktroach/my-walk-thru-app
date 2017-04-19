@@ -29,6 +29,9 @@ import welcomeStyle from '../../themes/welcome';
 import theme from '../../themes/form-theme';
 import styles from './styles';
 
+import moment from 'moment';
+import tz from 'moment-timezone';
+
 class Step0 extends Component {
    constructor(props) {
       super(props);
@@ -42,22 +45,28 @@ class Step0 extends Component {
            loaded: true,
            verified: false,
            build: '',
-           tenantId: ''
-
+           tenantId: '',
+           loggedin: '', 
+           userId: ''
       };
    }
 
    componentWillMount() {
+
         this.fetchBuildNumber();
+
         if (this.haveTheySignedUp()) {
-            console.log('user is signed up');
-            if (this.userVerified()) {
-                console.log('user authenticated'); 
+            console.log('user signed up');
+       
+            if (this.userLoggedIn()) {
+                console.log('user logged in'); 
+                this.replaceRoute('home');
             } else {
-                console.log('user has not signed up yet');
+                console.log('user is not logged in');
             }
+
         } else {
-            console.log('user not verified: verificationCode not stored'); 
+            console.log('user not Signed Up'); 
         } 
    }
 
@@ -76,43 +85,102 @@ class Step0 extends Component {
                 console.log('build not found...');
             }
         }).done();
-   }   
+   }      
 
-   userVerified() {
-     try {
-        AsyncStorage.getItem("tenantId")
-        .then( (tenantId) =>
-              {
-                this.setState({tenantId: tenantId});
-                
-              }
-        )
-        .done();
-     } catch(err){
-         return false;
-     }       
-     return false;
+   getStorageItems(){
+       this.getTenantId();
    }
 
-   // if we have the signUpDate stored on the device then yes they signed up before
-   haveTheySignedUp () {
+    getTenantId() {
         try {
-            AsyncStorage.getItem("signUpDate")
-            .then( (signUpDate) =>
+            AsyncStorage
+                .getItem("tenantId")
+                .then((tenantId) => {
+                    this.setState({tenantId: tenantId});
+                    this.getUserId();
+                })
+                .done();
+        } catch (err) {
+            console.log('Failed to get tenantId: ' + err);
+        }
+    }
+
+    getUserId() {
+        try {
+            AsyncStorage
+                .getItem("userId")
+                .then((userId) => {
+                    this.setState({userId: userId});
+                    this.getSignUpDate();
+                })
+                .done();
+        } catch (err) {
+            console.log('Failed to get userId: ' + err);
+        }
+    }
+
+    getSignUpDate() {
+        try {
+            AsyncStorage
+                .getItem("signUpDate")
+                .then((signUpDate) => {
+                    let sud = signUpDate.toString();
+                    if (sud) this.setState({signUpDate: sud});                    
+                    // this.setState({signUpDate: signUpDate});
+                    // return sud;
+                })
+                .done();
+        } catch (err) {
+            console.log('Failed to get userId: ' + err);
+        }
+    }        
+
+    userLoggedIn() {
+        try {
+            AsyncStorage.getItem("loggedin")
+                .then((loggedin) =>
                 {
-                    // if they dont have a signUpDate yet, then 
-                    // we need to handle that appropriately...
-                    if (!signUpDate){
-                        console.log('not signed up on this device');
-                    } else {
-                        let sud = signUpDate.toString();
-                        this.setState({signUpDate: sud});
-                        this.replaceRoute('home');
-                    }
+                    this.setState({loggedin: loggedin});
+                    if (loggedin === '1') return true;
                 }
             )
             .done();
-        } catch(err){}
+        } catch(err){
+            return false;
+        }       
+        return false;
+    }
+
+   
+   // if we have the signUpDate stored on the device then yes they signed up before
+   haveTheySignedUp () {
+
+        this.getStorageItems();
+
+        if (this.state.tenantId && this.state.userId && this.state.signUpDate){
+            console.log('>> haveTheySignedUp >> ', this.state.userId,' signed up on: ', this.state.signUpDate);
+            this.replaceRoute('home');
+        } else {
+            console.log('>> haveTheySignedUp >> no user info found in storage >> user must reauthenticate using pin');
+        }
+
+        // try {
+        //     AsyncStorage.getItem("signUpDate")
+        //     .then((signUpDate) =>
+        //         {
+        //             // if they dont have a signUpDate yet, then 
+        //             // we need to handle that appropriately...
+        //             if (!signUpDate){
+        //                 console.log('not signed up on this device');
+        //             } else {
+        //                 let sud = signUpDate.toString();
+        //                 if (sud) this.setState({signUpDate: sud});
+        //                 // this.replaceRoute('home');
+        //             }
+        //         }
+        //     )
+        //     .done();
+        // } catch(err){}
     }
 
     render(){
@@ -122,7 +190,7 @@ class Step0 extends Component {
           // if the signUpDate is saved in storage on the device render the welcome message 
          if (this.state.signUpDate && this.state.signUpDate.length>0) {
             return (
-               this.renderWelcome()
+               this.renderVerification()
             );
          } else {
           // no signUpDate means no welcome message so do the verification screen ..
@@ -166,27 +234,16 @@ class Step0 extends Component {
     }    
 
     onVerificationCodeChanged(verificationCode) {
-
         if (verificationCode){
-
             if (verificationCode.length === 4){
-                console.log('dismissing keyboard');
+                // console.log('dismissing keyboard');
                 Keyboard.dismiss();                
                 this.assertVerificationCode(verificationCode);
             }
-
-            // if (verificationCode.length > 3){
-            //     console.log('dismissing keyboard');
-            //     Keyboard.dismiss();
-            //     if(this.refs.pin_verfied_button){
-            //         this.refs.pin_verfied_button.focus();
-            //     }
-            // }
         }
-
         try {
             this.setState({verificationCode: verificationCode});
-        }catch(error){
+        } catch(error) {
             console.log(error);
         }
         
@@ -199,108 +256,82 @@ class Step0 extends Component {
             return;
         } 
         this.assertVerificationCode(verificationCode);
-    }
+    }              
 
     assertVerificationCode(verificationCode) {
-        if (verificationCode === '1111'){
-            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
-            this.replaceRoute('signup-instructions');
-            return true;
-        }        
-        if (verificationCode === '1101'){
-            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
-            this.replaceRoute('signup-user-info');
-            return true;
-        }
-        if (verificationCode === '1102'){
-            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
-            this.replaceRoute('signup-lease-info');
-            return true;
-        }
-        if (verificationCode === '1103'){
-            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
-            this.replaceRoute('signup-property-info');
-            return true;
-        } 
-        if (verificationCode === '1104'){
-            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
-            this.replaceRoute('signup-property-manager-info');
-            return true;
-        }  
-        if (verificationCode === '1105'){
-            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
-            this.replaceRoute('signup-property-photos');
-            return true;
-        }  
-        if (verificationCode === '1106'){
-            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
-            this.replaceRoute('signup-terms-conditions');
-            return true;
-        }      
-        if (verificationCode === '1107'){
-            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
-            this.replaceRoute('signup-complete');
-            return true;
-        }      
-        if (verificationCode === '1108'){
-            // alert('Bypass Code Accepted. Welcome to MyWalkThru');
-
-            let signUpDate = '';
-            let leaseBeginDate = '';
-            let userId = '';
-
-            let now = new Date();
-
-            signUpDate = now.toDateString();
-            leaseBeginDate = now.toDateString();
-            userId = 'HkAEemNpe';
-
-            AsyncStorage.setItem("signUpDate", signUpDate)
-            .then( () =>
-                {
-                    console.log('Adding storage item: signUpDate');
-
-                    AsyncStorage.setItem("userId", userId)
-                    .then( () => {
-
-                        console.log('Adding storage item: signUpDate');
-
-                        AsyncStorage.setItem("leaseBeginDate", leaseBeginDate)
-                        .then( () => {
-
-                            console.log('Adding storage item: signUpDate');
-
-                            this.replaceRoute('home');
-
-
-                        }
-                        ).done();
-                    }
-                    ).done();
-                }
-            )
-            .done( );
-
-            // this.replaceRoute('home');
-            return true;
-        }                                               
-
-
         let q = {"where": {"and": [{"pincode": verificationCode},{"active":{ "eq": "true"}}]}};
         let url = 'https://mywalkthruapi.herokuapp.com/api/v1/Tenants?filter=' + JSON.stringify(q);
         fetch(url).then((response) => response.json()).then((responseData) => {
-            console.log('responseData:', responseData);
+            // console.log('responseData:', responseData);
             let result = responseData[0];
             if (result && result.id) {
-                console.log('result.id:', result.id);
+                // console.log('result.id:', result.id);
+                // alert(result.id);
                 this.setState({verified: true});
                 // leave code active until final approval 
                 // this.deactivateCode(result.id);
                 if (result.fullname) {
                     AsyncStorage.setItem("tenantId", result.id)
                         .then( () => {
-                            alert('Welcome to MyWalkThru, ' + result.fullname + '!');
-                            this.replaceRoute('signup-instructions');
+                            // try to parse the first name  
+                            let s = result.fullname;
+                            if (s && s.length > 0) {
+                                s = s.trim();
+                                let n = s.lastIndexOf(' '); 
+                                if (n){
+                                    let firstName = s.substring(0, n); 
+                                    let greeting = '';  
+                                    let timeOfDay = '';  
+                                    let date = new Date();
+                                    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                                    const currentTime = moment().tz(timezone).format();
+                                    let hours = new Date(currentTime).getHours();
+                                    if (hours >= 12) {
+                                        timeOfDay = 'Good Afternoon';
+                                    } else {
+                                        timeOfDay = 'Good Morning';
+                                    }
+                                    if (firstName && firstName.length>0){
+                                        greeting = timeOfDay + ', ' + firstName + '!';
+                                    } else {
+                                        greeting = timeOfDay + ', ' + s + '!';
+                                    }
+                                    alert(greeting);
+                                }
+                            }
+
+                            if (result.userId && result.userId.length>0){
+                                AsyncStorage.setItem("loggedin", "1")
+                                    .then( () => {
+                                        console.log('Added storage item: loggedin');
+                                        AsyncStorage.setItem("signUpDate", result.created)
+                                        .then( () =>
+                                            {
+                                                console.log('Added storage item: signUpDate');
+                                                AsyncStorage.setItem("leaseBeginDate", result.leaseBegin)
+                                                    .then( () => {
+                                                        console.log('Adding storage item: leaseBegin');
+                                                        AsyncStorage.setItem("userId", result.userId)
+                                                            .then( () => {
+                                                                console.log('Adding storage item: userId');
+                                                                this.replaceRoute('home');
+                                                            }
+                                                        ).done();                                                    
+                                                    }
+                                                    ).done();
+                                            }
+                                        )
+                                        .done( );                                   
+                                    }
+                                ).done(); 
+                            } else {
+                                AsyncStorage.setItem("loggedin", "0")
+                                    .then( () => {
+                                        console.log('user doesnt exist, user is not logged in');
+                                        this.replaceRoute('signup-instructions');
+                                    }
+                                ).done(); 
+                            }
                         }
                     ).done();
                 } else {
@@ -341,10 +372,7 @@ class Step0 extends Component {
             <Container theme={theme} style={{backgroundColor: '#9DD6EB'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
-
                         <Title>USER VERIFICATION</Title>
-
-
                     </Header>
                     <Content padder style={{backgroundColor: 'transparent'}} >
                        <View style={welcomeStyle.welcomeContainer}>

@@ -77,18 +77,18 @@ export class SignUpInstructions extends Component {
         }
     } 
 
-  componentDidMount() {
-    if(this._confettiView) {
-       this._confettiView.startConfetti();
+    componentDidMount() {
+        if(this._confettiView) {
+        this._confettiView.startConfetti();
+        }
     }
-  }
   
-  componentWillUnmount() {
-      if (this._confettiView)
-      {
-        //   this._confettiView.stopConfetti();
-      }
-  }       
+    componentWillUnmount() {
+        // if (this._confettiView)
+        // {
+        //     //   this._confettiView.stopConfetti();
+        // }
+    }       
 
     replaceRoute(route) {
         this.props.replaceRoute(route);
@@ -125,8 +125,25 @@ export class SignUpInstructions extends Component {
                     />
                                         
                     <Text style={styles.text}>Welcome to MyWalkThru!</Text>
+
+                    <Text style={styles.text}>Let's begin!</Text>
+
+                        <Button rounded block
+                            style={{alignSelf: 'center',
+                                marginTop: 40,
+                                backgroundColor: '#ad241f',
+                                borderRadius:90,
+                                width: 200,
+                                height:40}}
+                                onPress={() => {
+                                    this.proceedToSignUp();
+                                }}
+                            >
+                            <Text style={{color:'#fff', fontWeight: 'bold'}}>Sign Up</Text>
+                        </Button>                     
                 </View>
-                <View style={styles.slide2}>
+
+                {/*<View style={styles.slide2}>
 
                     <Image
                         source={require('../../assets/images/logo.png')}
@@ -178,7 +195,7 @@ export class SignUpInstructions extends Component {
                             >
                             <Text style={{color:'#fff', fontWeight: 'bold'}}>I'm Ready >>> </Text>
                         </Button> 
-                </View>
+                </View>*/}
 
             </Swiper>         
 

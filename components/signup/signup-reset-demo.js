@@ -75,34 +75,42 @@ export class SignUpResetDemo extends Component {
 
     resetApp(){
 
-        AsyncStorage.removeItem("signUpDate")
-        .then( () =>
-            {
-                console.log('Removed storage item: signUpDate');
-
-                AsyncStorage.removeItem("userId")
-                .then( () => {
-
-                    console.log('Removed storage item: userId');
-
-                    AsyncStorage.removeItem("leaseBeginDate")
-                    .then( () => {
-
-                        console.log('Removed storage item: leaseBeginDate');
-
-                        // this.replaceRoute('signup-step0');
-
-                        alert('done');
-
-                        Expo.Util.reload();
-
-                    }
-                    ).done();
-                }
-                ).done();
+        AsyncStorage.removeItem("loggedin")
+            .then( () => {
+                console.log('Removed storage item: loggedin');
+                alert('Goodbye!');
+                Expo.Util.reload();
             }
-        )
-        .done( );
+        ).done();        
+
+        // AsyncStorage.removeItem("signUpDate")
+        // .then( () =>
+        //     {
+        //         console.log('Removed storage item: signUpDate');
+
+        //         AsyncStorage.removeItem("userId")
+        //         .then( () => {
+
+        //             console.log('Removed storage item: userId');
+
+        //             AsyncStorage.removeItem("leaseBeginDate")
+        //             .then( () => {
+
+        //                 console.log('Removed storage item: leaseBeginDate');
+
+        //                 // this.replaceRoute('signup-step0');
+
+        //                 alert('done');
+
+        //                 Expo.Util.reload();
+
+        //             }
+        //             ).done();
+        //         }
+        //         ).done();
+        //     }
+        // )
+        // .done( );
         
     }
 
@@ -116,21 +124,21 @@ export class SignUpResetDemo extends Component {
                         style={{width: 200, height: 200}}
                     />
 
-                    <Text style={styles.text}>Exit Demo Mode</Text>
+                    <Text style={styles.text}>You can log back in later using your 4-digit pincode</Text>
 
-                        <Button rounded block
-                            style={{alignSelf: 'center',
-                                marginTop: 40,
-                                backgroundColor: '#ad241f',
-                                borderRadius:90,
-                                width: 200,
-                                height:40}}
-                                onPress={() => {
-                                    this.resetApp();
-                                }}
-                            >
-                            <Text style={{color:'#fff', fontWeight: 'bold'}}>Do It >>> </Text>
-                        </Button> 
+                    <Button rounded block
+                        style={{alignSelf: 'center',
+                            marginTop: 40,
+                            backgroundColor: '#ad241f',
+                            borderRadius:90,
+                            width: 200,
+                            height:40}}
+                            onPress={() => {
+                                this.resetApp();
+                            }}
+                        >
+                        <Text style={{color:'#fff', fontWeight: 'bold'}}>Logout</Text>
+                    </Button> 
                 </View>
 
             </Swiper>         

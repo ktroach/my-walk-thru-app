@@ -211,7 +211,7 @@ class CategoryDetails extends React.Component {
 
      var filter = '{"where": {"and": [{"rank": "999"},{"userId": "'+userId+'"},{"PropertyCategoryId":{ "eq": "'+categoryId+'"}}]}}';
 
-     let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"rank": 999, "PropertyCategoryId": "'+categoryId+'"}}';
+     let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"rank": 999, "PropertyCategoryId": "'+categoryId+'", "active": true}}';
 
       // let query = Config.PRICING_ITEMS_API + '?filter={"where": {"rank": 999, "divisionid": "'+categoryId+'"}}';
       let count = 0;
@@ -223,6 +223,19 @@ class CategoryDetails extends React.Component {
 
       fetch(query).then((response) => response.json()).then((responseData) => {
          let count = responseData.length;
+
+         // this is a total shit fix. this needs to be fixed in the backend. shity bandaid
+        //  if (categoryName === 'Hallway / Stairway'){
+        //   for (let x = 0; x < responseData.length; x++){
+        //       let item = responseData[x];
+        //       if (item.name){
+        //           if (item.name === 'Floor'){
+
+        //           }
+        //       }
+        //   }  
+        //  }
+
          this.setState({
            dataSource: this.state.dataSource.cloneWithRows(responseData),
            loaded: true,

@@ -123,7 +123,7 @@ class SideBar extends Component {
 
                        <ListItem button onPress={() => this.navigateTo('signup-reset-demo')} iconLeft style={styles.links} >
                            <Icon style={styles.sidebarIcon} name='ios-git-compare' />
-                           <Text style={styles.text}>Exit Demo Mode</Text>
+                           <Text style={styles.text}>Logout</Text>
                        </ListItem>                                                             
                    </List>
                  

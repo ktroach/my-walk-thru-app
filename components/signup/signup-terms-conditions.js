@@ -589,7 +589,7 @@ export class SignUpTermsConditions extends Component {
 
         this.replaceRoute('signup-complete'); 
 
-        alert('Thank you for Signing Up!');
+        // alert('Thank you for Signing Up!');
 
     }
 

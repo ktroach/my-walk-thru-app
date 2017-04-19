@@ -99,6 +99,8 @@ class CategoryRow extends React.Component {
 
       // const icon = <Thumbnail circular size={50} source={require('../../assets/images/beds.png')} />;
 
+    //   ios-information-circle-outline
+
       return (
         
          <View style={{
@@ -110,7 +112,9 @@ class CategoryRow extends React.Component {
 
                    {/*<Thumbnail circular size={50} source={require(icon)} />*/}
 
-                   <Thumbnail circular size={50} source={require('../../assets/images/beds.png')} />
+                   <Icon name='ios-navigate-outline' style={{fontSize: 32, color: '#333'}} />
+
+                   {/*<Thumbnail circular size={50} source={require('../../assets/images/beds.png')} />*/}
 
                    <H3 style={{ color: '#333', fontWeight:'bold', marginLeft: 8, marginTop: 5 }}>{name}</H3>
 
