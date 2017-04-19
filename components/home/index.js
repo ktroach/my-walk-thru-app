@@ -34,10 +34,13 @@ class Home extends Component {
             termsAcceptedOn: "",
             leaseBeginsOn: "",
             deadlineDate: "",
-            daysLeft: "",
+            daysLeft: 0,
             progress: 0,
             indeterminate: true,
-            progressValue: 0.10
+            progressValue: 0.10,
+            leaseBegin: '',
+            todaysDate: '',
+            expiresOn: ''
        };
     }
   
@@ -64,82 +67,52 @@ class Home extends Component {
         this.props.popRoute();
     }
 
-    getCurrentDateTime() {
-      return moment().format('MMM DD YYYY h:mm:ss a');
-    }
-
     getDaysLeft() {
-      let now = new Date();
-      // var start = moment(start).add(-2, 'days');
-      let start = new Date();
-      
-      if (this.state.leaseBeginsOn) {
-        start = this.state.leaseBeginsOn;
-      }
+      // var daysLeft = 0;
+       AsyncStorage.getItem("leaseBeginDate")
+       .then((leaseBeginDate) =>
+          {
+              console.log('>>>AsyncStorage>>>leaseBeginDate', leaseBeginDate);  
 
-      
+              let begin = new Date(leaseBeginDate.toString());
+              // let df = moment(begin).format('M/D/YYYY');
+              let df = moment(begin).format('MMMM Do YYYY, h:mm:ss a');
 
-      var end = moment(start).add(5, 'days');
+              this.setState({leaseBeginDate: df.toString()});
 
-      var daysLeft = Math.floor(( end - now ) / 86400000);
+              let now = moment().format('M/D/YYYY');
+              let dn = moment().format('MMMM Do YYYY, h:mm:ss a');
 
-      return daysLeft;
+              this.setState({todaysDate: dn.toString()});
+              
+              let end = moment(begin).add(5, 'days');
+
+              let expiresOn = moment(end).format('MMMM Do YYYY, h:mm:ss a');
+
+              this.setState({expiresOn: expiresOn.toString()});
+
+              console.log('>>>AsyncStorage>>>begin', begin);
+              console.log('>>>AsyncStorage>>>end', end);
+
+              let a = moment(now, 'M/D/YYYY');
+              let b = moment(end, 'M/D/YYYY');
+              let daysLeft = b.diff(a, 'days');
+
+              console.log('>>>AsyncStorage>>>daysLeft', daysLeft);
+
+              if (daysLeft > 0) {
+                this.setState({daysLeft: daysLeft});
+              } else {
+                this.setState({daysLeft: 0});
+              }
+          }
+       )
+       .done();       
     }
 
-    getDueDate() {
-      var now = new Date();
-      var start = new Date();
+    componentDidMount() {
 
-      if (this.state.leaseBeginsOn) {
-        start = this.state.leaseBeginsOn;
-      }
-
-      var end = moment(start).add(5, 'days');
-
-      return moment(end).calendar();
-    }
-
-    componentDidMount(){
-      var termsAccepted = false;
-      var termsAcceptedOn = "";
-      var leaseBeginsOn = "";
-      var deadlineDate = "";
-      var daysLeft = "";
-
-      // daysLeft = moment().add(5, 'days').calendar();
-
-      //USE leaseBeginDate
-
-      AsyncStorage.getItem("termsAccepted").then((termsAccepted) => {
-          this.setState({"termsAccepted": termsAccepted});
-      }).then(res => {});
-
-      AsyncStorage.getItem("termsAcceptedOn").then((termsAcceptedOn) => {
-          this.setState({"termsAcceptedOn": termsAcceptedOn});
-      }).then(res => {});
-
-      AsyncStorage.getItem("leaseBeginDate").then((leaseBeginDate) => {
-          leaseBeginsOn = leaseBeginDate;
-          this.setState({"leaseBeginsOn": leaseBeginDate});
-      }).then(res => {});
-
-      if (leaseBeginsOn) {
-         // daysLeft = moment(termsAcceptedOn).add(5, 'days').calendar();
-
-         daysLeft = moment().add(5, 'days').calendar();
-         
-         alert('daysLeft:', daysLeft);
-
-         deadlineDate = moment(leaseBeginsOn, "DD.MM.YYYY");
-         deadlineDate.add(5, 'days');
-
-         alert('deadlineDate:', deadlineDate);
-
-
-
-      }
-
-      // this.animate();
+      this.getDaysLeft();
 
     }
 
@@ -180,22 +153,40 @@ class Home extends Component {
                             <Progress.Pie
                               style={styles.progress}
                               progress={this.state.progressValue} 
-                              size={200}
+                              size={150}
                               showsText={true} 
                               color='green'
                             />
                           </View>
-                          <Text style={{color:'rgba(0, 122, 255, 1)', fontWeight: 'bold', fontSize: 20}}> {this.getDaysLeft()} DAYS LEFT</Text>
-                        </View>                      
+                          <Text style={{color:'rgba(0, 122, 255, 1)', fontWeight: 'bold', fontSize: 20}}> {this.state.daysLeft} DAYS LEFT</Text>
+                        </View>      
 
                         <View style={{marginTop: 20}}>
-                        <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>COMPLETED</Text>
-                         <List>
-                            <ListItem iconRight >
-                               <Icon name='ios-checkmark-circle-outline' style={{color:'green'}} />
-                               <Text style={{fontWeight: 'bold', color:'green'}} >Completed Sign Up</Text>
-                            </ListItem>
-                        </List>
+                          <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>WALKTHRU TIMELINE</Text>
+                          <List>
+                              <ListItem iconRight >
+                                <Icon name='ios-time-outline' style={{color:'#333'}} />
+                                <Text style={{fontWeight: 'bold', color:'#333'}} >Today: {this.state.todaysDate}</Text>
+                              </ListItem>                            
+                              <ListItem iconRight >
+                                <Icon name='ios-time-outline' style={{color:'#333'}} />
+                                <Text style={{fontWeight: 'bold', color:'#333'}} >Begins: {this.state.leaseBeginDate}</Text>
+                              </ListItem>
+                              <ListItem iconRight >
+                                <Icon name='ios-time-outline' style={{color:'#333'}} />
+                                <Text style={{fontWeight: 'bold', color:'#333'}} >Expires: {this.state.expiresOn}</Text>
+                              </ListItem>                              
+                          </List>
+                        </View>                                        
+
+                        <View style={{marginTop: 20}}>
+                          <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>COMPLETED</Text>
+                          <List>
+                              <ListItem iconRight >
+                                <Icon name='ios-checkmark-circle-outline' style={{color:'green'}} />
+                                <Text style={{fontWeight: 'bold', color:'green'}} >Completed Sign Up</Text>
+                              </ListItem>
+                          </List>
                         </View>
 
                         <View style={{marginTop: 20}}>

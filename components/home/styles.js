@@ -30,7 +30,7 @@ module.exports = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#fff',
-       
+        marginTop: 15
     },
     progress: {
         margin: 5,

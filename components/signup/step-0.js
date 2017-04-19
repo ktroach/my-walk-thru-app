@@ -32,6 +32,8 @@ import styles from './styles';
 import moment from 'moment';
 import tz from 'moment-timezone';
 
+// import Speech from 'react-native-speech';
+
 class Step0 extends Component {
    constructor(props) {
       super(props);
@@ -296,7 +298,13 @@ class Step0 extends Component {
                                     } else {
                                         greeting = timeOfDay + ', ' + s + '!';
                                     }
-                                    alert(greeting);
+                                    // alert(greeting);
+
+                                    // Speech.speak({
+                                    //     text: greeting,
+                                    //     voice: 'en-US'
+                                    // });
+                                    
                                 }
                             }
 
