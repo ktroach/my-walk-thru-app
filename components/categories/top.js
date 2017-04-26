@@ -103,7 +103,7 @@ class TopCategories extends Component {
                        <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                    </Button>
 
-                    <Title style={{fontSize: 20}}>Categories</Title>
+                    <Title style={{fontSize: 20}}>Areas</Title>
 
                     <Button transparent onPress={this.props.openDrawer} >
                         <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
@@ -122,55 +122,56 @@ class TopCategories extends Component {
     }
 
     renderListView() {
-      var title = "  Categories (" + this.state.categoryCount + ")";
-      return (
-         <Container theme={theme} style={{backgroundColor: '#FBFAFA'}} >
-             <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
-             <Header>
-
-               <Button transparent onPress={() => this.replaceRoute('home')}>
-                   <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
-               </Button>
-
-                <Title style={{fontSize: 20}}>{title}</Title>
-
-                <Button transparent onPress={this.props.openDrawer} >
-                    <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
-                </Button>
-                
-             </Header>
-                <Content style={{backgroundColor: 'transparent'}}>
-                <ListView
-                      refreshControl={
-                         <RefreshControl
-                            refreshing={this.state.isRefreshing}
-                            onRefresh={this._onRefresh}
-                         />
-                      }
-                      enableEmptySections={true}
-                      dataSource={this.state.dataSource}
-                      renderRow={this.renderRow.bind(this)}
-                 />
-               </Content>
-             </Image>
-         </Container>
-      );
+        let title = "Areas (" + this.state.categoryCount + ")";
+        return (
+            <Container theme={theme} style={{backgroundColor: '#FBFAFA'}} >
+                    <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
+                    <Header>
+                        <Button transparent onPress={() => this.replaceRoute('home')}>
+                            <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
+                        </Button>
+                        <Title style={{fontSize: 20}}>{title}</Title>
+                        <Button transparent onPress={this.props.openDrawer} >
+                            <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
+                        </Button>                    
+                    </Header>
+                    <Content style={{backgroundColor: 'transparent'}}>
+                        <ListView
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={this.state.isRefreshing}
+                                    onRefresh={this._onRefresh}
+                                />
+                            }
+                            enableEmptySections={true}
+                            dataSource={this.state.dataSource}
+                            renderRow={this.renderRow.bind(this)}
+                        />
+                </Content>
+                </Image>
+            </Container>
+        );
     }
 
     // Important: Sort order is controlled by Loopback defualt order by property on the persisted model.
-    fetchAll (userId) {
+    fetchAll(userId) {
+        // gaurd clause 
+        if(!userId)return;
+        var url = 'https://mywalkthruapi.herokuapp.com/api/v1/PropertyCategories?filter={"where": {' +
+                '"and": [{"active": "true"},{"userId":{ "eq": "' + userId + '"}}]}}';
 
-      var url = 'https://mywalkthruapi.herokuapp.com/api/v1/PropertyCategories?filter={"where": {"and": [{"active": "true"},{"userId":{ "eq": "'+userId+'"}}]}}';
+        console.log('>>>top>>>fetchAll>>>url:', url);
+        console.log('>>>top>>>fetchAll>>>userId:', userId);
 
-      console.log('>>>top>>>fetchAll>>>url:', url);
-      console.log('>>>top>>>fetchAll>>>userId:', userId);
-
-      fetch(url).then((response) => response.json()).then((responseData) => {
+        fetch(url).then((response) => response.json()).then((responseData) => {
             this.setState({
-               categories: responseData,
-               dataSource: this.state.dataSource.cloneWithRows(responseData),
-               loaded: true,
-               categoryCount: responseData.length
+                categories: responseData,
+                dataSource: this
+                    .state
+                    .dataSource
+                    .cloneWithRows(responseData),
+                loaded: true,
+                categoryCount: responseData.length
             });
         }).done();
     }

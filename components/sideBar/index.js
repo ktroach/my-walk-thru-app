@@ -22,7 +22,8 @@ class SideBar extends Component {
    state = {
      username: '',
      loaded: false,
-     signUpDate: ''
+     signUpDate: '',
+     userId: ''
    }
 
     navigateTo(route) {
@@ -37,11 +38,11 @@ class SideBar extends Component {
     // if we have the signUpDate stored on the device then yes they signed up before
     haveTheySignedUp () {
       try {
-         AsyncStorage.getItem("signUpDate")
-         .then( (signUpDate) =>
+         AsyncStorage.getItem("userId")
+         .then( (userId) =>
                {
                   this.setState({loaded: true});
-                  return this.setState({signUpDate: signUpDate})
+                  return this.setState({userId: userId})
                }
          )
          .done();
@@ -50,7 +51,7 @@ class SideBar extends Component {
 
     render(){
       if (this.state.loaded){
-         if (this.state.signUpDate && this.state.signUpDate.length>0) {
+         if (this.state.userId && this.state.userId.length>0) {
             return (
                this.renderSignedUp()
             );
@@ -87,7 +88,7 @@ class SideBar extends Component {
 
              {/*<Image source={require('../../assets/images/3d-house-1.png')} style={{resizeMode: 'cover', opacity: 1.8}}>*/}
 
-                  <Thumbnail size={500} style={{resizeMode: 'contain', marginTop: 7}} source={require('../../assets/images/logo.png')} />
+                  <Thumbnail size={100} style={{resizeMode: 'contain', marginTop: 7}} source={require('../../assets/images/logo.png')} />
                 
                   <List style={{paddingTop: 1, height: 1000}}>
                          {/*<ListItem button onPress={() => this.navigateTo('signup-step0')} iconLeft style={styles.links} >
@@ -117,8 +118,18 @@ class SideBar extends Component {
                        </ListItem>*/}
                        <ListItem button onPress={() => this.navigateTo('signup-property-photos')} iconLeft style={styles.links} >
                            <Icon style={styles.sidebarIcon} name='ios-photos-outline' />
-                           <Text style={styles.text}>Property Photos</Text>
+                           <Text style={styles.text}>Snap Photos</Text>
                        </ListItem> 
+
+                       <ListItem button onPress={() => this.navigateTo('report')} iconLeft style={styles.links} >
+                         <Icon style={styles.sidebarIcon} name='ios-list-box-outline' />
+                         <Text style={styles.text}>View Report</Text>
+                       </ListItem>
+                       
+                       <ListItem button onPress={() => this.navigateTo('submittal')} iconLeft style={styles.links} >
+                         <Icon style={styles.sidebarIcon} name='ios-list-box-outline' />
+                         <Text style={styles.text}>Submit WalkThru</Text>
+                       </ListItem>                                              
 
 
                        <ListItem button onPress={() => this.navigateTo('signup-reset-demo')} iconLeft style={styles.links} >
@@ -140,7 +151,7 @@ class SideBar extends Component {
 
              {/*<Image source={require('../../assets/images/3d-house-1.png')} style={{resizeMode: 'cover', opacity: 1.8}}>*/}
 
-                  <Thumbnail size={500} style={{resizeMode: 'contain', marginTop: 7}} source={require('../../assets/images/logo.png')} />
+                  <Thumbnail size={100} style={{resizeMode: 'contain', marginTop: 7}} source={require('../../assets/images/logo.png')} />
                 
                   <List style={{paddingTop: 1, height: 1000}}>
                          <ListItem button onPress={() => this.navigateTo('signup-step0')} iconLeft style={styles.links} >
@@ -149,7 +160,7 @@ class SideBar extends Component {
                          </ListItem>      
                        <ListItem button onPress={() => this.navigateTo('signup-reset-demo')} iconLeft style={styles.links} >
                            <Icon style={styles.sidebarIcon} name='ios-git-compare' />
-                           <Text style={styles.text}>Exit Demo Mode</Text>
+                           <Text style={styles.text}>Logout</Text>
                        </ListItem>                              
 
                        {/*<ListItem button onPress={() => this.navigateTo('home')} iconLeft style={styles.links} >

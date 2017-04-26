@@ -119,19 +119,25 @@ class DetailRow extends React.Component {
              shadowRadius: 5,
             }}>
 
-            <Header style={{backgroundColor: '#fafbfc'}}>
-                <Title style={{fontSize: 20, color: '#333'}}>{this.state.item.name}</Title>
+            <Header style={{backgroundColor: '#9DD6EB'}}>
+                <Title style={{fontSize: 22, color: '#333', marginTop: -10}}>{this.state.item.name}</Title>
             </Header>
 
             <View padder style={{backgroundColor: '#fafbfc'}} >
-                <Card transparent foregroundColor="#000">
-                    <CardItem header>
-                       <Text>Condition</Text>
-                    </CardItem>
+                <Card transparent foregroundColor="#333">
+                    {/*<CardItem header>
+                       <Text style={{
+                              paddingVertical: 5, 
+                              paddingHorizontal: 5, 
+                              color: '#333', 
+                              fontSize: 18, 
+                              fontWeight: 'bold'
+                          }}>Condition</Text>
+                    </CardItem>*/}
                     <CardItem>
                        {this.renderSegmentControl(this.state.item)}
                     </CardItem>
-                    <CardItem header>
+                    {/*<CardItem header>
                        <Text style={{
                               paddingVertical: 5, 
                               paddingHorizontal: 5, 
@@ -139,21 +145,21 @@ class DetailRow extends React.Component {
                               fontSize: 18, 
                               fontWeight: 'bold'
                           }}>Summary of Attention Needed</Text>
-                    </CardItem>
+                    </CardItem>*/}
                     <CardItem>
                       {this.maybeRenderSummaryPhotosComments()}
                     </CardItem>
-                    <CardItem>
+                    {/*<CardItem>
                     <Button rounded block
                        style={{alignSelf: 'center',
                             marginTop: 5,
-                            backgroundColor: '#ad241f',
-                            borderRadius:90,
+                            backgroundColor: 'rgba(0, 122, 255, 1)',
+                            borderRadius:45,
                             width: 300,
-                            height:65}} onPress={() => this.navigateTo('commentsAndPhotos')}>
+                            height:45}} onPress={() => this.navigateTo('commentsAndPhotos')}>
                           <Text style={{fontSize: 16, fontWeight: 'bold', color: '#fff'}}>Close Up Photos/Comments</Text>
                       </Button>
-                    </CardItem>
+                    </CardItem>*/}
                 </Card>
             </View>
 
@@ -184,61 +190,97 @@ class DetailRow extends React.Component {
          alignSelf: 'center'
        }}>*/
 
-         <ScrollView behavior={this.state.behavior} style={{backgroundColor: '#fafbfc'}}>
+      <ScrollView behavior={this.state.behavior} style={{backgroundColor: '#fafbfc'}}>
            
-           <Text
-             style={{
-                paddingVertical: 5, 
-                paddingHorizontal: 5, 
-                color: '#333', 
-                fontSize: 16, 
-                fontWeight: 'bold'
-            }}>
-            Summary Comment
-           </Text>
+        <Card transparent foregroundColor="#333">
+            <CardItem header>
+                <Text style={{
+                      color: '#333', 
+                      fontSize: 18, 
+                      fontWeight: 'bold'
+                  }}>Summary</Text>
+            </CardItem>
 
-           <Textarea
-              placeholder='Type a summary comment...'
-              keyboardType='default'
-              autoCapitalize='sentences' 
-              autoCorrect={false}
-              maxLength={1000}
-              clearButtonMode='while-editing'
-              returnKeyType='done'
-              style={{
-                fontSize: 14, 
-                backgroundColor: '#fff', 
-                color: '#333', 
-                height: 50, 
-                overflow: 'scroll'
-              }}
-              onChangeText={this.updateSummaryComments.bind(this)}
-              onBlur={this.saveSummaryComments()}
-              value={this.state.summaryComments}>
-           </Textarea>
+            <CardItem>
+              <Text
+                style={{ 
+                    color: '#333', 
+                    fontSize: 16, 
+                    fontWeight: 'bold',
+                    paddingVertical: 10,
+                    backgroundColor: '#eff0f1'
+                }}>
+                Comments
+              </Text>
 
-           <Text
-              style={{
-                paddingVertical: 5, 
-                paddingHorizontal: 5, 
-                color: '#333', 
-                fontSize: 16, 
-                fontWeight: 'bold'
-              }}>
-              Summary Photo
-            </Text>
-            <View style={{ flex: 1,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: '#fafbfc',}}>
-             <Image
-               source={{uri: summaryPhoto}}
-               style={{width: screenWidth *.8, height: 200}}
-             />
+              <Textarea
+                  placeholder='Type your comments...'
+                  keyboardType='default'
+                  autoCapitalize='sentences' 
+                  autoCorrect={false}
+                  maxLength={1000}
+                  clearButtonMode='while-editing'
+                  returnKeyType='done'
+                  style={{
+                    fontSize: 14, 
+                    backgroundColor: '#fff', 
+                    color: '#333', 
+                    height: 50, 
+                    overflow: 'scroll'
+                  }}
+                  onChangeText={this.updateSummaryComments.bind(this)}
+                  onBlur={this.saveSummaryComments()}
+                  value={this.state.summaryComments}>
+              </Textarea>
+            </CardItem>
 
-            </View>           
+            <CardItem>
+              <Text
+                style={{
+                  color: '#333', 
+                  fontSize: 16, 
+                  fontWeight: 'bold',
+                  paddingVertical: 10,
+                  backgroundColor: '#eff0f1'                  
+                }}>
+                Photo
+              </Text>
+              <View style={{ flex: 1,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          backgroundColor: '#fafbfc',}}>
+                <Image
+                  source={{uri: summaryPhoto}}
+                  style={{width: screenWidth *.8, height: 200}}
+                />
+              </View>          
+              </CardItem>
 
-         </ScrollView>
+            <CardItem>
+                <Text
+                  style={{
+                    color: '#333', 
+                    fontSize: 16, 
+                    fontWeight: 'bold',
+                    paddingVertical: 10,
+                    backgroundColor: '#eff0f1'                    
+                  }}>
+                  Close Ups
+                </Text>
+                <Button rounded block
+                  style={{alignSelf: 'center',
+                        marginTop: 5,
+                        backgroundColor: 'rgba(0, 122, 255, 1)',
+                        borderRadius:45,
+                        width: 300,
+                        height:45}} onPress={() => this.navigateTo('commentsAndPhotos')}>
+                      <Text style={{fontSize: 16, fontWeight: 'bold', color: '#fff'}}>Close Up Photos/Comments</Text>
+                  </Button>              
+              </CardItem>
+
+          </Card>
+
+      </ScrollView>
 
  
 
@@ -631,7 +673,7 @@ class DetailRow extends React.Component {
           item: item
        },
        {
-         label: '📷 Needs Attention',
+         label: '📷 Photos/Comments',
          value: 'Needs Attention',
          item: item
        },

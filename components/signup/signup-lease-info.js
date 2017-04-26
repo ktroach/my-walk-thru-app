@@ -43,6 +43,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import CustomInput from './CustomInput';
 
+
+
 export class SignUpLeaseInfo extends Component {
     constructor(props){
         super(props);
@@ -302,9 +304,9 @@ export class SignUpLeaseInfo extends Component {
         return (
             <Container  style={{backgroundColor: '#fff'}} >
                 <Header>
-                    <Button transparent onPress={() => this.replaceRoute('signup-user-info')}>
+                    {/*<Button transparent onPress={() => this.replaceRoute('signup-user-info')}>
                         <Icon name='ios-arrow-back' style={{fontSize: 30}} />
-                    </Button>                      
+                    </Button>                      */}
                     <Title style={{fontSize: 20}}>{title}</Title>
                 </Header>            
 

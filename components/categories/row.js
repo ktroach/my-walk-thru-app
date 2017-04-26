@@ -33,7 +33,7 @@ class CategoryRow extends React.Component {
    }
 
     componentDidMount() {
-      this.fetchProgressSummary();
+      // this.fetchProgressSummary();
     }
 
     fetchProgressSummary(){
@@ -67,6 +67,18 @@ class CategoryRow extends React.Component {
       // Category name ( trim it )
       var name = '';
       var categoryname = this.props.category.name;
+
+      // let tagged = false;
+      // let summaryComment = '';
+      // if(this.props.category.summaryComment){
+      //   summaryComment = this.props.category.summaryComment;
+      //   if(summaryComment.length>0) summaryComment.trim();
+      //   tagged = (summaryComment.length>0);
+      // }
+
+      // if (tagged){
+
+      // }
 
       if (categoryname && categoryname.length > 0) {
          name = categoryname.trim();

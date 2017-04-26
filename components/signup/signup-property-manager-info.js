@@ -279,9 +279,9 @@ export class SignUpPropertyManagerInfo extends Component {
             <Container  style={{backgroundColor: '#fff'}} >
                
                 <Header>
-                    <Button transparent onPress={() => this.replaceRoute('signup-lease-info')}>
+                    {/*<Button transparent onPress={() => this.replaceRoute('signup-lease-info')}>
                         <Icon name='ios-arrow-back' style={{fontSize: 30}} />
-                    </Button>                     
+                    </Button>                     */}
                     <Title style={{fontSize: 20}}>{title}</Title>
                 </Header>            
         <View style={{ flex: 1, backgroundColor: '#EFEFF4' }}>
@@ -350,12 +350,12 @@ export class SignUpPropertyManagerInfo extends Component {
             <Section
                 ref={'PhoneSection'}
                 title={'Phone Number'}
-                helpText={'Enter your Property Manager`s phone number.  You can enter it in this format: 8308321234'}
+                helpText={'Enter your Property Manager`s phone number.  DO NOT USE PARENTHESIS, DASHES, or DOTS'}
             >
                 <TextInputCell
                     ref="phoneNumber"
                     inputProps={{ 
-                        placeholder: 'Phone Number',
+                        placeholder: '0000000000',
                         autoCapitalize: "none",
                         autoCorrect: false,
                         keyboardType: 'phone-pad'

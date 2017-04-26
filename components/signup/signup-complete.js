@@ -315,7 +315,8 @@ export class SignUpComplete extends Component {
                                     }}
                                 >
                                 <Text style={{color:'#fff', fontWeight: 'bold'}}>Start</Text>
-                            </Button>                            
+                            </Button>  
+                                                      
                     </View>
 
                     {/*<View style={styles.slide2}>

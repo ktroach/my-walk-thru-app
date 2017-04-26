@@ -81,7 +81,9 @@ export class SignUpComplete extends Component {
             formData:{},
             leaseBeginMessage: '',
             leaseBeginDate: '',
-            tenantId: ''
+            tenantId: '',
+            userId: '',
+            userModelId: ''
         }
     } 
 
@@ -90,32 +92,53 @@ export class SignUpComplete extends Component {
     }
 
     componentDidMount() {
-        // this.getTenantId();
+      AsyncStorage.getItem("userId")
+      .then( (userId) =>
+            {
+                this.setState({userId: userId});
+                // alert(userId);
+                this.fetchUser(userId, function(err, res){
+                    if (err){
+                        console.log(err);
+                    } else {
+                        console.log('snap');
+                        // if(res && res[0]){
+                        //     let userModelId = res[0].id;
+                        //     if(userModelId){
+                        //         this.setState({userModelId: userModelId});
+                        //     }    
+                        // }
+                    }
+
+                });
+            }
+      )
+      .done();
     }
 
-   getTenantId() {
-     try {
-        AsyncStorage.getItem("tenantId")
-        .then( (tenantId) =>
-              {
-                // this.setState({tenantId: tenantId});
-                return tenantId;
-              }
-        )
-        .done();
-     } catch(err){
-         console.log('Failed to get tenantId: ' + err);
+    fetchUser(userId, cb){
+        if(!userId)return;
+        var query = 'https://mywalkthruapi.herokuapp.com/api/v1/users?filter={"where": {"userId": "' + userId + '"}}';
+        
+        console.log('query:', query);
 
-        //  //REMOVE!!!
-        //  let tenantId = '58decc07583ad3e4bab8b0ce';
-        //  console.log('REMOVE!!! USING TEST TENANTID...')
-        // //  this.setState({tenantId: tenantId});
+        fetch(query).then((response) => response.json()).then((res) => {
+            console.log('fetchUser => responseData', res);
 
-         return tenantId;
+            if(res && res[0]){
+                let userModelId = res[0].id;
+                if(userModelId){
+                    this.setState({userModelId: userModelId});
+                }    
+            }
 
-     }     
-   
-   }      
+
+            cb(null, res);
+        }).catch((error) => {
+            console.error(error);
+            cb(error, null);
+        }).done();      
+    }       
   
     componentWillUnmount() {
     }    
@@ -144,7 +167,11 @@ export class SignUpComplete extends Component {
         this.replaceRoute('home');
     }    
 
-    takePhoto(){
+    proceedToAreas(){
+        this.replaceRoute('categories');
+    }    
+
+    takePhoto(userId){
          ImagePicker.launchCameraAsync({
             allowsEditing: true,
             aspect: [4,3]
@@ -153,28 +180,36 @@ export class SignUpComplete extends Component {
               let uploadResponse, uploadResult;
               try {
                 if (!pickerResult.cancelled) {
-                  let userId = 'unknown';
-                  let fileName = shortid.generate();
-                  let fileType = 'jpg';
 
-                  const file = {
-                    uri: pickerResult.uri,
-                    name: `${fileName}.${fileType}`,
-                    type: `image/${fileType}`
-                  };
+                    // let userId = this.state.userModelId;
 
-                  const options = {
-                    keyPrefix: 'photos/',
-                    bucket: 'mywalkthru-pm-files',
-                    region: 'us-west-2',
-                    accessKey: 'AKIAIRVLMXELYRQ5GYFA',
-                    secretKey: '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',
-                    successActionStatus: 201
-                  };
+                    
 
-                  console.log('UPLOADING PROPERTY (FRONT) PHOTO TO S3...');
+                    if (!userId) {
+                        throw new Error('No userId found!');
+                    }
 
-                  RNS3.put(file, options).then(response => {
+                    let fileName = shortid.generate();
+                    let fileType = 'jpg';
+
+                    const file = {
+                        uri: pickerResult.uri,
+                        name: `${fileName}.${fileType}`,
+                        type: `image/${fileType}`
+                    };
+
+                    const options = {
+                        keyPrefix: 'photos/',
+                        bucket: 'mywalkthru-pm-files',
+                        region: 'us-west-2',
+                        accessKey: 'AKIAIRVLMXELYRQ5GYFA',
+                        secretKey: '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',
+                        successActionStatus: 201
+                    };
+
+                    console.log('UPLOADING PROPERTY (FRONT) PHOTO TO S3...');
+
+                    RNS3.put(file, options).then(response => {
                     // let res = JSON.stringify(response);
 
                     console.log('>>>>>>>> response:', response);
@@ -191,41 +226,65 @@ export class SignUpComplete extends Component {
 
                     console.log('Property photoUrl:', photoUrl);
 
-                    // this.savedPropertyPhotoUrl = photoUrl;
+                    // alert(photoUrl);
 
-                    let tenantId = '58decc07583ad3e4bab8b0ce';
-
-                    console.log('>>>>>> tenantId:', tenantId);
-
-                    if (!tenantId) {
-                        throw new Error('No TenantId found!');
-                    }
 
                     let now = new Date();
 
-                    let newimages = [];
+                    // let newimages = [];
 
-                    newimages.push(
-                    {
-                        image: photoUrl,
-                        caption: 'Front of Property',
-                        timestamp: now
-                    });                    
+                    // newimages.push(
+                    // {
+                    //     image: photoUrl,
+                    //     caption: 'Front of Property',
+                    //     timestamp: now
+                    // });                    
 
                     let data =
                     {
-                        images: newimages,
+                        snap: photoUrl,
                         modified: now
                     };                    
 
-                    this.persistData(tenantId, data, null);
+                    // this.persistData(userId, data, 'categories');
+                    
+                    //PATCH data
+                    let url = 'https://mywalkthruapi.herokuapp.com/api/v1/users/' + userId;
 
+                    // alert(url);
+
+                    fetch(url, {
+                        method: 'PATCH',
+                        headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    }).then((response) => response.json()).then((responseData) => {
+                        console.log('responseData: ', responseData);
+
+
+                        AsyncStorage.setItem("snappedFront", url)
+                        .then( () => 
+                            {
+                                alert('Thank you for snapping a pic of your home');
+                                // this.replaceRoute('categories');    
+                            }
+                        )
+                        .done(); 
+
+                        //  this.replaceRoute('categories');
+
+                        //this.setState({comments: JSON.stringify(responseData)});
+                    }).catch((error) => {
+                        console.error(error);
+                    }).done();
 
                   });
                 }
               } catch(error) {
-                console.log({uploadResponse});
-                console.log({uploadResult});
+                // console.log({uploadResponse});
+                // console.log({uploadResult});
                 console.log('error:', error);
                 let errorMessage = 'Failed to upload image' + error.message;
                 alert(errorMessage);
@@ -249,11 +308,16 @@ export class SignUpComplete extends Component {
         alert('Invalid parameter: id');
         return;
       }         
-    //   let url = '';
+
+    //   alert('persistData userId:'+userId);
+
       let now = new Date();
 
       //PATCH data
-      let url = 'https://mywalkthruapi.herokuapp.com/api/v1/Tenants/' + id;
+      let url = 'https://mywalkthruapi.herokuapp.com/api/v1/users/' + id;
+
+      alert(url);
+
       fetch(url, {
         method: 'PATCH',
         headers: {
@@ -264,24 +328,32 @@ export class SignUpComplete extends Component {
       }).then((response) => response.json()).then((responseData) => {
          console.log('responseData: ', responseData);
 
-         // change navigation route post save
-         if (route) {
-           this.replaceRoute(route);
-         }
+
+        AsyncStorage.setItem("snappedFront", true)
+        .then( () => 
+            {
+                alert('Thank you for snapping a pic of your home');
+                this.replaceRoute('categories');    
+            }
+        )
+        .done(); 
+
+        //  this.replaceRoute('categories');
+
          //this.setState({comments: JSON.stringify(responseData)});
       }).catch((error) => {
          console.error(error);
       }).done();
+
     }    
 
     render(){
         return (
             <View>
                  
-            
-                <Swiper style={styles.wrapper} showsButtons={true} loop={false}>
+                <Swiper style={styles.wrapper} showsButtons={false} loop={false}>
 
-                    <View style={styles.slide1}>
+                    {/*<View style={styles.slide1}>
 
                         <Image
                             source={require('../../assets/images/logo.png')}
@@ -289,17 +361,17 @@ export class SignUpComplete extends Component {
                         />
                                             
                         <Text style={styles.text}>Let's take some photos of the Property...</Text>
-                    </View>
+                    </View>*/}
                  
 
-                    <View style={styles.slide3}>
+                    <View style={styles.slide1}>
                         
                         <Image
                             source={require('../../assets/images/logo.png')}
                             style={{width: 200, height: 200}}
                         />
 
-                        <Text style={styles.text}>Take a Photo of the Front</Text>
+                        <Text style={styles.text}>Snap a Photo of the Front</Text>
                         <Text style={styles.text}>of the Property</Text>
                         <Text style={styles.text}>from the Street</Text>
 
@@ -311,7 +383,7 @@ export class SignUpComplete extends Component {
                                     width: 200,
                                     height:40}}
                                     onPress={() => {
-                                        this.takePhoto();
+                                        this.takePhoto(this.state.userModelId);
                                     }}
                                 >
                                 <Text style={{color:'#fff', fontWeight: 'bold'}}>Take Photo</Text>
@@ -325,10 +397,24 @@ export class SignUpComplete extends Component {
                                     width: 200,
                                     height:40}}
                                     onPress={() => {
+                                        this.proceedToAreas();
+                                    }}
+                                >
+                                <Text style={{color:'#fff', fontWeight: 'bold'}}>Next</Text>
+                            </Button>                              
+
+                            <Button rounded block
+                                style={{alignSelf: 'center',
+                                    marginTop: 40,
+                                    backgroundColor: '#ad241f',
+                                    borderRadius:90,
+                                    width: 200,
+                                    height:40}}
+                                    onPress={() => {
                                         this.proceedToHome();
                                     }}
                                 >
-                                <Text style={{color:'#fff', fontWeight: 'bold'}}>Skip, for now...</Text>
+                                <Text style={{color:'#fff', fontWeight: 'bold'}}>Cancel</Text>
                             </Button>                                              
                     </View>
 

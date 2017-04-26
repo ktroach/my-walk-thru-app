@@ -80,7 +80,7 @@ class CategoryDetails extends React.Component {
            categoryIndex: 0,
            nextCategory: {},
            categoryName: "",
-           allObservedSwitchIsOn: false,
+           allObservedSwitchIsOn: true,
            selectedItem: {},
            selectedoptions: [],
            selectedindexset: [],
@@ -152,12 +152,21 @@ class CategoryDetails extends React.Component {
                        </Button>
                    </Header>
 
+                   {/*<View style={{marginTop: 5, marginLeft:15, marginBottom: 5}}>
+                       <Text style={{color:'#333', fontSize:14}}>All Observed</Text>
+                       <Switch 
+                          onValueChange={(value) => this.setState({allObservedSwitchIsOn: value})}
+                          onTintColor='#8EC5AD'
+                          thumbTintColor='rgba(0, 122, 255, 1)'
+                          tintColor='#C8C7CC'
+                          value={this.state.allObservedSwitchIsOn} 
+                        />
+                   </View>                   */}
 
                    <Content padder style={{backgroundColor: 'transparent'}}>
-
-                  {
-                   this.renderListView()
-                  }
+                        {
+                        this.renderListView()
+                        }
                    </Content>
               </Image>
           </Container>
@@ -183,15 +192,15 @@ class CategoryDetails extends React.Component {
    //
    //          <View style={[styles.subHeaderBar]}>
    //              <View style={{flex: 1,justifyContent: 'space-between',flexDirection: 'row', padding: 10}}>
-   //                 <View>
-   //                     <Switch onValueChange={(value) => this.toggleAllObserved(value)}
-   //                        onTintColor="#00ff00"
-   //                        thumbTintColor="#0000ff"
-   //                        tintColor="#C8C7CC"
-   //                        value={this.state.allObservedSwitchIsOn} />
-   //                     <Text style={{color:'#333', fontSize:10, fontWeight:'500', textAlign: 'center', paddingTop: 3}}>
-   //                     All Observed</Text>
-   //                 </View>
+                //    <View>
+                //        <Switch onValueChange={(value) => this.toggleAllObserved(value)}
+                //           onTintColor="#00ff00"
+                //           thumbTintColor="#0000ff"
+                //           tintColor="#C8C7CC"
+                //           value={this.state.allObservedSwitchIsOn} />
+                //        <Text style={{color:'#333', fontSize:10, fontWeight:'500', textAlign: 'center', paddingTop: 3}}>
+                //        All Observed</Text>
+                //    </View>
    //              </View>
    //          </View>
    //
@@ -221,54 +230,103 @@ class CategoryDetails extends React.Component {
       //    categoryName = this.props.category.name;
       // }
 
-      fetch(query).then((response) => response.json()).then((responseData) => {
-         let count = responseData.length;
+        Array.prototype.contains = function(element){
+            return this.indexOf(element) > -1;
+        };
 
-         // this is a total shit fix. this needs to be fixed in the backend. shity bandaid
-        //  if (categoryName === 'Hallway / Stairway'){
-        //   for (let x = 0; x < responseData.length; x++){
-        //       let item = responseData[x];
-        //       if (item.name){
-        //           if (item.name === 'Floor'){
+        fetch(query).then((response) => response.json()).then((responseData) => {
 
-        //           }
-        //       }
-        //   }  
-        //  }
+            let count = responseData.length;
+        
+            if (categoryName === 'Hallway / Stairway'){
 
-         this.setState({
-           dataSource: this.state.dataSource.cloneWithRows(responseData),
-           loaded: true,
-           itemCount: count,
-           toolbarTitle: "   " + categoryName + " (" + count + ")"
-         });
+                
+                
+                let ds = [];
+                let filter = [];
 
-         this.setState({
-            subcategories: responseData
-         });
+                // making a best guess at what is at the property in a certain area 
+                // based on common areas on a property site 
 
-         // let subCategoryStates = {};
-         // //subCategoryStates["prop"] = value;
-         // //var value = subCategoryStates[key];
-         // // key will be item.id
-         //
-         // let allobserved = false;
-         // let items = responseData;
-         // items.forEach(function(item){
-         //   let value = '';
-         //   let key = item.id;
-         //   if (item.selectedOption) value = item.selectedOption;
-         //   subCategoryStates[key] = value;
-         //   allobserved = item.allObservedSwitchIsOn;
-         // });
-         //
-         // this.setState({
-         //    allObservedSwitchIsOn: allobserved
-         // });
-         //
-         // this.setState({
-         //    subCategoryStates: subCategoryStates
-         // });
+                filter.push('Flooring');
+                filter.push('Ceiling');
+                filter.push('Walls/Paint');
+                filter.push('Doors');
+                filter.push('Smoke Alarm');
+                filter.push('Windows');
+                filter.push('Switch Covers');
+
+                responseData.forEach(function(item){
+                    if (item.name){
+                        if (filter.contains(item.name)){
+                            ds.push(item);
+                        }
+                    }
+                });
+
+                const data = ds;
+
+                // dedup es6 style didnt work?
+                // const set = new Set(data.map(item => JSON.stringify(item)));
+                // const dedup = [...set].map(item => JSON.parse(item));
+
+                // dedpup using array filter
+                let seenNames = {};
+                data = data.filter(function(currentObject) {
+                    if (currentObject.name in seenNames) {
+                        return false;
+                    } else {
+                        seenNames[currentObject.name] = true;
+                        return true;
+                    }
+                });
+
+                console.log(`Removed ${data.length - ds.length} elements`);
+                // console.log(data);  
+
+                // update new count 
+                count = data.length;
+
+                this.setState({
+                    dataSource: this.state.dataSource.cloneWithRows(data),
+                    loaded: true,
+                    itemCount: count,
+                    toolbarTitle: "   " + categoryName + " (" + count + ")"
+                });            
+                this.setState({subcategories: data});
+            } else {
+                // you might need to dedup all cases, such as the user added a duplicate 
+                this.setState({
+                    dataSource: this.state.dataSource.cloneWithRows(responseData),
+                    loaded: true,
+                    itemCount: count,
+                    toolbarTitle: "   " + categoryName + " (" + count + ")"
+                });
+                this.setState({subcategories: responseData});
+            }      
+
+            // let subCategoryStates = {};
+            // //subCategoryStates["prop"] = value;
+            // //var value = subCategoryStates[key];
+            // // key will be item.id
+            //
+            // let allobserved = false;
+            // let items = responseData;
+            // items.forEach(function(item){
+            //   let value = '';
+            //   let key = item.id;
+            //   if (item.selectedOption) value = item.selectedOption;
+            //   subCategoryStates[key] = value;
+            //   allobserved = item.allObservedSwitchIsOn;
+            // });
+            //
+            // this.setState({
+            //    allObservedSwitchIsOn: allobserved
+            // });
+            //
+            // this.setState({
+            //    subCategoryStates: subCategoryStates
+            // });
       }).done();
    }
 

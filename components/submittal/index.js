@@ -17,6 +17,7 @@ import theme from '../../themes/form-theme';
 import styles from './styles';
 
 import SignaturePad from 'react-native-signature-pad';
+// import RNFetchBlob from 'react-native-fetch-blob';
 
 import moment from 'moment';
 import shortid from 'shortid';
@@ -38,7 +39,8 @@ class Submittal extends Component {
             signature: null,
             userId: '',
             loaded: false,
-            reportUrl: ''
+            reportUrl: '',
+            alreadySubmitted: false 
        };
     }
 
@@ -47,7 +49,18 @@ class Submittal extends Component {
       .then( (userId) =>
             {
                 this.setState({loaded: true});
-                return this.setState({userId: userId});
+                this.setState({userId: userId});
+
+                AsyncStorage.getItem("completionDate")
+                .then( (completionDate) =>
+                        {
+                            if(completionDate && completionDate.length>0){
+                                this.setState({alreadySubmitted: true});
+                            }
+                            
+                        }
+                )
+                .done();                
             }
       )
       .done();
@@ -66,6 +79,38 @@ class Submittal extends Component {
          </Content>
       );
     }    
+
+    renderAlreadySubmittedView() {
+      return (
+            <Container theme={theme} style={{backgroundColor: '#fff'}}>
+               <Image source={require('../../assets/images/glow2.png')} style={styles.container} >          
+                    <Header>
+                        <Button transparent onPress={() => this.replaceRoute('home')}>
+                            <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
+                        </Button>
+
+                        <Title>Submit Your Walkthru</Title>
+
+                        <Button transparent onPress={this.props.openDrawer}>
+                            <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
+                        </Button>
+                    </Header>
+
+                    <Content padder style={{backgroundColor: 'transparent'}}>
+                        <View style={styles.box}>
+                            <Card foregroundColor='#000'>
+                                <CardItem header>
+                                    <Text>*** YOU HAVE ALREADY SUBMITTED YOUR WALKTHRU ***</Text>
+                                </CardItem>
+                            </Card>
+                        </View>
+                    </Content>
+
+                </Image>
+
+            </Container>
+      );
+    }      
 
     popRoute() {
         this.props.popRoute();
@@ -88,84 +133,212 @@ class Submittal extends Component {
     }
 
     _onSave(result) {
-      const base64String = `data:image/png;base64,${result.encoded}`;
-      this.setState({data: base64String});
+        const base64String = `data:image/png;base64,${result.encoded}`;
+        this.setState({data: base64String});
 
-      this._signatureView.show(false);
+        // let dirs = RNFetchBlob.fs.dirs;
+        // console.log(dirs.DocumentDir);
+        // console.log(dirs);
+        // console.log(dirs.DCIMDir);
+        // console.log(dirs.DownloadDir);
+
+        // return;        
+
+        // let PATH_TO_FILE = 'temp1241wdqweqwdqwd.png';
+
+        // RNFetchBlob.fs.writeStream(
+        //     PATH_TO_FILE,
+        //     // encoding, should be one of `base64`, `utf8`, `ascii` 
+        //     'utf8',
+        //     // should data append to existing content ? 
+        //     true)
+        // .then((ofstream) => {
+        //     ofstream.write(base64String);
+        //     ofstream.close();
+        //     this._signatureView.show(false);
+        // });      
+
+        this._signatureView.show(false);
     }
 
+    uploadSignature(){
+        let uploadResponse, uploadResult;
+        try {
+        if (this.state.data && this.state.data.length>0) {
+            let userId = this.state.userId;
+
+            if (!userId) {
+                throw new Error('No UserId found!');
+            }
+
+            let fileName = shortid.generate();
+            let fileType = 'jpg';
+
+            const file = {
+                uri: pickerResult.uri,
+                name: `${fileName}.${fileType}`,
+                type: `image/${fileType}`
+            };
+
+            const options = {
+                keyPrefix: 'photos/',
+                bucket: 'mywalkthru-pm-files',
+                region: 'us-west-2',
+                accessKey: 'AKIAIRVLMXELYRQ5GYFA',
+                secretKey: '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',
+                successActionStatus: 201
+            };
+
+            console.log('UPLOADING TENANT SIGNATURE TO S3...');
+
+            RNS3.put(file, options).then(response => {
+            // let res = JSON.stringify(response);
+
+            console.log('>>>>>>>> response:', response);
+
+            if (response.status !== 201) {
+                throw new Error('Failed to upload image to S3', response);
+            }
+
+            if (!response.body){
+                throw new Error('Failed to upload image to S3', response);
+            }
+
+            let photoUrl = response.body.postResponse.location;
+            // console.log('Property photoUrl:', photoUrl);
+            let now = new Date();                  
+            let data =
+            {
+                signatureUrl: photoUrl,
+                modified: now
+            };                    
+
+            this.persistData(userId, data, 'report');
+
+
+            });
+        }
+        } catch(error) {
+        console.log({uploadResponse});
+        console.log({uploadResult});
+        console.log('error:', error);
+        let errorMessage = 'Failed to upload image' + error.message;
+        alert(errorMessage);
+        } finally {
+        console.log('finally');
+        }
+    }    
+
+    persistData(id, data, route) {
+      if (!data) {
+        alert('Invalid parameter: data');
+        return;
+      }
+      if (!id) {
+        alert('Invalid parameter: id');
+        return;
+      }         
+
+      let now = new Date();
+
+      //PATCH data
+      let url = 'https://mywalkthruapi.herokuapp.com/api/v1/users/' + id;
+      fetch(url, {
+        method: 'PATCH',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      }).then((response) => response.json()).then((responseData) => {
+         console.log('responseData: ', responseData);
+
+         alert('Photo Saved');
+
+         // change navigation route post save
+         if (route) {
+           this.replaceRoute(route);
+         }
+         //this.setState({comments: JSON.stringify(responseData)});
+      }).catch((error) => {
+         console.error(error);
+      }).done();
+    }    
+    
+
     submitWalkThru(){
-      // alert('Creating Walkthru Report...');
+        // this.setState({loaded: false});
+        // this.setState({updating: true, processStatus: 'Creating Walkthru Report...'});
 
-      this.setState({loaded: false});
-
-    //   if(!this.state.userId){
-    //     alert('UserId is invalid');
-    //     return;
-    //   }
-
-    //   if (!this.state.firstChecked) {
-    //     alert('Please confirm you want to proceed.');
-    //     return;
-    //   }
-
-    //   if (!this.state.signature) {
-    //     alert('Please sign off on your Walkthru to proceed');
-    //     return;
-    //   }
-
-      this.setState({updating: true, processStatus: 'Creating Walkthru Report...'});
-
-      var url = "https://mywalkthruapi.herokuapp.com/api/v1/Reports/pdfExport/"+this.state.userId;
+        // var url = "https://mywalkthruapi.herokuapp.com/api/v1/Reports/pdfExport/"+this.state.userId;
       // var data = {userId: this.state.userId};
 
-      let completionDate = moment().format();
-      let now = new Date();
-      let reportUrl = '';
+        let completionDate = moment().format();
+        let now = new Date();
+        // let reportUrl = '';
+
+        // todo : upload the signature image to aws storage
+        // todo: patch the user record with the url to the signature per the report script
+        // todo : email the report to the PM and the Tenant
+        // todo: remove the submit button on the home screen
+
+        if (!this.state.signature){
+            alert('Please SIGN the signature pad to confirm your WALKTHRU is complete');
+            return;
+        }
+
+        AsyncStorage.setItem("completionDate", completionDate)
+        .then( () => 
+            {
+                alert('Thank you for Completing your Walkthru ('+completionDate+')');
+                this.replaceRoute('report');    
+            }
+        )
+        .done( );  
 
       // console.log('data: ', data);
 
-      fetch(url, {
-           method: 'get',
-           headers: {
-             "Content-type": "application/json"
-           }
-      }).then((response) => response.json()).then((responseData) => {
+    //   fetch(url, {
+    //        method: 'get',
+    //        headers: {
+    //          "Content-type": "application/json"
+    //        }
+    //   }).then((response) => response.json()).then((responseData) => {
 
-            console.log('RESPONSEDATA: ', responseData);
-            alert(responseData);
+    //         console.log('RESPONSEDATA: ', responseData);
+    //         alert(responseData);
 
-            if (!responseData) {
-                alert('Sorry, there was a problem Submitting your Walkthru');
-            } else {
+    //         if (!responseData) {
+    //             alert('Sorry, there was a problem Submitting your Walkthru');
+    //         } else {
 
-                this.setState({loaded: true});
-                this.setState({reportUrl: responseData.reportUrl});
+    //             this.setState({loaded: true});
+    //             this.setState({reportUrl: responseData.reportUrl});
 
-                AsyncStorage.setItem("reportUrl", responseData.reportUrl)
-                .then( () => 
-                    {
-                        AsyncStorage.setItem("completionDate", completionDate)
-                        .then( () => 
-                            {
-                                alert('Thank you for Completing your Walkthru ('+completionDate+')');
-                                this.replaceRoute('report');    
-                            }
-                        )
-                        .done( );
-                    }
-                )
-                .done( );                
-            }
+    //             AsyncStorage.setItem("reportUrl", responseData.reportUrl)
+    //             .then( () => 
+    //                 {
+    //                     AsyncStorage.setItem("completionDate", completionDate)
+    //                     .then( () => 
+    //                         {
+    //                             alert('Thank you for Completing your Walkthru ('+completionDate+')');
+    //                             this.replaceRoute('report');    
+    //                         }
+    //                     )
+    //                     .done( );
+    //                 }
+    //             )
+    //             .done( );                
+    //         }
             
-      }).done();
+    //   }).done();
 
       // this.replaceRoute('home');
     }
 
     render() {
-       if (!this.state.loaded) {
-          return this.renderLoadingView();
+       if (this.state.alreadySubmitted) {
+          return this.renderAlreadySubmittedView();
        } else {
             return this.renderSubmittalForm();
        }
@@ -246,17 +419,17 @@ class Submittal extends Component {
                         <View style={styles.box}>
                             <Card foregroundColor='#000'>
                                 <CardItem header>
-                                    <Text>Are you sure you want to Complete your WalkThru?</Text>
+                                    <Text>*** PLEASE READ ***</Text>
                                 </CardItem>
-                                <CardItem header>
-                                    <Text>Check the circle to confirm you are ready</Text>
+                                {/*<CardItem>
+                                    <Text>Tap (Check) the circle to confirm want to submit your WalkThru</Text>
                                     <Checkbox
                                       style={checkboxStyle}
                                       kind='circle'
                                       checked={this.state.firstChecked}
                                       onValueChange={this.handleFirstCheckboxChange}
                                     ></Checkbox>
-                                </CardItem>
+                                </CardItem>*/}
 
                                 {/*<CardItem header>
                                     <Text onPress={() => this.openLink()}>Tap HERE to Read the Checklist</Text>
@@ -292,7 +465,7 @@ class Submittal extends Component {
                                 */}
 
                                 <CardItem>
-                                    <Text>By Signing, you authorize a copy of this property review to go to my landlord/property manager:</Text>
+                                    <Text>By Signing and Submitting your WALKTHRU, you authorize a copy of this property review to go to your Property Manager for their records:</Text>
                                 </CardItem>                                    
 
                                 <CardItem style={{height: 200}}>

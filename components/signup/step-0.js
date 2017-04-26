@@ -32,8 +32,6 @@ import styles from './styles';
 import moment from 'moment';
 import tz from 'moment-timezone';
 
-// import Speech from 'react-native-speech';
-
 class Step0 extends Component {
    constructor(props) {
       super(props);
@@ -62,7 +60,8 @@ class Step0 extends Component {
        
             if (this.userLoggedIn()) {
                 console.log('user logged in'); 
-                this.replaceRoute('home');
+
+                // this.replaceRoute('home');
             } else {
                 console.log('user is not logged in');
             }
@@ -90,7 +89,7 @@ class Step0 extends Component {
    }      
 
    getStorageItems(){
-       this.getTenantId();
+       this.getUserId()();
    }
 
     getTenantId() {
@@ -113,7 +112,10 @@ class Step0 extends Component {
                 .getItem("userId")
                 .then((userId) => {
                     this.setState({userId: userId});
-                    this.getSignUpDate();
+                    // this.getSignUpDate();
+                    if (userId && userId.length>0) {
+                        this.replaceRoute('home');
+                    }
                 })
                 .done();
         } catch (err) {
@@ -126,8 +128,10 @@ class Step0 extends Component {
             AsyncStorage
                 .getItem("signUpDate")
                 .then((signUpDate) => {
-                    let sud = signUpDate.toString();
-                    if (sud) this.setState({signUpDate: sud});                    
+                    if (signUpDate && signUpDate.length>0){
+                        let sud = signUpDate.toString();
+                        if (sud) this.setState({signUpDate: sud});
+                    }
                     // this.setState({signUpDate: signUpDate});
                     // return sud;
                 })
@@ -143,7 +147,9 @@ class Step0 extends Component {
                 .then((loggedin) =>
                 {
                     this.setState({loggedin: loggedin});
-                    if (loggedin === '1') return true;
+                    // if (loggedin === '1') return true;
+                    // this.replaceRoute('home');
+                    return true;
                 }
             )
             .done();
@@ -157,10 +163,17 @@ class Step0 extends Component {
    // if we have the signUpDate stored on the device then yes they signed up before
    haveTheySignedUp () {
 
-        this.getStorageItems();
+        this.getUserId();
+
+        console.log('>>haveTheySignedUp>>this.state.tenantId:',this.state.tenantId);
+        console.log('>>haveTheySignedUp>>this.state.userId:',this.state.userId);
+        console.log('>>haveTheySignedUp>>this.state.signUpDate:',this.state.signUpDate);
 
         if (this.state.tenantId && this.state.userId && this.state.signUpDate){
             console.log('>> haveTheySignedUp >> ', this.state.userId,' signed up on: ', this.state.signUpDate);
+
+
+
             this.replaceRoute('home');
         } else {
             console.log('>> haveTheySignedUp >> no user info found in storage >> user must reauthenticate using pin');
@@ -298,15 +311,11 @@ class Step0 extends Component {
                                     } else {
                                         greeting = timeOfDay + ', ' + s + '!';
                                     }
-                                    // alert(greeting);
-
-                                    // Speech.speak({
-                                    //     text: greeting,
-                                    //     voice: 'en-US'
-                                    // });
-                                    
+                                    alert(greeting);                                    
                                 }
                             }
+
+                            console.log('>>assertVerificationCode>>resultuserId:',result.userId);
 
                             if (result.userId && result.userId.length>0){
                                 AsyncStorage.setItem("loggedin", "1")

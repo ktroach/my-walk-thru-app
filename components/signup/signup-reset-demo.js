@@ -73,44 +73,48 @@ export class SignUpResetDemo extends Component {
         this.props.popRoute();
     }  
 
+    cancelLogout(){
+        this.replaceRoute('home');
+    }
+
     resetApp(){
 
-        AsyncStorage.removeItem("loggedin")
-            .then( () => {
-                console.log('Removed storage item: loggedin');
-                alert('Goodbye!');
-                Expo.Util.reload();
-            }
-        ).done();        
-
-        // AsyncStorage.removeItem("signUpDate")
-        // .then( () =>
-        //     {
-        //         console.log('Removed storage item: signUpDate');
-
-        //         AsyncStorage.removeItem("userId")
-        //         .then( () => {
-
-        //             console.log('Removed storage item: userId');
-
-        //             AsyncStorage.removeItem("leaseBeginDate")
-        //             .then( () => {
-
-        //                 console.log('Removed storage item: leaseBeginDate');
-
-        //                 // this.replaceRoute('signup-step0');
-
-        //                 alert('done');
-
-        //                 Expo.Util.reload();
-
-        //             }
-        //             ).done();
-        //         }
-        //         ).done();
+        // AsyncStorage.removeItem("loggedin")
+        //     .then( () => {
+        //         console.log('Removed storage item: loggedin');
+        //         alert('Goodbye!');
+        //         Expo.Util.reload();
         //     }
-        // )
-        // .done( );
+        // ).done();        
+
+        AsyncStorage.removeItem("signUpDate")
+        .then( () =>
+            {
+                console.log('Removed storage item: signUpDate');
+
+                AsyncStorage.removeItem("userId")
+                .then( () => {
+
+                    console.log('Removed storage item: userId');
+
+                    AsyncStorage.removeItem("leaseBeginDate")
+                    .then( () => {
+
+                        AsyncStorage.removeItem("loggedin")
+                            .then( () => {
+                                console.log('Removed storage item: loggedin');
+                                alert('Goodbye!');
+                                Expo.Util.reload();
+                            }
+                        ).done(); 
+
+                    }
+                    ).done();
+                }
+                ).done();
+            }
+        )
+        .done( );
         
     }
 
@@ -139,6 +143,20 @@ export class SignUpResetDemo extends Component {
                         >
                         <Text style={{color:'#fff', fontWeight: 'bold'}}>Logout</Text>
                     </Button> 
+
+                    <Button rounded block
+                        style={{alignSelf: 'center',
+                            marginTop: 40,
+                            backgroundColor: '#ad241f',
+                            borderRadius:90,
+                            width: 200,
+                            height:40}}
+                            onPress={() => {
+                                this.cancelLogout();
+                            }}
+                        >
+                        <Text style={{color:'#fff', fontWeight: 'bold'}}>Cancel</Text>
+                    </Button>                     
                 </View>
 
             </Swiper>         

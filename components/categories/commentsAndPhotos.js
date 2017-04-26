@@ -323,7 +323,7 @@ class CommentsAndPhotos extends Component {
 
                         </View>
 
-                         <Button rounded block style={{backgroundColor: '#ad241f'}}
+                         <Button rounded block style={{backgroundColor: 'rgba(0, 122, 255, 1)'}}
                              onPress={() => this.saveCloseUp()}>
                              <Text style={{color:'#fff', fontWeight: 'bold'}}>Save Close Up</Text>
                          </Button>
@@ -348,7 +348,7 @@ class CommentsAndPhotos extends Component {
                             </CardItem>
 
                             <CardItem>
-                                 <Button rounded block style={{backgroundColor: '#ad241f'}}
+                                 <Button rounded block style={{backgroundColor: 'rgba(0, 122, 255, 1)'}}
                                      onPress={() => this._takePhoto()}>
                                      <Text style={{color:'#fff', fontWeight: 'bold'}}>TAKE CLOSE UP PHOTO</Text>
                                  </Button>

@@ -31,28 +31,66 @@ class Report extends Component {
        };
     }
 
-    componentDidMount() {
-      AsyncStorage.getItem("reportUrl")
-      .then( (reportUrl) =>
+    componentWillMount() {
+      AsyncStorage.getItem("userId")
+      .then( (userId) =>
             {
-                this.setState({loaded: true});
-                return this.setState({reportUrl: reportUrl});
+                this.setState({userId: userId});
+                this.fetchReport(userId);
             }
       )
       .done();
+
+    //   var url = "https://mywalkthruapi.herokuapp.com/api/v1/Reports/pdfExport/"+this.state.userId;
+
+    //   AsyncStorage.getItem("reportUrl")
+    //   .then( (reportUrl) =>
+    //         {
+    //             this.setState({loaded: true});
+    //             return this.setState({reportUrl: reportUrl});
+    //         }
+    //   )
+    //   .done();
     }
 
+
+    fetchReport(userId){
+        this.setState({loaded: false});
+        var url = "https://mywalkthruapi.herokuapp.com/api/v1/Reports/pdfExport/"+userId;
+        let completionDate = moment().format();
+        let now = new Date();
+        let reportUrl = '';
+
+        fetch(url, {
+            method: 'get',
+            headers: {
+                "Content-type": "application/json"
+            }
+        }).then((response) => response.json()).then((responseData) => {
+                console.log('RESPONSEDATA: ', responseData);
+                if (!responseData) {
+                    alert('Sorry, there was a problem Submitting your Walkthru');
+                } else {
+
+                    this.setState({loaded: true});
+                    this.setState({reportUrl: responseData.reportUrl});                
+                }
+        }).done();
+    }    
+
+
     renderLoadingView() {
+      var screenHeight = Dimensions.get('window').height;
       return (
-         <Content style={styles.sidebar} >
-             <Image source={require('../../assets/images/house02.jpg')} style={styles.container} >
-                 <ActivityIndicator
-                    animating={!this.state.loaded}
-                    style={[styles.activityIndicator, {height: 80}]}
-                    size="large"
-                />
-             </Image>
-         </Content>
+            <Container theme={theme} style={{backgroundColor: '#fff'}}>
+                <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
+                    <ActivityIndicator
+                        animating={!this.state.loaded}
+                        style={[styles.activityIndicator, {height: screenHeight}]}
+                        size="large"
+                    />
+                </Image>
+          </Container>
       );
     }    
 
@@ -92,7 +130,7 @@ class Report extends Component {
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
-                        <Title>Walkthru Report</Title>
+                        <Title>Your Walkthru Report</Title>
 
                         <Button transparent onPress={this.props.openDrawer}>
                             <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
@@ -100,10 +138,10 @@ class Report extends Component {
                     </Header>
 
                     <Content padder style={{backgroundColor: 'transparent'}}>
-                        <View style={{flex: 1, width: screenWidth *.9, height: 800}}>
+                        <View style={{flex: 1, width: screenWidth *.97, height: 800}}>
                             <WebView
                                 source={{uri: this.state.reportUrl}}
-                                style={{width: screenWidth *.9, height: 800}}
+                                style={{width: screenWidth *.97, height: 800}}
                             />                        
                         </View>                         
                     </Content>

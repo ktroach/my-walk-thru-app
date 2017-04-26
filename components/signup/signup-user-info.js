@@ -341,9 +341,9 @@ export class SignUpUserInfo extends Component {
                 
                
                 <Header>
-                    <Button transparent onPress={() => this.replaceRoute('signup-instructions')}>
+                    {/*<Button transparent onPress={() => this.replaceRoute('signup-instructions')}>
                         <Icon name='ios-arrow-back' style={{fontSize: 30}} />
-                    </Button>                     
+                    </Button>                     */}
                     <Title style={{fontSize: 20}}>{title}</Title>
                 </Header>            
 
@@ -391,12 +391,12 @@ export class SignUpUserInfo extends Component {
             <Section
                 ref={'PhoneSection'}
                 title={'Phone Number'}
-                helpText={'Enter the primary phone number that you have given your Property Manager.  You can enter it in this format: 8308321234'}
+                helpText={'Enter the primary phone number that you have given your Property Manager.  DDO NOT USE PARENTHESIS, DASHES, or DOTS'}
             >
                 <TextInputCell
                     ref="phoneNumber"
                     inputProps={{ 
-                        placeholder: 'Your Phone Number',
+                        placeholder: '0000000000',
                         autoCapitalize: "none",
                         autoCorrect: false,
                         keyboardType: 'phone-pad'

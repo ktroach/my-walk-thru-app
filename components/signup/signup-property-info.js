@@ -210,9 +210,9 @@ export class SignUpPropertyInfo extends Component {
                 if (formData.StoriesSection.storiesActionCell) stories = formData.StoriesSection.storiesActionCell;
             }
             
-            if (formData.ParkingSection){
-                if (formData.ParkingSection.parkingActionCell) parking = formData.ParkingSection.parkingActionCell;
-            }
+            // if (formData.ParkingSection){
+            //     if (formData.ParkingSection.parkingActionCell) parking = formData.ParkingSection.parkingActionCell;
+            // }
 
             if (!propertyType || propertyType.length===0){
                 propertyType = 'Single Family';
@@ -262,7 +262,6 @@ export class SignUpPropertyInfo extends Component {
                 "forcedAir": forcedAir,  
                 "windowUnit": windowUnit,
                 "stories": stories,
-                "parking": parking,
                 "active": "true",
                 "modified": now
             });
@@ -327,13 +326,7 @@ export class SignUpPropertyInfo extends Component {
             !formData.StoriesSection.storiesActionCell) {
             alert('Number of Stories is required');
             return false;
-        } 
-
-        if (!formData.ParkingSection || 
-            !formData.ParkingSection.parkingActionCell) {
-            alert('Parking selection is required');
-            return false;
-        }                                
+        }                               
 
         return true;      
     }    
@@ -402,9 +395,9 @@ export class SignUpPropertyInfo extends Component {
             <Container  style={{backgroundColor: '#fff'}} >
                
                 <Header>
-                    <Button transparent onPress={() => this.replaceRoute('signup-lease-info')}>
+                    {/*<Button transparent onPress={() => this.replaceRoute('signup-lease-info')}>
                         <Icon name='ios-arrow-back' style={{fontSize: 30}} />
-                    </Button>                     
+                    </Button>                     */}
                     <Title style={{fontSize: 20}}>{title}</Title>
                 </Header>            
 
@@ -473,6 +466,7 @@ export class SignUpPropertyInfo extends Component {
                     ref={'stateName'}
                     title={'State Name'}
                     options={ [ " ", 
+                    "TX - Texas", 
                     "AK - Alaska", 
                     "AL - Alabama", 
                     "AR - Arkansas", 
@@ -519,7 +513,6 @@ export class SignUpPropertyInfo extends Component {
                     "SC - South Carolina", 
                     "SD - South Dakota", 
                     "TN - Tennessee", 
-                    "TX - Texas", 
                     "UT - Utah", 
                     "VA - Virginia", 
                     "VI - Virgin Islands", 
@@ -643,7 +636,7 @@ export class SignUpPropertyInfo extends Component {
 
             </Section>  
 
-            <Section
+            {/*<Section
                 ref={'ParkingSection'}
                 title={'PARKING'}
                 helpText={'Select what type of parking is provided'}
@@ -654,7 +647,7 @@ export class SignUpPropertyInfo extends Component {
                     options={[' ', '1+ Car Garage', '3+ Car Garage', 'Carport', 'Driveway', 'Circle Driveway', 'Other']}
                     selectedValueIndex={0}
                 />
-            </Section>              
+            </Section>              */}
 
 
         </Form>
