@@ -242,7 +242,7 @@ export class SignUpComplete extends Component {
 
                     let data =
                     {
-                        snap: photoUrl,
+                        photoUrl: photoUrl,
                         modified: now
                     };                    
 

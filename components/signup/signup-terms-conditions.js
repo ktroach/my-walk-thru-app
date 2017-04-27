@@ -273,8 +273,8 @@ export class SignUpTermsConditions extends Component {
                     if (values.userType) user.userType = values.userType;
 
 
-
                     if (values.fullName) user.fullName = values.fullName;
+                    if (values.fullname) user.fullName = values.fullname;
                     if (values.email) user.email = values.email;
                     if (values.phoneNumber) user.phoneNumber = values.phoneNumber;
                     if (values.gender) user.gender = values.gender;
@@ -526,7 +526,7 @@ export class SignUpTermsConditions extends Component {
                         }       
 
                         if (!AsyncStorage){
-                            alert('Please use this screen on an acutal device that supports AsyncStorage.');
+                            alert('AsyncStorage not supported on this device type.');
                             return;
                         }             
 

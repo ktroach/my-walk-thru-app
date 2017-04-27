@@ -1,0 +1,310 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+<body>
+    <style>
+        /* page */
+        
+        html {
+            font: 16px/1 'Open Sans', sans-serif;
+            overflow: auto;
+            padding: 0.2in;
+        }
+        
+        body {
+            box-sizing: border-box;
+            height: 11in;
+            margin: 0 auto;
+            padding: 0.2in;
+            width: 8.5in;
+        }
+        
+        p {
+            margin: 10px 0;
+        }
+        
+        h1 {
+            font: bold 100% sans-serif;
+            letter-spacing: 0.5em;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        
+        h2 {
+            font-size: 14pt;
+            margin-top: 25px;
+        }
+        
+        .gray-box {
+            background-color: #d7d7d7;
+        }
+        /* table */
+        
+        .photos {
+            table-layout: fixed;
+            width: 100%;
+            white-space: nowrap;
+        }
+        
+        .photos td {
+            white-space: nowrap;
+            padding: 5px;
+        }
+        
+        .detail {
+            table-layout: fixed;
+            width: 100%;
+            white-space: nowrap;
+        }
+        
+        .detail td {
+            white-space: nowrap;
+            /*overflow: hidden;
+            text-overflow: ellipsis;*/
+        }
+        /* Column widths are based on these cells */
+        
+        .detail-name {
+            width: 40%;
+            text-align: left;
+        }
+        
+        .detail-observed {
+            width: 10%;
+            text-align: center;
+        }
+        
+        .detail-not-applicable {
+            width: 30%;
+            text-align: center;
+        }
+        
+        .detail-needs-attention {
+            width: 20%;
+            text-align: center;
+        }
+        
+        blockquote {
+            font-style: italic;
+            border-left: 0.25rem solid #333;
+            margin-left: 0;
+            padding-left: 1rem;
+        }
+    </style>
+
+    <div style="margin: 1px;">
+        <table>
+            <tr>
+                <td rowspan="5">
+                    <img src='{#image logo}' />
+                </td>
+                <td>
+                    <h3>{{report.title}}</h3>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <h4>Tenant: {{user.fullName}}</h4>
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+
+            <tr>
+                <td>
+                    <h4>Lease Begins: {{property.leaseBegins}}</h4>
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+
+            <tr>
+                <td>
+                    <h4>Report Date: {{reportDate}}</h4>
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="margin: 1px;">
+        <table>
+            <tbody>
+                <tr>
+                    <td rowspan="6">
+                        <img src='{{photoUrl}}' style="height: 150px; width: 180px" />
+                    </td>
+                    <td>&nbsp;</td>
+                    <td valign="middle" class="gray-box">
+                        <h5>PROPERTY LOCATION</h5>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td valign="middle" class="gray-box">
+                        <h5>PROPERTY MANAGER</h5>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>{{property.address1}} {{property.address2}}</td>
+                    <td>&nbsp;</td>
+                    <td>{{propertyManager.company}}</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>{{property.city}}, {{property.state}} {{property.zip}}</td>
+                    <td>&nbsp;</td>
+                    <td>{{propertyManager.landLordName}}</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>{{propertyManager.landLordPhone}}</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>{{propertyManager.landLordEmail}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <p style="font-size: small; padding-bottom:10px;">This report is an assessment of the condition of the property on the date shown.  The documentation in this report is not a work order to report issues to your landlord, but simply your assessment of the property on the day of the walk thru.  My Walk Thru app is only a tool to use for documentation purposes and assumes no financial responsibility in the event of a tenant/landlord dispute.   By use of My Walk Thru App, you agree to hold harmless the app and its owner, agents and employees from any claims, demands, damages and attorneys’ fees for any matters arising between the tenant and landlord.
+    </p>
+
+    <div style="background-color: #333; height: 20px; width:100%;">
+        <h3 style="color: #fff">SUMMARY OF ITEMS THAT NEED ATTENTION</h3>
+    </div>
+    <div>
+        <table style='border-style:none'>
+            {{#each summary}}
+            <tr>
+                <td>
+                    <img src='{{photoUrl}}' style="height: 100px; width: 150px" />
+                </td>
+                <td>
+                    <table>
+                        <tr>
+                            <td>
+                                <h3>{{category}}</h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>{{area}}</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{{comments}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{dateTaken}}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            {{/each}}
+        </table>
+    </div>
+    
+    <div>
+        <h3 style="color: #333">***END OF SUMMARY***</h3>
+    </div>
+
+    <div style="page-break-before: always; background-color: #333; height: 20px; width:100%;">
+        <h3 style="color: #fff">PROPERTY DETAIL</h3>
+    </div>
+    <div>
+        <table class="detail">
+            {{#each details}} {{#if @first}}
+            <tr>
+                <th class="detail-name">
+                    <strong>{{category}}</strong>
+                </th>
+                <th class='detail-observed'>Observed</th>
+                <th class='detail-not-applicable'>Not Applicable</th>
+                <th class='detail-needs-attention'>Needs Attention</th>
+            </tr>
+            {{/if}}
+            <tr>
+                <td class="detail-name">
+                    {{area}}
+                </td>
+                <td class='detail-observed'>
+                    <img src='{{observationIcon1}}' style="height: 20px; width: 20px" />
+                </td>
+                <td class='detail-not-applicable'>
+                    <img src='{{observationIcon2}}' style="height: 20px; width: 20px" />
+                </td>
+                <td class='detail-needs-attention'>
+                    <img src='{{observationIcon3}}' style="height: 20px; width: 20px" />
+                </td>
+            </tr>
+            {{/each}}
+        </table>
+
+        <table class="photos">
+            {{#each details}}
+            <tr>
+                <td>
+                    <table>
+                        {{#each photos}}
+                        <tr>
+                            <td>
+                                <strong>{{key}}.</strong>
+                            </td>
+                            <td style="text-align: right;">
+                                <span style="text-align: right;">{{timestamp}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <img src='{{url}}' style="height: 300px; width: 350px" />
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>{{caption}}</strong>
+                            </td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        {{/each}}
+                    </table>
+                </td>
+            </tr>
+            {{/each}}
+        </table>
+        
+        <div>
+            <h3 style="color: #333">***END OF PROPERTY DETAIL***</h3>
+        </div>        
+
+        <div style="page-break-before: always; margin-top: 5px; background-color: #333; height: 20px; width:100%;">
+            <h3 style="color: #fff">Close Out Details and Signature</h3>
+        </div>
+        <div style="border: solid;">
+            <p>Tenant Signature</p>
+            <img src='{{user.signatureUrl}}' style="height: 100px; width: 150px" />
+        </div>
+
+        <div style="page-break-before: always; background-color: #333; height: 20px; width:100%;">
+            <h3 style="color: #fff">NOTES</h3>
+        </div>
+
+        <div style="border: solid;">
+            <blockquote>{{user.notes}}</blockquote>
+        </div>
+
+        <div style="page-break-after: always; background-color: #333; height: 20px; width:100%;">
+            <h3 style="color: #fff">END OF REPORT</h3>
+        </div>
+
+</body>
+
+</html>

@@ -29,11 +29,124 @@ class CategoryRow extends React.Component {
 
    state = {
        progress: 0,
-       progressColor: 'red'
+       progressColor: 'red',
+       pending: true,
+       complete: false,
+       subcategories: [],
+       userId: '',
+       itemCount: 0,
+       loaded: false,
+       status: '',
+       iconName: 'ios-information-circle-outline',
+       iconColor: '#333'
    }
 
     componentDidMount() {
-      // this.fetchProgressSummary();
+     AsyncStorage.getItem("userId")
+     .then( (userId) =>
+           {
+               this.setState({userId: userId});
+               this.fetchWalkthroughItems(userId);
+
+               if(this.state.subcategories && this.state.subcategories.length>0){
+                 console.log('subcategories[0]:', this.state.subcategories[0]);
+               }
+           }
+     )
+     .done();
+      
+      // this.fetchStatus();
+    }
+
+    // fetchStatus(){
+    //   this.setState({pending: true});
+    // }
+
+    fetchWalkthroughItems(userId) {
+        console.log('>>> ENTERED: fetchWalkthroughItems');
+
+        let filter = '{"where": {"and": [{"rank": "999"},{"userId": "' + userId + '"},{"PropertyCategoryId":{ "eq": "' + this.props.category.id + '"}}]}}';
+        let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"rank": 999, "PropertyCategoryId": "' + this.props.category.id + '", "active": true}}';
+        let count = 0;
+        let categoryName = this.state.categoryName;
+        let subcategories = [];
+        let itemCount = 0;
+        let pending = false;
+        let completed = false;
+
+        Array.prototype.contains = function (element) {
+          return this.indexOf(element) > -1;
+        };
+
+        fetch(query).then((response) => response.json()).then((responseData) => {
+          let count = responseData.length;
+          if (categoryName === 'Hallway / Stairway') {
+            let ds = [];
+            let filter = [];
+            filter.push('Flooring');
+            filter.push('Ceiling');
+            filter.push('Walls/Paint');
+            filter.push('Doors');
+            filter.push('Smoke Alarm');
+            filter.push('Windows');
+            filter.push('Switch Covers');
+            responseData.forEach(function (item) {
+              if (item.name) {
+                if (filter.contains(item.name)) {
+                  ds.push(item);
+                }
+              }
+            });
+            const data = ds;
+            let seenNames = {};
+            data = data.filter(function (currentObject) {
+              if (currentObject.name in seenNames) {
+                return false;
+              } else {
+                seenNames[currentObject.name] = true;
+                return true;
+              }
+            });
+            itemCount = data.length;
+
+            subcategories = data;
+
+          } else {
+
+            itemCount = responseData.length;
+
+            subcategories = responseData;
+          }
+
+          let completedCount = 0;
+
+          // console.log(subcategories);
+
+          subcategories.forEach(function(item) {
+            if (item.dateObserved && item.dateObserved.length > 0) {
+              completedCount++;
+            }
+          });
+
+          console.log('itemCount/completedCount: ', itemCount, completedCount);
+
+          let status = '';
+          let iconName = 'ios-arrow-dropright-outline';
+          let iconColor = 'rgba(0, 122, 255, 1)';          
+
+          if (itemCount === completedCount) {
+            status = 'compeleted';
+            iconName = 'ios-checkmark-circle-outline';
+            iconColor = 'green'; 
+          } else {
+            status = 'pending';
+            iconName = 'ios-arrow-dropright-outline';
+            iconColor = '#fe7013';            
+          }
+
+          this.setState({loaded: true, itemCount: count, subcategories: subcategories, status: status, iconName: iconName, iconColor: iconColor});
+
+        }).done();
     }
 
     fetchProgressSummary(){
@@ -55,7 +168,6 @@ class CategoryRow extends React.Component {
     }
 
     navigateTo(route) {
-
       AsyncStorage.setItem("categoryId", this.props.category.id);
       AsyncStorage.setItem("categoryName", this.props.category.name);
       this.props.toggleTodo(this.props.category.id);
@@ -113,6 +225,21 @@ class CategoryRow extends React.Component {
 
     //   ios-information-circle-outline
 
+      // let icon = 'ios-arrow-dropright-outline';
+      // let iconColor = 'rgba(0, 122, 255, 1)';
+      // let status = this.state.status;
+
+      // if (!status || status === ''){
+      //   icon = 'ios-arrow-dropright-outline';
+      //   iconColor = 'rgba(0, 122, 255, 1)';
+      // } else if (status === 'complete'){
+      //   icon = 'ios-checkmark-circle-outline';
+      //   iconColor = '#8EC5AD';
+      // } else if (status === 'pending') {
+      //   icon = 'ios-information-circle-outline';
+      //   iconColor = '#333';
+      // }
+
       return (
         
          <View style={{
@@ -124,13 +251,16 @@ class CategoryRow extends React.Component {
 
                    {/*<Thumbnail circular size={50} source={require(icon)} />*/}
 
-                   <Icon name='ios-navigate-outline' style={{fontSize: 32, color: '#333'}} />
+                   {/*<Icon name={icon} style={{fontSize: 32, color: iconColor}} />*/}
 
                    {/*<Thumbnail circular size={50} source={require('../../assets/images/beds.png')} />*/}
 
                    <H3 style={{ color: '#333', fontWeight:'bold', marginLeft: 8, marginTop: 5 }}>{name}</H3>
 
-                   <Text style={styles.arrow}><Icon name="ios-arrow-forward" style={{ color: '#333'}} /></Text>
+                   <Text style={styles.arrow}>
+                     {/*<Icon name="ios-arrow-forward" style={{ color: '#333'}} />*/}
+                     <Icon name={this.state.iconName} style={{fontSize: 32, fontWeight:'bold', color: this.state.iconColor}} />
+                   </Text>
                </CardItem>
                {/*<CardItem style={styles.cardItem}   onPress={() => this.navigateTo('subcategories')}>
                   <List>

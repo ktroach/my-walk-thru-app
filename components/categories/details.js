@@ -111,6 +111,8 @@ class CategoryDetails extends React.Component {
         });
       });
 
+      
+
       // AsyncStorage.getItem("categoryId").then((categoryId) => {
       //    this.setState({"categoryId": categoryId});
       //    if (categoryId) {
@@ -125,6 +127,61 @@ class CategoryDetails extends React.Component {
       // });
    }
 
+    updateDateObserved(items){  
+        if(items && items.length> 0) {
+            items.forEach(function(item){
+                let itemId = item.id;
+                if(itemId && itemId.length>0){
+                    let now = new Date();
+                    let url = 'https://mywalkthruapi.herokuapp.com/api/v1/PropertyItems/' + itemId;
+                    let data = {dateObserved: now, modified: now};
+                    fetch(url, {
+                        method: 'PATCH',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    }).then((response) => response.json()).then((responseData) => {
+                        console.log('responseData: ', responseData);
+                    }).catch((error) => {
+                        console.error(error);
+                    }).done();
+                }
+            }); 
+        }
+
+
+        // let id = this.state.item.id;
+        // let now = new Date();
+        // let data = {dateObserved: now, modified: now};
+        // this.persistData(id, data);
+    }
+
+    // persistData(id, data) {
+    //     if (!id) {
+    //         alert('Invalid parameter: id');
+    //         return;
+    //     }          
+    //     if (!data) {
+    //         alert('Invalid parameter: data');
+    //         return;
+    //     }
+    //     //PATCH data
+    //     let url = 'https://mywalkthruapi.herokuapp.com/api/v1/PropertyItems/' + id;
+    //     fetch(url, {
+    //         method: 'PATCH',
+    //         headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify(data)
+    //     }).then((response) => response.json()).then((responseData) => {
+    //         console.log('responseData: ', responseData);
+    //     }).catch((error) => {
+    //         console.error(error);
+    //     }).done();
+    // }  
 
     replaceRoute(route) {
         this.props.replaceRoute(route);
@@ -304,6 +361,11 @@ class CategoryDetails extends React.Component {
                 });
                 this.setState({subcategories: responseData});
             }      
+
+            this.updateDateObserved(responseData);
+
+
+           
 
             // let subCategoryStates = {};
             // //subCategoryStates["prop"] = value;

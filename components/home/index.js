@@ -75,7 +75,9 @@ class Home extends Component {
             completed: [],
             pending: [],
             alreadySubmitted: false,
-            snappedFront: ''        
+            snappedFront: '',
+            reviewDate: '',
+            walkthruCompletedDate: ''        
        };
     }
   
@@ -103,29 +105,114 @@ class Home extends Component {
     }
 
     getUserId() {
+        let progressValue = 0.00;
+        let daysLeft = 5;
         try {
             AsyncStorage
                 .getItem("userId")
                 .then((userId) => {
                     this.setState({userId: userId});   
                     this.setState({currentPosition: 1});
-                    ////
-                    AsyncStorage.getItem("completionDate")
-                    .then((completionDate) =>
+                    progressValue = 0.15;
+                    //// snappedFront
+                    AsyncStorage.getItem("snappedFront")
+                    .then((snappedFront) =>
                     {
-                        if(completionDate && completionDate.length>0){
-                            this.setState({alreadySubmitted: true});
-                            this.setState({currentPosition: 5});
+                        if(snappedFront && snappedFront.length>0){
+                            this.setState({snappedFront: snappedFront});
+                            this.setState({currentPosition: 2});
+                            progressValue = 0.20;
                         }
-                        ////
-                        AsyncStorage.getItem("snappedFront")
-                        .then((snappedFront) =>
+                        //// walkthruCompletedDate
+                        AsyncStorage.getItem("walkthruCompletedDate")
+                        .then((walkthruCompletedDate) =>
                         {
-                          if(snappedFront && snappedFront.length>0){
-                              this.setState({snappedFront: snappedFront});
-                              this.setState({currentPosition: 2});
+                          if(walkthruCompletedDate && walkthruCompletedDate.length>0){
+                              this.setState({walkthruCompletedDate: walkthruCompletedDate});
+                              this.setState({currentPosition: 3});
+                              progressValue = 0.60;
                           }
-                          ////
+                            //// reviewDate
+                            AsyncStorage.getItem("reviewDate")
+                            .then((reviewDate) =>
+                            {
+                              if(reviewDate && reviewDate.length>0){
+                                  this.setState({reviewDate: reviewDate});
+                                  this.setState({currentPosition: 4});
+                                  progressValue = 0.75;
+                              }
+                                //// completionDate submitted on date
+                                AsyncStorage.getItem("completionDate")
+                                .then((completionDate) =>
+                                {
+                                  if(completionDate && completionDate.length>0){
+                                      this.setState({alreadySubmitted: true});
+                                      this.setState({completionDate: completionDate});
+                                      this.setState({currentPosition: 5});
+                                      progressValue = 0.95;
+                                  }
+                                  ////
+                                  AsyncStorage.getItem("leaseBeginDate")
+                                  .then((leaseBeginDate) =>
+                                  {
+                                      if (!leaseBeginDate){
+                                        let bd = new Date();
+                                        leaseBeginDate = bd.toString();
+                                      }
+
+                                      let begin = new Date(leaseBeginDate);
+                                      let df = moment(begin).format('MMMM Do YYYY, h:mm:ss a');
+
+                                      this.setState({leaseBeginDate: df.toString()});
+
+                                      let now = moment().format('M/D/YYYY');
+                                      let dn = moment().format('MMMM Do YYYY, h:mm:ss a');
+
+                                      this.setState({todaysDate: dn.toString()});
+                                      
+                                      let end = moment(begin).add(5, 'days');
+
+                                      let expiresOn = moment(end).format('MMMM Do YYYY, h:mm:ss a');
+
+                                      this.setState({expiresOn: expiresOn.toString()});
+
+                                      console.log('>>>AsyncStorage>>>begin', begin);
+                                      console.log('>>>AsyncStorage>>>end', end);
+
+                                      let a = moment(now, 'M/D/YYYY');
+                                      let b = moment(end, 'M/D/YYYY');
+                                      let daysLeft = b.diff(a, 'days');
+
+                                      console.log('>>>AsyncStorage>>>daysLeft', daysLeft);
+
+                                      if (daysLeft > 0) {
+                                        this.setState({daysLeft: daysLeft});
+                                      } else {
+                                        this.setState({daysLeft: 0});
+                                      }
+
+                                      this.setState({progressValue: progressValue});
+                                      if (progressValue > 0.30 && daysLeft > 3) {
+                                        this.setState({progressColor: 'green'});
+                                      }                   
+
+                                      if (progressValue < 0.80 && daysLeft < 1) {
+                                        this.setState({progressColor: 'red'});
+                                      }   
+
+ 
+
+                                  }
+                                  )
+                                  .done();
+ 
+                                }
+                                )
+                                .done();
+
+                            }
+                            )
+                            .done();
 
                         }
                         )
@@ -148,42 +235,42 @@ class Home extends Component {
           {
               console.log('>>>AsyncStorage>>>leaseBeginDate', leaseBeginDate);  
 
-              if (!leaseBeginDate){
-                let bd = new Date();
-                leaseBeginDate = bd.toString();
-              }
+              // if (!leaseBeginDate){
+              //   let bd = new Date();
+              //   leaseBeginDate = bd.toString();
+              // }
 
-              let begin = new Date(leaseBeginDate);
-              // let df = moment(begin).format('M/D/YYYY');
-              let df = moment(begin).format('MMMM Do YYYY, h:mm:ss a');
+              // let begin = new Date(leaseBeginDate);
+              // // let df = moment(begin).format('M/D/YYYY');
+              // let df = moment(begin).format('MMMM Do YYYY, h:mm:ss a');
 
-              this.setState({leaseBeginDate: df.toString()});
+              // this.setState({leaseBeginDate: df.toString()});
 
-              let now = moment().format('M/D/YYYY');
-              let dn = moment().format('MMMM Do YYYY, h:mm:ss a');
+              // let now = moment().format('M/D/YYYY');
+              // let dn = moment().format('MMMM Do YYYY, h:mm:ss a');
 
-              this.setState({todaysDate: dn.toString()});
+              // this.setState({todaysDate: dn.toString()});
               
-              let end = moment(begin).add(5, 'days');
+              // let end = moment(begin).add(5, 'days');
 
-              let expiresOn = moment(end).format('MMMM Do YYYY, h:mm:ss a');
+              // let expiresOn = moment(end).format('MMMM Do YYYY, h:mm:ss a');
 
-              this.setState({expiresOn: expiresOn.toString()});
+              // this.setState({expiresOn: expiresOn.toString()});
 
-              console.log('>>>AsyncStorage>>>begin', begin);
-              console.log('>>>AsyncStorage>>>end', end);
+              // console.log('>>>AsyncStorage>>>begin', begin);
+              // console.log('>>>AsyncStorage>>>end', end);
 
-              let a = moment(now, 'M/D/YYYY');
-              let b = moment(end, 'M/D/YYYY');
-              let daysLeft = b.diff(a, 'days');
+              // let a = moment(now, 'M/D/YYYY');
+              // let b = moment(end, 'M/D/YYYY');
+              // let daysLeft = b.diff(a, 'days');
 
-              console.log('>>>AsyncStorage>>>daysLeft', daysLeft);
+              // console.log('>>>AsyncStorage>>>daysLeft', daysLeft);
 
-              if (daysLeft > 0) {
-                this.setState({daysLeft: daysLeft});
-              } else {
-                this.setState({daysLeft: 0});
-              }
+              // if (daysLeft > 0) {
+              //   this.setState({daysLeft: daysLeft});
+              // } else {
+              //   this.setState({daysLeft: 0});
+              // }
 
               let steps = [];
 
@@ -205,137 +292,137 @@ class Home extends Component {
        .done();       
     }
 
-    stuff(uppdateProgressThingy, total, daysLeft){
-      let curProgress = 0;
-      let pc = 0;
-      let cc = 0;
+    // stuff(uppdateProgressThingy, total, daysLeft){
+    //   let curProgress = 0;
+    //   let pc = 0;
+    //   let cc = 0;
 
-      this.getCurrentProgress(function(res){
-        if(res){
-          console.log('pending count:',res.pending.length);
-          console.log('completed count:',res.completed.length);
-          pc = res.pending.length;
-          cc = res.completed.length;
-          curProgress = pc-cc;
+    //   this.getCurrentProgress(function(res){
+    //     if(res){
+    //       console.log('pending count:',res.pending.length);
+    //       console.log('completed count:',res.completed.length);
+    //       pc = res.pending.length;
+    //       cc = res.completed.length;
+    //       curProgress = pc-cc;
 
-          this.setState({progressValue: 0.14});
+    //       this.setState({progressValue: 0.14});
 
-          // return uppdateProgressThingy(curProgress, total, daysLeft);
-          // return curProgress;
+    //       // return uppdateProgressThingy(curProgress, total, daysLeft);
+    //       // return curProgress;
 
           
-        }
-      });
-    }
+    //     }
+    //   });
+    // }
 
-    uppdateProgressThingy(curProgress, total, daysLeft){
-      let progressValue = 0.00;
-      progressValue = (curProgress/total);
-      progressValue = progressValue*1;
-      console.log('progressValue:', progressValue);
+    // uppdateProgressThingy(curProgress, total, daysLeft){
+    //   let progressValue = 0.00;
+    //   progressValue = (curProgress/total);
+    //   progressValue = progressValue*1;
+    //   console.log('progressValue:', progressValue);
 
-      if (progressValue > 0.30 && daysLeft > 3) {
-        this.setState({progressColor: 'green'});
-      }                   
+    //   if (progressValue > 0.30 && daysLeft > 3) {
+    //     this.setState({progressColor: 'green'});
+    //   }                   
 
-      if (progressValue < 0.80 && daysLeft < 1) {
-        this.setState({progressColor: 'red'});
-      }              
+    //   if (progressValue < 0.80 && daysLeft < 1) {
+    //     this.setState({progressColor: 'red'});
+    //   }              
 
-      return progressValue;
-      // this.setState({progressValue: progressValue});
-    }
+    //   return progressValue;
+    //   // this.setState({progressValue: progressValue});
+    // }
 
-    getCurrentProgress(fn){
+    // getCurrentProgress(fn){
 
-      let tasks = this.state.steps.length;
+    //   let tasks = this.state.steps.length;
 
-      let accomplished = 0;
+    //   let accomplished = 0;
 
-      let result = {};
+    //   let result = {};
 
-      // signup complete
-      if (this.state.userId) accomplished++;
+    //   // signup complete
+    //   if (this.state.userId) accomplished++;
 
-      // arrive at property?
+    //   // arrive at property?
 
-      // take photo of the front of the property?
+    //   // take photo of the front of the property?
 
-      // signoff walkthru?
+    //   // signoff walkthru?
 
-      // download walkthru report? 
+    //   // download walkthru report? 
 
-      // move in to new home? 
+    //   // move in to new home? 
 
-      // walkthru the property status
-      let completed = [];
-      let pending = [];
-
-
-      if (this.state.userId){
-        let userId = this.state.userId;
-        this.fetchItems(userId, function(err, res){
-          if (err){
-            console.log(err);
-          } else {
-            console.log('home>>>getCurrentProgress>>>fetchItems count:', res.length);
-            let items = res;
+    //   // walkthru the property status
+    //   let completed = [];
+    //   let pending = [];
 
 
-            for (let i=0; i<items.length; i++){
-              let item = items[i];
-              if (item && item.dateObserved && item.summaryComments){
-                // item is completed
-                completed.push(item);
-                // console.log('completed:',completed.length);
-              } else {
-                // item is pending
-                pending.push(item);
-                // console.log('pending:',pending.length);
-              }              
-            } // for
+    //   if (this.state.userId){
+    //     let userId = this.state.userId;
+    //     this.fetchItems(userId, function(err, res){
+    //       if (err){
+    //         console.log(err);
+    //       } else {
+    //         console.log('home>>>getCurrentProgress>>>fetchItems count:', res.length);
+    //         let items = res;
 
-            // this.setState({"pending": pending});
-            // this.setState({"completed": completed});            
 
-            // items.forEach(function(item){
-            //   // create a current snapshot of items that have been completed and items that are still pending.
-            //   if (item && item.dateObserved && item.summaryComments){
-            //     // item is completed
-            //     completed.push(item);
-            //   } else {
-            //     // item is pending
-            //     pending.push(item);
-            //   }
-            // });
+    //         for (let i=0; i<items.length; i++){
+    //           let item = items[i];
+    //           if (item && item.dateObserved && item.summaryComments){
+    //             // item is completed
+    //             completed.push(item);
+    //             // console.log('completed:',completed.length);
+    //           } else {
+    //             // item is pending
+    //             pending.push(item);
+    //             // console.log('pending:',pending.length);
+    //           }              
+    //         } // for
 
-            if (completed.length === items.length){
-              accomplished++;
-            }
+    //         // this.setState({"pending": pending});
+    //         // this.setState({"completed": completed});            
 
-            result = {
-              completed: completed,
-              pending: pending
-            };
+    //         // items.forEach(function(item){
+    //         //   // create a current snapshot of items that have been completed and items that are still pending.
+    //         //   if (item && item.dateObserved && item.summaryComments){
+    //         //     // item is completed
+    //         //     completed.push(item);
+    //         //   } else {
+    //         //     // item is pending
+    //         //     pending.push(item);
+    //         //   }
+    //         // });
 
-            fn(result);
+    //         if (completed.length === items.length){
+    //           accomplished++;
+    //         }
 
-          }
-        });
+    //         result = {
+    //           completed: completed,
+    //           pending: pending
+    //         };
 
-        // this.setState({pending: pending});
-        // this.setState({completed: completed});
+    //         fn(result);
 
-        // if(this.state.snappedFront){
-        //   this.setState({currentPosition: 2});
-        // } else {
-        //   this.setState({currentPosition: 1});
-        // }
+    //       }
+    //     });
+
+    //     // this.setState({pending: pending});
+    //     // this.setState({completed: completed});
+
+    //     // if(this.state.snappedFront){
+    //     //   this.setState({currentPosition: 2});
+    //     // } else {
+    //     //   this.setState({currentPosition: 1});
+    //     // }
                 
-      }
+    //   }
 
-      return result;
-    }
+    //   return result;
+    // }
 
     fetchItems(userId, cb) {
       let query = 'https://mywalkthruapi.herokuapp.com/api/v1/PropertyCategory?filter={"where": {"rank": 999, "userId": "'+userId+'", "active": true}}';          
@@ -356,8 +443,8 @@ class Home extends Component {
     componentDidMount() {
       this.getDaysLeft();
 
-      let total = this.state.steps.length;
-      let daysLeft = this.state.daysLeft;
+      // let total = this.state.steps.length;
+      // let daysLeft = this.state.daysLeft;
 
       // let pv = this.stuff(this.uppdateProgressThingy, total, daysLeft);
 

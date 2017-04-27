@@ -57,7 +57,7 @@ class Report extends Component {
     fetchReport(userId){
         this.setState({loaded: false});
         var url = "https://mywalkthruapi.herokuapp.com/api/v1/Reports/pdfExport/"+userId;
-        let completionDate = moment().format();
+        let reviewDate = moment().format();
         let now = new Date();
         let reportUrl = '';
 
@@ -73,7 +73,9 @@ class Report extends Component {
                 } else {
 
                     this.setState({loaded: true});
-                    this.setState({reportUrl: responseData.reportUrl});                
+                    this.setState({reportUrl: responseData.reportUrl});   
+                    
+                    AsyncStorage.setItem("reviewDate", reviewDate).then(() => {}).done();                                   
                 }
         }).done();
     }    

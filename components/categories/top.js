@@ -26,7 +26,7 @@ import { pushNewRoute, replaceRoute } from '../../actions/route';
 import { Container, Header, Title, Content, Text, Button, Icon, List, ListItem, Card, CardItem, InputGroup, Input, Thumbnail } from 'native-base';
 
 import Config from '../../config'
-import Toolbar from '../toolbar'
+// import Toolbar from '../toolbar'
 
 // import theme from './form-theme';
 import theme from '../../themes/form-theme';
