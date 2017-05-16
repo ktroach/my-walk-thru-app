@@ -259,7 +259,7 @@ class CategoryRow extends React.Component {
 
                    <Text style={styles.arrow}>
                      {/*<Icon name="ios-arrow-forward" style={{ color: '#333'}} />*/}
-                     <Icon name={this.state.iconName} style={{fontSize: 32, fontWeight:'bold', color: this.state.iconColor}} />
+                     <Icon name={this.state.iconName} style={{fontSize: 24, fontWeight:'bold', color: this.state.iconColor}} />
                    </Text>
                </CardItem>
                {/*<CardItem style={styles.cardItem}   onPress={() => this.navigateTo('subcategories')}>

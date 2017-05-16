@@ -28,6 +28,8 @@ import * as Progress from 'react-native-progress';
 
 import StepIndicator from 'react-native-step-indicator';
 
+import MapView from 'react-native-maps';
+
 const stepIndicatorStyles = {
   stepIndicatorSize: 30,
   currentStepIndicatorSize:40,
@@ -80,7 +82,7 @@ class Home extends Component {
             walkthruCompletedDate: ''        
        };
     }
-  
+
     animate() {
       let progress = 0;
       this.setState({ progress });
@@ -292,139 +294,11 @@ class Home extends Component {
        .done();       
     }
 
-    // stuff(uppdateProgressThingy, total, daysLeft){
-    //   let curProgress = 0;
-    //   let pc = 0;
-    //   let cc = 0;
 
-    //   this.getCurrentProgress(function(res){
-    //     if(res){
-    //       console.log('pending count:',res.pending.length);
-    //       console.log('completed count:',res.completed.length);
-    //       pc = res.pending.length;
-    //       cc = res.completed.length;
-    //       curProgress = pc-cc;
-
-    //       this.setState({progressValue: 0.14});
-
-    //       // return uppdateProgressThingy(curProgress, total, daysLeft);
-    //       // return curProgress;
-
-          
-    //     }
-    //   });
-    // }
-
-    // uppdateProgressThingy(curProgress, total, daysLeft){
-    //   let progressValue = 0.00;
-    //   progressValue = (curProgress/total);
-    //   progressValue = progressValue*1;
-    //   console.log('progressValue:', progressValue);
-
-    //   if (progressValue > 0.30 && daysLeft > 3) {
-    //     this.setState({progressColor: 'green'});
-    //   }                   
-
-    //   if (progressValue < 0.80 && daysLeft < 1) {
-    //     this.setState({progressColor: 'red'});
-    //   }              
-
-    //   return progressValue;
-    //   // this.setState({progressValue: progressValue});
-    // }
-
-    // getCurrentProgress(fn){
-
-    //   let tasks = this.state.steps.length;
-
-    //   let accomplished = 0;
-
-    //   let result = {};
-
-    //   // signup complete
-    //   if (this.state.userId) accomplished++;
-
-    //   // arrive at property?
-
-    //   // take photo of the front of the property?
-
-    //   // signoff walkthru?
-
-    //   // download walkthru report? 
-
-    //   // move in to new home? 
-
-    //   // walkthru the property status
-    //   let completed = [];
-    //   let pending = [];
-
-
-    //   if (this.state.userId){
-    //     let userId = this.state.userId;
-    //     this.fetchItems(userId, function(err, res){
-    //       if (err){
-    //         console.log(err);
-    //       } else {
-    //         console.log('home>>>getCurrentProgress>>>fetchItems count:', res.length);
-    //         let items = res;
-
-
-    //         for (let i=0; i<items.length; i++){
-    //           let item = items[i];
-    //           if (item && item.dateObserved && item.summaryComments){
-    //             // item is completed
-    //             completed.push(item);
-    //             // console.log('completed:',completed.length);
-    //           } else {
-    //             // item is pending
-    //             pending.push(item);
-    //             // console.log('pending:',pending.length);
-    //           }              
-    //         } // for
-
-    //         // this.setState({"pending": pending});
-    //         // this.setState({"completed": completed});            
-
-    //         // items.forEach(function(item){
-    //         //   // create a current snapshot of items that have been completed and items that are still pending.
-    //         //   if (item && item.dateObserved && item.summaryComments){
-    //         //     // item is completed
-    //         //     completed.push(item);
-    //         //   } else {
-    //         //     // item is pending
-    //         //     pending.push(item);
-    //         //   }
-    //         // });
-
-    //         if (completed.length === items.length){
-    //           accomplished++;
-    //         }
-
-    //         result = {
-    //           completed: completed,
-    //           pending: pending
-    //         };
-
-    //         fn(result);
-
-    //       }
-    //     });
-
-    //     // this.setState({pending: pending});
-    //     // this.setState({completed: completed});
-
-    //     // if(this.state.snappedFront){
-    //     //   this.setState({currentPosition: 2});
-    //     // } else {
-    //     //   this.setState({currentPosition: 1});
-    //     // }
-                
-    //   }
-
-    //   return result;
-    // }
 
     fetchItems(userId, cb) {
+
+      // todo: hange this query to get the relation category with the items
       let query = 'https://mywalkthruapi.herokuapp.com/api/v1/PropertyCategory?filter={"where": {"rank": 999, "userId": "'+userId+'", "active": true}}';          
 
       console.log('>>>home>>>fetchItems>>>query:', query);
@@ -442,45 +316,29 @@ class Home extends Component {
 
     componentDidMount() {
       this.getDaysLeft();
-
-      // let total = this.state.steps.length;
-      // let daysLeft = this.state.daysLeft;
-
-      // let pv = this.stuff(this.uppdateProgressThingy, total, daysLeft);
-
-      // alert(pv);
     }
 
     onPageChange(position){
         this.setState({currentPosition: position});
     }    
 
-// <View style={styles.progressContainer}>
-// <View style={styles.circles}>
-// <Progress.Circle
-//   style={styles.progress}
-//   progress={this.state.progress}
-//   indeterminate={this.state.indeterminate}
-//   showsText={true}
-// />
-// </View>
-// </View> 
+    maybeRenderDaysLeft = () => {
+      let { daysLeft } = this.state;
+      if (!daysLeft) {
+        return;
+      }
+      if (daysLeft === 1){
+        return(
+          <Text style={{color:'rgba(0, 122, 255, 1)', fontWeight: 'bold', fontSize: 20}}> {this.state.daysLeft} DAY LEFT</Text>
+        );
+      } else {
+        return(
+          <Text style={{color:'rgba(0, 122, 255, 1)', fontWeight: 'bold', fontSize: 20}}> {this.state.daysLeft} DAYS LEFT</Text>
+        );       
+      }
+    }
 
-   maybeRenderDaysLeft = () => {
-     let { daysLeft } = this.state;
-     if (!daysLeft) {
-       return;
-     }
-     if (daysLeft === 1){
-      return(
-        <Text style={{color:'rgba(0, 122, 255, 1)', fontWeight: 'bold', fontSize: 20}}> {this.state.daysLeft} DAY LEFT</Text>
-      );
-     } else {
-      return(
-        <Text style={{color:'rgba(0, 122, 255, 1)', fontWeight: 'bold', fontSize: 20}}> {this.state.daysLeft} DAYS LEFT</Text>
-      );       
-     }
-   }
+
 
     render() {
       return (
@@ -519,7 +377,7 @@ class Home extends Component {
 
                           {this.maybeRenderDaysLeft()}
 
-                        </View>      
+                        </View>        
 
                         <View style={{marginTop: 20}}>
                         <Button rounded block

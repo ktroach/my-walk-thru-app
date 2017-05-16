@@ -83,7 +83,8 @@ export class SignUpComplete extends Component {
             leaseBeginDate: '',
             tenantId: '',
             userId: '',
-            userModelId: ''
+            userModelId: '',
+            photoUrl: ''
         }
     } 
 
@@ -183,10 +184,8 @@ export class SignUpComplete extends Component {
 
                     // let userId = this.state.userModelId;
 
-                    
-
                     if (!userId) {
-                        throw new Error('No userId found!');
+                        alert('userId not found!');
                     }
 
                     let fileName = shortid.generate();
@@ -244,7 +243,10 @@ export class SignUpComplete extends Component {
                     {
                         photoUrl: photoUrl,
                         modified: now
-                    };                    
+                    };             
+
+                    // this.setState({photoUrl: photoUrl});
+                    alert(photoUrl);      
 
                     // this.persistData(userId, data, 'categories');
                     
@@ -263,15 +265,16 @@ export class SignUpComplete extends Component {
                     }).then((response) => response.json()).then((responseData) => {
                         console.log('responseData: ', responseData);
 
+                        
 
-                        AsyncStorage.setItem("snappedFront", url)
-                        .then( () => 
-                            {
-                                alert('Thank you for snapping a pic of your home');
-                                // this.replaceRoute('categories');    
-                            }
-                        )
-                        .done(); 
+                        // AsyncStorage.setItem("snappedFront", url)
+                        // .then( () => 
+                        //     {
+                        //         alert('Thank you for snapping a pic of your home');
+                        //         // this.replaceRoute('categories');    
+                        //     }
+                        // )
+                        // .done(); 
 
                         //  this.replaceRoute('categories');
 
@@ -347,6 +350,24 @@ export class SignUpComplete extends Component {
 
     }    
 
+    maybeRenderFrontPhoto(){
+        if (this.state.photoUrl){
+            return(
+            <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
+                <Image
+                    source={{uri: this.state.photoUrl}}
+                    style={{width: 250, height: 250}}
+                />
+            </View>            
+            );
+        } else {
+            return(
+            <View>
+            </View>            
+            );
+        }
+    }
+
     render(){
         return (
             <View>
@@ -375,47 +396,49 @@ export class SignUpComplete extends Component {
                         <Text style={styles.text}>of the Property</Text>
                         <Text style={styles.text}>from the Street</Text>
 
-                            <Button rounded block
-                                style={{alignSelf: 'center',
-                                    marginTop: 40,
-                                    backgroundColor: '#ad241f',
-                                    borderRadius:90,
-                                    width: 200,
-                                    height:40}}
-                                    onPress={() => {
-                                        this.takePhoto(this.state.userModelId);
-                                    }}
-                                >
-                                <Text style={{color:'#fff', fontWeight: 'bold'}}>Take Photo</Text>
-                            </Button>     
+                        {this.maybeRenderFrontPhoto()}
 
-                            <Button rounded block
-                                style={{alignSelf: 'center',
-                                    marginTop: 40,
-                                    backgroundColor: '#ad241f',
-                                    borderRadius:90,
-                                    width: 200,
-                                    height:40}}
-                                    onPress={() => {
-                                        this.proceedToAreas();
-                                    }}
-                                >
-                                <Text style={{color:'#fff', fontWeight: 'bold'}}>Next</Text>
-                            </Button>                              
+                        <Button rounded block
+                            style={{alignSelf: 'center',
+                                marginTop: 40,
+                                backgroundColor: '#ad241f',
+                                borderRadius:90,
+                                width: 200,
+                                height:40}}
+                                onPress={() => {
+                                    this.takePhoto(this.state.userModelId);
+                                }}
+                            >
+                            <Text style={{color:'#fff', fontWeight: 'bold'}}>Take Photo</Text>
+                        </Button>     
 
-                            <Button rounded block
-                                style={{alignSelf: 'center',
-                                    marginTop: 40,
-                                    backgroundColor: '#ad241f',
-                                    borderRadius:90,
-                                    width: 200,
-                                    height:40}}
-                                    onPress={() => {
-                                        this.proceedToHome();
-                                    }}
-                                >
-                                <Text style={{color:'#fff', fontWeight: 'bold'}}>Cancel</Text>
-                            </Button>                                              
+                        <Button rounded block
+                            style={{alignSelf: 'center',
+                                marginTop: 40,
+                                backgroundColor: '#ad241f',
+                                borderRadius:90,
+                                width: 200,
+                                height:40}}
+                                onPress={() => {
+                                    this.proceedToAreas();
+                                }}
+                            >
+                            <Text style={{color:'#fff', fontWeight: 'bold'}}>Next</Text>
+                        </Button>                              
+
+                        <Button rounded block
+                            style={{alignSelf: 'center',
+                                marginTop: 40,
+                                backgroundColor: '#ad241f',
+                                borderRadius:90,
+                                width: 200,
+                                height:40}}
+                                onPress={() => {
+                                    this.proceedToHome();
+                                }}
+                            >
+                            <Text style={{color:'#fff', fontWeight: 'bold'}}>Cancel</Text>
+                        </Button>                                              
                     </View>
 
                 </Swiper> 

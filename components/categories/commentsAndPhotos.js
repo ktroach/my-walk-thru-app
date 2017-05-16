@@ -667,10 +667,12 @@ class CommentsAndPhotos extends Component {
         }}>
           <Text>{new Date().toISOString()}</Text>
           <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
-              <Image
-                source={{uri: image}}
-                style={{width: 250, height: 250}}
-              />
+              <Image source={require('../../assets/images/logo.png')} style={{width: 250, height: 250, resizeMode: 'cover', opacity: 1.8}}>
+                <Image
+                  source={{uri: image}}
+                  style={{width: 250, height: 250}}
+                />
+              </Image>
           </View>
           <View style={{backgroundColor: '#333'}}>
             <Text

@@ -33,14 +33,6 @@ import SignUpComplete from './components/signup/signup-complete';
 import SignUpInstructions from './components/signup/signup-instructions';
 import SignUpResetDemo from './components/signup/signup-reset-demo';
 
-// Old Sign Up Routes (replace)
-import Step0 from './components/signup/step-0';
-import Step1 from './components/signup/step-1';
-import Step2 from './components/signup/step-2';
-import Step3 from './components/signup/step-3';
-import Step4 from './components/signup/step-4';
-import Step5 from './components/signup/step-5';
-import Step6 from './components/signup/step-6';
 
 // we have to deprecate the react-native-gifted-form becuase it was a terrible peice of crap
 import Step1Copy from './components/signup/step-1-copy';
@@ -206,20 +198,6 @@ class AppNavigator extends Component {
                return <SignUpComplete navigator={navigator} />;    
             case 'signup-instructions':
                return <SignUpInstructions navigator={navigator} />;                           
-            case 'signup-step0':
-               return <Step0 navigator={navigator} />;
-            case 'signup-step1':
-               return <Step1Copy navigator={navigator} />;
-            case 'signup-step2':
-               return <Step2 navigator={navigator} />;
-            case 'signup-step3':
-               return <Step3 navigator={navigator} />;
-            case 'signup-step4':
-               return <Step4 navigator={navigator} />;
-            case 'signup-step5':
-               return <Step5 navigator={navigator} />;
-            case 'signup-step6':
-               return <Step6 navigator={navigator} />;
             case 'categories':
                return <TopCategories navigator={navigator} />;
             case 'subcategories':

@@ -18,6 +18,7 @@ import styles from './styles';
 
 import SignaturePad from 'react-native-signature-pad';
 // import RNFetchBlob from 'react-native-fetch-blob';
+//saveImageFileInExtStorage
 
 import moment from 'moment';
 import shortid from 'shortid';
@@ -55,7 +56,7 @@ class Submittal extends Component {
                 .then( (completionDate) =>
                         {
                             if(completionDate && completionDate.length>0){
-                                this.setState({alreadySubmitted: true});
+                                this.setState({alreadySubmitted: false});
                             }
                             
                         }
@@ -174,8 +175,12 @@ class Submittal extends Component {
             let fileName = shortid.generate();
             let fileType = 'jpg';
 
+            // need ro save the file
+            // need file path
+            // uri required - File system URI, can be assets library path or file:// path
+            //"assets-library://asset/asset.PNG?id=655DBE66-8008-459C-9358-914E1FB532DD&ext=PNG"
             const file = {
-                uri: pickerResult.uri,
+                uri: `file://${path}`,
                 name: `${fileName}.${fileType}`,
                 type: `image/${fileType}`
             };
@@ -287,14 +292,16 @@ class Submittal extends Component {
             return;
         }
 
-        AsyncStorage.setItem("completionDate", completionDate)
-        .then( () => 
-            {
-                alert('Thank you for Completing your Walkthru ('+completionDate+')');
-                this.replaceRoute('report');    
-            }
-        )
-        .done( );  
+        this.uploadSignature();
+
+        // AsyncStorage.setItem("completionDate", completionDate)
+        // .then( () => 
+        //     {
+        //         alert('Thank you for Completing your Walkthru ('+completionDate+')');
+        //         this.replaceRoute('report');    
+        //     }
+        // )
+        // .done( );  
 
       // console.log('data: ', data);
 

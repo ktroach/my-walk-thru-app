@@ -175,6 +175,7 @@ class DetailRow extends React.Component {
      }
 
      var screenWidth = Dimensions.get('window').width;
+     var screenHeight = Dimensions.get('window').height;
 
      return (
 
@@ -249,10 +250,14 @@ class DetailRow extends React.Component {
                           justifyContent: 'center',
                           alignItems: 'center',
                           backgroundColor: '#fafbfc',}}>
+
                 <Image
                   source={{uri: summaryPhoto}}
                   style={{width: screenWidth *.8, height: 200}}
-                />
+                >
+                  <Text style={{fontSize: 8, color: '#333'}}>{new Date().toISOString()}</Text>
+                </Image> 
+               
               </View>          
               </CardItem>
 
@@ -377,6 +382,7 @@ class DetailRow extends React.Component {
            let now = new Date();
            let data = {summaryComments: this.state.summaryComments, summaryPhoto: location, dateObserved: now};
            let item = this.state.item;
+
 
            this.setState({summaryPhoto: location});
 
