@@ -22,6 +22,7 @@ import Home from './components/home/';
 import Report from './components/report/';
 
 // New Sign Up Routes (replace old signup routes)
+import Step0 from './components/signup/step-0';
 import SignUpUserInfo from './components/signup/signup-user-info';
 import SignUpPropertyInfo from './components/signup/signup-property-info';
 import SignUpPropertyLocation from './components/signup/signup-property-location';
@@ -35,7 +36,7 @@ import SignUpResetDemo from './components/signup/signup-reset-demo';
 
 
 // we have to deprecate the react-native-gifted-form becuase it was a terrible peice of crap
-import Step1Copy from './components/signup/step-1-copy';
+// import Step1Copy from './components/signup/step-1-copy';
 
 // Submittal screen  process signature
 import Submittal from './components/submittal/';
@@ -178,6 +179,8 @@ class AppNavigator extends Component {
                return <Report navigator={navigator} />;               
             case 'submittal':
                return <Submittal navigator={navigator} />;
+            case 'signup-step0':
+                return <Step0 navigator={navigator} />; 
             case 'signup-user-info':
                return <SignUpUserInfo navigator={navigator} />;               
             case 'signup-property-info':

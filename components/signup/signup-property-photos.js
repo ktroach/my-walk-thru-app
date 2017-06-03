@@ -246,7 +246,7 @@ export class SignUpComplete extends Component {
                     };             
 
                     // this.setState({photoUrl: photoUrl});
-                    alert(photoUrl);      
+                    // alert(photoUrl);      
 
                     // this.persistData(userId, data, 'categories');
                     
@@ -319,7 +319,7 @@ export class SignUpComplete extends Component {
       //PATCH data
       let url = 'https://mywalkthruapi.herokuapp.com/api/v1/users/' + id;
 
-      alert(url);
+    //   alert(url);
 
       fetch(url, {
         method: 'PATCH',

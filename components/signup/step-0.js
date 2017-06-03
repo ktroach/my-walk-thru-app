@@ -53,7 +53,7 @@ class Step0 extends Component {
 
    componentWillMount() {
 
-        this.fetchBuildNumber();
+        // this.fetchBuildNumber();
 
         if (this.haveTheySignedUp()) {
             console.log('user signed up');

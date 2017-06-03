@@ -126,10 +126,10 @@ class SideBar extends Component {
                          <Text style={styles.text}>View Report</Text>
                        </ListItem>
                        
-                       <ListItem button onPress={() => this.navigateTo('submittal')} iconLeft style={styles.links} >
+                       {/*<ListItem button onPress={() => this.navigateTo('submittal')} iconLeft style={styles.links} >
                          <Icon style={styles.sidebarIcon} name='ios-list-box-outline' />
                          <Text style={styles.text}>Submit WalkThru</Text>
-                       </ListItem>                                              
+                       </ListItem>                                              */}
 
 
                        <ListItem button onPress={() => this.navigateTo('signup-reset-demo')} iconLeft style={styles.links} >

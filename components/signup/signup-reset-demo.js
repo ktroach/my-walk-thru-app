@@ -79,42 +79,44 @@ export class SignUpResetDemo extends Component {
 
     resetApp(){
 
-        // AsyncStorage.removeItem("loggedin")
-        //     .then( () => {
-        //         console.log('Removed storage item: loggedin');
-        //         alert('Goodbye!');
-        //         Expo.Util.reload();
-        //     }
-        // ).done();        
-
-        AsyncStorage.removeItem("signUpDate")
-        .then( () =>
-            {
-                console.log('Removed storage item: signUpDate');
-
-                AsyncStorage.removeItem("userId")
-                .then( () => {
-
-                    console.log('Removed storage item: userId');
-
-                    AsyncStorage.removeItem("leaseBeginDate")
-                    .then( () => {
-
-                        AsyncStorage.removeItem("loggedin")
-                            .then( () => {
-                                console.log('Removed storage item: loggedin');
-                                alert('Goodbye!');
-                                Expo.Util.reload();
-                            }
-                        ).done(); 
-
-                    }
-                    ).done();
-                }
-                ).done();
+        AsyncStorage.removeItem("loggedin")
+            .then( () => {
+                console.log('Removed storage item: loggedin');
+                alert('Goodbye!');
+                Expo.Util.reload();
             }
-        )
-        .done( );
+        ).done();        
+
+        // AsyncStorage.removeItem("signUpDate")
+        // .then( () =>
+        //     {
+        //         console.log('Removed storage item: signUpDate');
+
+        //         AsyncStorage.removeItem("userId")
+        //         .then( () => {
+
+        //             console.log('Removed storage item: userId');
+
+        //             // leaseBeginDate
+        //             AsyncStorage.removeItem("leaseBeginDate") 
+        //             .then( () => {
+
+        //                 AsyncStorage.removeItem("loggedin")
+        //                     .then( () => {
+        //                         console.log('Removed storage item: loggedin');
+        //                         // alert('Goodbye!');
+        //                         this.replaceRoute('step-0');
+        //                         // Expo.Util.reload();
+        //                     }
+        //                 ).done(); 
+
+        //             }
+        //             ).done();
+        //         }
+        //         ).done();
+        //     }
+        // )
+        // .done( );
         
     }
 

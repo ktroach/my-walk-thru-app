@@ -185,24 +185,19 @@ class Home extends Component {
                                       let b = moment(end, 'M/D/YYYY');
                                       let daysLeft = b.diff(a, 'days');
 
-                                      console.log('>>>AsyncStorage>>>daysLeft', daysLeft);
+                                      // alert(daysLeft);
+                                      console.log('>>> daysLeft: ', daysLeft);
 
-                                      if (daysLeft > 0) {
-                                        this.setState({daysLeft: daysLeft});
-                                      } else {
-                                        this.setState({daysLeft: 0});
-                                      }
+                                      if (daysLeft<0) {
+                                        this.setState({progressValue: 1.0, progressColor: '#FF5640', daysLeft: 0});
+                                        return;
+                                      }                                         
 
-                                      this.setState({progressValue: progressValue});
                                       if (progressValue > 0.30 && daysLeft > 3) {
-                                        this.setState({progressColor: 'green'});
-                                      }                   
-
-                                      if (progressValue < 0.80 && daysLeft < 1) {
-                                        this.setState({progressColor: 'red'});
-                                      }   
-
- 
+                                        this.setState({progressValue: progressValue, progressColor: '#8BCF62', daysLeft: daysLeft});
+                                      }  else {
+                                        this.setState({progressValue: progressValue, progressColor: '#F8CB43', daysLeft: daysLeft});
+                                      }                 
 
                                   }
                                   )
@@ -324,9 +319,6 @@ class Home extends Component {
 
     maybeRenderDaysLeft = () => {
       let { daysLeft } = this.state;
-      if (!daysLeft) {
-        return;
-      }
       if (daysLeft === 1){
         return(
           <Text style={{color:'rgba(0, 122, 255, 1)', fontWeight: 'bold', fontSize: 20}}> {this.state.daysLeft} DAY LEFT</Text>
@@ -360,11 +352,11 @@ class Home extends Component {
 
                    <Content padder style={{backgroundColor: 'transparent'}}>
                         <View style={{paddingBottom: 10, marginTop: 10}}>
-                          <Text style={{color:'rgba(0, 122, 255, 1)', fontSize: 22, fontWeight: 'bold', alignSelf: 'center'}}>Welcome to your new Home!</Text>
+                          <Text style={{color:'#3B64C9', fontSize: 22, fontWeight: 'bold', alignSelf: 'center'}}>Welcome to your new Home!</Text>
                         </View>                        
 
-                        <View style={styles.progressContainer}>
-                          <Text style={{color:'rgba(0, 122, 255, 1)', fontWeight: 'bold', fontSize: 20}}>YOU HAVE </Text>
+                        {/*<View style={styles.progressContainer}>
+                          <Text style={{color:'#3B64C9', fontWeight: 'bold', fontSize: 20}}>YOU HAVE </Text>
                           <View style={styles.circles}>
                             <Progress.Pie
                               style={styles.progress}
@@ -377,13 +369,13 @@ class Home extends Component {
 
                           {this.maybeRenderDaysLeft()}
 
-                        </View>        
+                        </View>        */}
 
                         <View style={{marginTop: 20}}>
                         <Button rounded block
                           style={{alignSelf: 'center',
                                   marginTop: 1,
-                                  backgroundColor:'rgba(0, 122, 255, 1)',
+                                  backgroundColor:'#87B6D8',
                                   borderRadius:45,
                                   width: 300,
                                   height:40}}
@@ -396,7 +388,7 @@ class Home extends Component {
                         <Button rounded block
                           style={{alignSelf: 'center',
                                   marginTop: 1,
-                                  backgroundColor:'rgba(0, 122, 255, 1)',
+                                  backgroundColor:'#87B6D8',
                                   borderRadius:45,
                                   width: 300,
                                   height:40}}
@@ -409,7 +401,7 @@ class Home extends Component {
                         <Button rounded block
                           style={{alignSelf: 'center',
                                   marginTop: 1,
-                                  backgroundColor:'rgba(0, 122, 255, 1)',
+                                  backgroundColor:'#87B6D8',
                                   borderRadius:45,
                                   width: 300,
                                   height:40}}
@@ -418,23 +410,23 @@ class Home extends Component {
                         </Button>           
                         </View>                          
 
-                        <View style={{marginTop: 20}}>
+                        {/*<View style={{marginTop: 20}}>
                         <Button rounded block
                           style={{alignSelf: 'center',
                                   marginTop: 1,
-                                  backgroundColor:'rgba(0, 122, 255, 1)',
+                                  backgroundColor:'#87B6D8',
                                   borderRadius:45,
                                   width: 300,
                                   height:40}}
                                   onPress={() => this.replaceRoute('submittal')}>
                             <Text style={{color:'#fff', fontWeight: 'bold'}}>SUBMIT YOUR WALKTHRU</Text>
                         </Button>           
-                        </View>                          
+                        </View>                          */}
 
                                  
 
                         <View style={{marginTop: 20}}>
-                          <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>TIMEFRAME</Text>
+                          <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>SCHEDULE</Text>
                           <List>
                               {/*<ListItem iconRight >
                                 <Icon name='ios-time-outline' style={{color:'#666666'}} />
@@ -455,7 +447,7 @@ class Home extends Component {
                           </List>
                         </View>      
 
-                        <View style={{marginTop: 10, paddingHorizontal:10}}>
+                        {/*<View style={{marginTop: 10, paddingHorizontal:10}}>
                           <View>
                             <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>STEPS</Text>  
                           </View>
@@ -468,9 +460,9 @@ class Home extends Component {
                                 stepCount={this.state.steps.length}
                             /> 
                           </View>                         
-                        </View>      
+                        </View>      */}
 
-                        <View style={{marginTop: 20}}>
+                        {/*<View style={{marginTop: 20}}>
                           <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>STATUS</Text>
                           <List>
                               <ListItem iconRight >
@@ -486,7 +478,7 @@ class Home extends Component {
                                 <Text style={{color:'#666666'}} >Areas Pending: {this.state.pending.length}</Text>
                               </ListItem>                              
                           </List>
-                        </View>                                                       
+                        </View>                                                       */}
 
                         {/*<View style={{marginTop: 20}}>
                           <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>COMPLETED</Text>
@@ -646,6 +638,7 @@ class Home extends Component {
 
         );
     }
+    
 
 
   _handleGetStartedPressed() {
