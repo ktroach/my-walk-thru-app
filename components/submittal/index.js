@@ -385,6 +385,11 @@ class Submittal extends Component {
     _signaturePadChange = ({base64DataUrl}) => {
       console.log("Got new signature: " + base64DataUrl);
       this.setState({signature: base64DataUrl});
+      alert('Image changed');
+
+      // upload the image to aws s3 and store the s3 url in state 
+      
+
     };
 
     renderSubmittalForm() {
@@ -425,6 +430,14 @@ class Submittal extends Component {
 
                         <View style={styles.box}>
                             <Card foregroundColor='#000'>
+
+                                <CardItem header>
+                                    <Image
+                                        style={{width: 200, height: 200}}
+                                        source={{uri: 'https://facebook.github.io/react/img/logo_og.png'}}
+                                    />
+                                </CardItem>
+
                                 <CardItem header>
                                     <Text>*** PLEASE READ ***</Text>
                                 </CardItem>
@@ -503,6 +516,8 @@ class Submittal extends Component {
                                         <Text style={{color:'#fff', fontWeight: 'bold'}}>SUBMIT YOUR WALKTHRU</Text>
                                     </Button>
                                 </CardItem>
+
+
                             </Card>
 
 

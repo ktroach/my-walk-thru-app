@@ -132,10 +132,10 @@ class SideBar extends Component {
                        </ListItem>                                              */}
 
 
-                       <ListItem button onPress={() => this.navigateTo('signup-reset-demo')} iconLeft style={styles.links} >
+                       {/*<ListItem button onPress={() => this.navigateTo('signup-reset-demo')} iconLeft style={styles.links} >
                            <Icon style={styles.sidebarIcon} name='ios-git-compare' />
                            <Text style={styles.text}>Logout</Text>
-                       </ListItem>                                                             
+                       </ListItem>                                                             */}
                    </List>
                  
 
@@ -158,10 +158,10 @@ class SideBar extends Component {
                              <Icon style={styles.sidebarIcon} name='ios-happy-outline' />
                              <Text style={styles.text}>Welcome</Text>
                          </ListItem>      
-                       <ListItem button onPress={() => this.navigateTo('signup-reset-demo')} iconLeft style={styles.links} >
+                       {/*<ListItem button onPress={() => this.navigateTo('signup-reset-demo')} iconLeft style={styles.links} >
                            <Icon style={styles.sidebarIcon} name='ios-git-compare' />
                            <Text style={styles.text}>Logout</Text>
-                       </ListItem>                              
+                       </ListItem>                              */}
 
                        {/*<ListItem button onPress={() => this.navigateTo('home')} iconLeft style={styles.links} >
                           <Icon style={styles.sidebarIcon} name='ios-home-outline' />

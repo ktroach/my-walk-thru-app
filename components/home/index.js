@@ -410,7 +410,7 @@ class Home extends Component {
                         </Button>           
                         </View>                          
 
-                        {/*<View style={{marginTop: 20}}>
+                        <View style={{marginTop: 20}}>
                         <Button rounded block
                           style={{alignSelf: 'center',
                                   marginTop: 1,
@@ -421,7 +421,7 @@ class Home extends Component {
                                   onPress={() => this.replaceRoute('submittal')}>
                             <Text style={{color:'#fff', fontWeight: 'bold'}}>SUBMIT YOUR WALKTHRU</Text>
                         </Button>           
-                        </View>                          */}
+                        </View>                          
 
                                  
 
