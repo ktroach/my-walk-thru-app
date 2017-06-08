@@ -9,7 +9,7 @@ import { popRoute, replaceRoute } from '../../actions/route';
 
 import { Container, Header, Title, Content, Text, Button, Icon, Card, CardItem, View } from 'native-base';
 
-import { Checkbox } from 'nachos-ui';
+// import { Checkbox } from 'nachos-ui';
 
 import SignatureView from './SignatureView';
 
@@ -22,6 +22,8 @@ import SignaturePad from 'react-native-signature-pad';
 
 import moment from 'moment';
 import shortid from 'shortid';
+
+import FileSystem from 'react-native-filesystem';
 
 const flexCenter = {
   flex: 1,
@@ -121,9 +123,9 @@ class Submittal extends Component {
         this.props.replaceRoute(route);
     }
 
-    handleFirstCheckboxChange = (firstChecked) => {
-      this.setState({ firstChecked })
-    }
+    // handleFirstCheckboxChange = (firstChecked) => {
+    //   this.setState({ firstChecked })
+    // }
 
     openLink() {
        Linking.openURL('http://www.mywalkthru.com/');
@@ -162,11 +164,33 @@ class Submittal extends Component {
         this._signatureView.show(false);
     }
 
+    // saveToCameraRoll = (image) => {
+    //     if (Platform.OS === 'android') {
+    //         RNFetchBlob
+    //         .config({
+    //             fileCache : true,
+    //             appendExt : 'jpg'
+    //         })
+    //         .fetch('GET', image.urls.small)
+    //         .then((res) => {
+    //             CameraRoll.saveToCameraRoll(res.path())
+    //             .then(Alert.alert('Success', 'Photo added to camera roll!'))
+    //             .catch(err => console.log('err:', err))
+    //         })
+    //     } else {
+    //         CameraRoll.saveToCameraRoll(image.urls.small)
+    //         .then(Alert.alert('Success', 'Photo added to camera roll!'))
+    //     }
+    // }    
+
     uploadSignature(){
         let uploadResponse, uploadResult;
         try {
         if (this.state.data && this.state.data.length>0) {
             let userId = this.state.userId;
+
+            let signatureImage = this.state.data;
+            // save the signatureImage to the file system
 
             if (!userId) {
                 throw new Error('No UserId found!');
@@ -175,7 +199,7 @@ class Submittal extends Component {
             let fileName = shortid.generate();
             let fileType = 'jpg';
 
-            // need ro save the file
+            // need to save the file
             // need file path
             // uri required - File system URI, can be assets library path or file:// path
             //"assets-library://asset/asset.PNG?id=655DBE66-8008-459C-9358-914E1FB532DD&ext=PNG"
@@ -199,27 +223,29 @@ class Submittal extends Component {
             RNS3.put(file, options).then(response => {
             // let res = JSON.stringify(response);
 
-            console.log('>>>>>>>> response:', response);
+                console.log('>>>>>>>> response:', response);
 
-            if (response.status !== 201) {
-                throw new Error('Failed to upload image to S3', response);
-            }
+                if (response.status !== 201) {
+                    throw new Error('Failed to upload image to S3', response);
+                }
 
-            if (!response.body){
-                throw new Error('Failed to upload image to S3', response);
-            }
+                if (!response.body){
+                    throw new Error('Failed to upload image to S3', response);
+                }
 
-            let photoUrl = response.body.postResponse.location;
-            // console.log('Property photoUrl:', photoUrl);
-            let now = new Date();                  
-            let data =
-            {
-                signatureUrl: photoUrl,
-                modified: now
-            };                    
+                let photoUrl = response.body.postResponse.location;
 
-            this.persistData(userId, data, 'report');
+                alert(photoUrl);
 
+                // console.log('Property photoUrl:', photoUrl);
+                let now = new Date();                  
+                let data =
+                {
+                    signatureUrl: photoUrl,
+                    modified: now
+                };                    
+
+                this.persistData(userId, data, 'report');
 
             });
         }
@@ -385,15 +411,34 @@ class Submittal extends Component {
     _signaturePadChange = ({base64DataUrl}) => {
       console.log("Got new signature: " + base64DataUrl);
       this.setState({signature: base64DataUrl});
-      alert('Image changed');
+    //   alert('Image changed');
+      
+    //   let fileName = 'assets-library://asset/asset.PNG';
+      
+    //   this.writeToFile(fileName, base64DataUrl, function(err,res){
+    //       console.log('writeToFile done');
+    //   });
 
       // upload the image to aws s3 and store the s3 url in state 
-      
+
 
     };
 
+
+    writeToFile(fileName, fileContents, cb) {
+        FileSystem.writeToFile(fileName, fileContents, function(err, res){
+            if(err){
+                console.log(err);
+                return cb(err,null);
+            }else{
+                console.log('file is written');
+                return cb(null, '200 OK');
+            }
+        });
+    }    
+
     renderSubmittalForm() {
-      const checkboxStyle = { margin: 5 }
+    //   const checkboxStyle = { margin: 5 }
       const {data} = this.state;
       var screenWidth = Dimensions.get('window').width;
         return (

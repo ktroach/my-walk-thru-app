@@ -706,6 +706,19 @@ export class SignUpTermsConditions extends Component {
         >
 
           <Section
+            ref={'termsSection'}
+            title={'TERMS'}
+            helpText={'Switch on if you accept the Terms and Conditions, below:'}
+          >
+                <SwitchCell
+                    ref={'acceptTermsSwitchCell'}
+                    switchTintColor={'#8EC5AD'}
+                    title={'Do you accept the Terms?'}
+                    titleColor={'black'}
+                />
+          </Section>
+
+          <Section
             ref={'readTermsSection'}
             title={'TERMS and CONDITIONS'}
             helpText={'*** Please Read the Terms and Conditions ***'}
@@ -721,18 +734,7 @@ export class SignUpTermsConditions extends Component {
 
           </Section>
 
-          <Section
-            ref={'termsSection'}
-            title={'TERMS'}
-            helpText={'Switch on if you accept the Terms and Conditions'}
-          >
-                <SwitchCell
-                    ref={'acceptTermsSwitchCell'}
-                    switchTintColor={'#8EC5AD'}
-                    title={'Do you accept the Terms?'}
-                    titleColor={'black'}
-                />
-          </Section>
+
 
 
 

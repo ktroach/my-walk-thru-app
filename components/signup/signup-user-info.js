@@ -154,11 +154,34 @@ export class SignUpUserInfo extends Component {
             if(change && change.length === 10){
                 Keyboard.dismiss();
             }            
-        }        
+        }     
+
+        // if(ref && ref !== '' && ref === 'primaryEmail'){
+        //     if(change && change.length>8){
+        //         this.validateEmail(change);
+        //     }            
+        // }
+
+        // if(ref && ref !== '' && ref === 'primaryEmail'){
+        //     if(change && change.length === 255){
+        //         Keyboard.dismiss();
+        //     }            
+        // }           
 
         if(change && change !== ''){
             this.setState({validated:true});
         }
+    }
+
+    validateEmail(value){
+        console.log('>> ENTERED: validateEmail');
+        if (!value || value.length===0) return false;
+        let v1 = value.indexOf("@");
+        let v2 = value.lastIndexOf(".");        
+        if (v1 < 1 || ( v2 - v1 < 2 )) {
+            return false;
+        }
+        return true;
     }
 
     formatPhone(value) {
@@ -221,13 +244,15 @@ export class SignUpUserInfo extends Component {
             let primaryEmail = formData.EmailSection.primaryEmail;
             let phoneNumber = formData.PhoneSection.phoneNumber;
 
-            // let gender = formData.GenderSection.genderActionCell;
-            // let birthday = formData.BirthdaySection.birthdayDatePicker;
+            let gender = formData.GenderSection.genderActionCell;
+            let birthday = formData.BirthdaySection.birthdayDatePicker;
 
             var data = JSON.stringify({
                 "fullname": fullName,
                 "phoneNumber": phoneNumber,
                 "email": primaryEmail,
+                "gender": gender,
+                "birthday": birthday, 
                 "active": "true",
                 "modified": now
             });
@@ -259,6 +284,11 @@ export class SignUpUserInfo extends Component {
             alert('Your Email is required');
             return false;
         }   
+
+        if (!this.validateEmail(formData.EmailSection.primaryEmail)) {
+            alert('Valid Email is required');
+            return false;
+        }
 
         if (!formData.PhoneSection) {
             alert('Your Phone Number is required');
@@ -375,8 +405,6 @@ export class SignUpUserInfo extends Component {
             >
                 <TextInputCell
                     ref="primaryEmail"
-                    value={this.state.tenantId}
-                    validator={createValidator(emailValidator, { errorMessage: 'Invalid Email' })}
                     inputProps={{ 
                         placeholder: 'Your Primary Email', 
                         keyboardType: 'email-address',
@@ -402,7 +430,7 @@ export class SignUpUserInfo extends Component {
                 />   
             </Section>               
 
-            {/*<Section
+            <Section
                 ref={'GenderSection'}
                 title={'GENDER'}
                 helpText={'Select your gender.'}
@@ -437,7 +465,7 @@ export class SignUpUserInfo extends Component {
                     return date.toLocaleDateString('en-US', options);
                 }}
                 />
-            </Section>*/}
+            </Section>
 
         </Form>
       </View>
