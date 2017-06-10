@@ -23,7 +23,9 @@ import SignaturePad from 'react-native-signature-pad';
 import moment from 'moment';
 import shortid from 'shortid';
 
-import FileSystem from 'react-native-filesystem';
+// import FileSystem from 'react-native-filesystem';
+
+// import * as RNFS from 'react-native-fs';
 
 const flexCenter = {
   flex: 1,
@@ -183,6 +185,14 @@ class Submittal extends Component {
     //     }
     // }    
 
+    // saveImage(){
+    //     let signature = this.state.signature;
+    //     let fileName = shortid.generate();
+    //     let fileType = 'png';
+    //     let path = RNFS.DocumentDirectoryPath + '/' + `${fileName}.${fileType}`;
+    //     alert(path);
+    // }
+
     uploadSignature(){
         let uploadResponse, uploadResult;
         try {
@@ -197,7 +207,9 @@ class Submittal extends Component {
             }
 
             let fileName = shortid.generate();
-            let fileType = 'jpg';
+            let fileType = 'png';
+            // let path = RNFS.DocumentDirectoryPath + '/' + `${fileName}.${fileType}`;
+            // alert(path);
 
             // need to save the file
             // need file path
@@ -411,6 +423,8 @@ class Submittal extends Component {
     _signaturePadChange = ({base64DataUrl}) => {
       console.log("Got new signature: " + base64DataUrl);
       this.setState({signature: base64DataUrl});
+
+    //   this.saveImage();
     //   alert('Image changed');
       
     //   let fileName = 'assets-library://asset/asset.PNG';

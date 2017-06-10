@@ -266,7 +266,7 @@ export class SignUpPropertyInfo extends Component {
                 "modified": now
             });
 
-            this.saveFormData(tenantId, data, 'signup-property-manager-info');
+            this.saveFormData(tenantId, data, 'signup-terms-conditions');
         }
     }
 

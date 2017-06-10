@@ -55,28 +55,28 @@ class Step0 extends Component {
 
         // this.fetchBuildNumber();
 
-        if (this.haveTheySignedUp()) {
-            console.log('user signed up');
+        // if (this.haveTheySignedUp()) {
+        //     console.log('user signed up');
        
-            if (this.userLoggedIn()) {
-                console.log('user logged in'); 
+            // if (this.userLoggedIn()) {
+            //     console.log('user logged in'); 
 
-                // this.replaceRoute('home');
-            } else {
-                console.log('user is not logged in');
-            }
+            //     // this.replaceRoute('home');
+            // } else {
+            //     console.log('user is not logged in');
+            // }
 
-        } else {
-            console.log('user not Signed Up'); 
-        } 
+        // } else {
+        //     console.log('user not Signed Up'); 
+        // } 
    }
 
    fetchBuildNumber(){
         console.log('>>> ENTERED: fetchBuildNumber');
-        let query = 'https://mywalkthruapi.herokuapp.com/api/v1/Builds/58e55cc261405659dd6ccdc8';
+        let query = 'https://mywalkthruapi.herokuapp.com/api/v1/Builds';
         console.log('query: ', query);
         fetch(query).then((response) => response.json()).then((responseData) => {
-            let build = responseData;
+            let build = responseData[0];
             console.log('>>> build:', build);
             if (build && 
                 build.buildNumber &&
@@ -88,9 +88,9 @@ class Step0 extends Component {
         }).done();
    }      
 
-   getStorageItems(){
-       this.getUserId()();
-   }
+//    getStorageItems(){
+//        this.getUserId()();
+//    }
 
     getTenantId() {
         try {
@@ -148,7 +148,7 @@ class Step0 extends Component {
                 {
                     this.setState({loggedin: loggedin});
                     // if (loggedin === '1') return true;
-                    // this.replaceRoute('home');
+                    this.replaceRoute('home');
                     return true;
                 }
             )
@@ -163,21 +163,21 @@ class Step0 extends Component {
    // if we have the signUpDate stored on the device then yes they signed up before
    haveTheySignedUp () {
 
-        this.getUserId();
+        // this.getUserId();
 
-        console.log('>>haveTheySignedUp>>this.state.tenantId:',this.state.tenantId);
-        console.log('>>haveTheySignedUp>>this.state.userId:',this.state.userId);
-        console.log('>>haveTheySignedUp>>this.state.signUpDate:',this.state.signUpDate);
+        // console.log('>>haveTheySignedUp>>this.state.tenantId:',this.state.tenantId);
+        // console.log('>>haveTheySignedUp>>this.state.userId:',this.state.userId);
+        // console.log('>>haveTheySignedUp>>this.state.signUpDate:',this.state.signUpDate);
 
-        if (this.state.tenantId && this.state.userId && this.state.signUpDate){
-            console.log('>> haveTheySignedUp >> ', this.state.userId,' signed up on: ', this.state.signUpDate);
+        // if (this.state.tenantId && this.state.userId && this.state.signUpDate){
+        //     console.log('>> haveTheySignedUp >> ', this.state.userId,' signed up on: ', this.state.signUpDate);
 
 
 
-            this.replaceRoute('home');
-        } else {
-            console.log('>> haveTheySignedUp >> no user info found in storage >> user must reauthenticate using pin');
-        }
+        //     this.replaceRoute('home');
+        // } else {
+        //     console.log('>> haveTheySignedUp >> no user info found in storage >> user must login using pin');
+        // }
 
         // try {
         //     AsyncStorage.getItem("signUpDate")
@@ -344,7 +344,7 @@ class Step0 extends Component {
                             } else {
                                 AsyncStorage.setItem("loggedin", "0")
                                     .then( () => {
-                                        console.log('user doesnt exist, user is not logged in');
+                                        console.log('user does not exist, user is not logged in');
                                         this.replaceRoute('signup-instructions');
                                     }
                                 ).done(); 
@@ -386,7 +386,7 @@ class Step0 extends Component {
     
     renderVerification() {
       return (
-            <Container theme={theme} style={{backgroundColor: '#9DD6EB'}} >
+            <Container theme={theme} style={{backgroundColor: '#ffffff'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
                         <Title>USER VERIFICATION</Title>
@@ -401,13 +401,13 @@ class Step0 extends Component {
                         </View>
                         <View>
                             <Text style={{color: '#0066cc', textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
-                                Enter the 4-digit Invite Code 
+                                Enter the Invite Code 
                             </Text>
                             <Text style={{color: '#0066cc', textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
-                                you recieved on your 
+                                you recieved from  
                             </Text>  
                             <Text style={{color: '#0066cc', textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
-                                Phone / Mobile Device / Email
+                                MyWalkThru.com
                             </Text>                                                       
                         </View>
                         
@@ -440,7 +440,7 @@ class Step0 extends Component {
 
                     <View style={{alignSelf: 'center'}}>
                         <Text style={{color: '#333', textAlign: 'left', fontSize: 10, paddingBottom: 10, marginLeft: 10}}>
-                             MyWalkThru.com © 2017, Build: {this.state.build.buildNumber}, Version: {this.state.build.version}
+                             MyWalkThru.com © 2017, Build: Z281X3HX5ZM, Version: 1.8.2
                         </Text>                          
                     </View>
 

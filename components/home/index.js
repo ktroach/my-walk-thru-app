@@ -28,7 +28,9 @@ import * as Progress from 'react-native-progress';
 
 import StepIndicator from 'react-native-step-indicator';
 
-import MapView from 'react-native-maps';
+// import MapView from 'react-native-maps';
+
+import Expo from 'expo';
 
 const stepIndicatorStyles = {
   stepIndicatorSize: 30,
@@ -330,7 +332,16 @@ class Home extends Component {
       }
     }
 
-
+    signout(){
+        AsyncStorage.removeItem("loggedin")
+            .then( () => {
+                console.log('Removed storage item: loggedin');
+                alert('Goodbye!');
+                Expo.Util.reload();
+            }
+        ).done();      
+      // this.replaceRoute('signup-step-0');
+    }
 
     render() {
       return (
@@ -339,7 +350,9 @@ class Home extends Component {
                    <Header>
 
                        <Button transparent>
-                           <Icon name='ios-happy-outline' style={{fontSize: 30, lineHeight: 32}} />
+                           <Icon name='ios-sad-outline' 
+                           onPress={() => this.signout()}
+                           style={{fontSize: 30, lineHeight: 32}} />
                        </Button>                     
 
                        <Title>Home</Title>

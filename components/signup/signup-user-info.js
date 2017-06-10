@@ -244,15 +244,15 @@ export class SignUpUserInfo extends Component {
             let primaryEmail = formData.EmailSection.primaryEmail;
             let phoneNumber = formData.PhoneSection.phoneNumber;
 
-            let gender = formData.GenderSection.genderActionCell;
-            let birthday = formData.BirthdaySection.birthdayDatePicker;
+            // let gender = formData.GenderSection.genderActionCell;
+            // let birthday = formData.BirthdaySection.birthdayDatePicker;
 
             var data = JSON.stringify({
                 "fullname": fullName,
                 "phoneNumber": phoneNumber,
                 "email": primaryEmail,
-                "gender": gender,
-                "birthday": birthday, 
+                // "gender": gender,
+                // "birthday": birthday, 
                 "active": "true",
                 "modified": now
             });
@@ -430,7 +430,7 @@ export class SignUpUserInfo extends Component {
                 />   
             </Section>               
 
-            <Section
+            {/*<Section
                 ref={'GenderSection'}
                 title={'GENDER'}
                 helpText={'Select your gender.'}
@@ -465,7 +465,7 @@ export class SignUpUserInfo extends Component {
                     return date.toLocaleDateString('en-US', options);
                 }}
                 />
-            </Section>
+            </Section>*/}
 
         </Form>
       </View>

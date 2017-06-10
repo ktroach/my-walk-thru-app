@@ -107,7 +107,7 @@ export class SignUpInstructions extends Component {
     }
 
     proceedToSignUp(){
-        this.replaceRoute('signup-user-info');
+        this.replaceRoute('signup-property-info');
     }
 
     render(){
