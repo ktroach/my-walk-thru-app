@@ -401,6 +401,13 @@ class Step0 extends Component {
                     </Header>
                     <Content padder style={{backgroundColor: 'transparent'}} >
                        <View style={welcomeStyle.welcomeContainer}>
+
+                        <View style={{paddingBottom: 10, marginTop: 10}}>
+                          <Text style={{color:'#C31826', fontSize: 18, fontWeight: 'bold', alignSelf: 'center'}}>
+                            WELCOME TO MYWALKTHRU
+                          </Text>
+                        </View> 
+
                         <View>
                            <Image
                             source={require('../../assets/images/mwtlogo.png')}
@@ -408,7 +415,7 @@ class Step0 extends Component {
                            />
                         </View>
                         <View>
-                            <Text style={{marginTop: 20, color: '#282333', textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
+                            <Text style={{marginTop: 20, color: 'rgb(68,68,68)', textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
                                 Enter your Invite Code 
                             </Text>                                                 
                         </View>
@@ -420,7 +427,7 @@ class Step0 extends Component {
                         <View style={{paddingTop: 20}}>
                             <TextInput
                                 style={{borderWidth: 2,
-                                        borderColor: '#282333', 
+                                        borderColor: 'rgb(68,68,68)', 
                                         textAlign: 'center', 
                                         fontSize: 20, 
                                         height:60, 

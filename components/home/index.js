@@ -479,29 +479,124 @@ class Home extends Component {
       console.log('>>>>> maybeRenderSubmitYourWalkthru');
       if (isWalkthruSubmitted===true){
         return(
-          <View style={{marginTop: 25}}>
-            <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>
-              PROGRESS
-            </Text>
-            <List>
-                <ListItem iconRight >
-                  <Icon name='ios-stats-outline' style={{color:'#2B59AC'}} />
-                  <Text style={{color:'#2B59AC'}}>
-                    Completed: {percentCompleteStatus}
-                  </Text>
-                </ListItem>                
-                <ListItem iconRight >
-                  <Icon name='ios-stopwatch-outline' style={{color:'#2B59AC'}} />
-                  <Text style={{color:'#2B59AC'}}>
-                    Submitted: {submittedOn}         
-                  </Text>
-                </ListItem>                            
-            </List>
-          </View> 
+          <View>
+
+            <View style={{marginTop: 20}}>
+            <Button rounded block
+              style={{alignSelf: 'center',
+                      marginTop: 1,
+                      backgroundColor:'#2B59AC',
+                      borderRadius:45,
+                      width: 300,
+                      height:40}}
+                      onPress={() => this.replaceRoute('signup-property-photos')}>
+                <Text style={{color:'#fff', fontWeight: 'bold'}}>SNAP A PHOTO OF YOUR HOME</Text>
+            </Button>           
+            </View>                          
+
+            <View style={{marginTop: 20}}>
+            <Button rounded block
+              style={{alignSelf: 'center',
+                      marginTop: 1,
+                      backgroundColor:'#2B59AC',
+                      borderRadius:45,
+                      width: 300,
+                      height:40}}
+                      onPress={() => this.replaceRoute('categories')}>
+                <Text style={{color:'#fff', fontWeight: 'bold'}}>WALKTHRU YOUR HOME</Text>
+            </Button>           
+            </View>            
+
+            <View style={{marginTop: 20}}>
+            <Button rounded block
+              style={{alignSelf: 'center',
+                      marginTop: 1,
+                      backgroundColor:'#2B59AC',
+                      borderRadius:45,
+                      width: 300,
+                      height:40}}
+                      onPress={() => this.replaceRoute('report')}>
+                <Text style={{color:'#fff', fontWeight: 'bold'}}>VIEW YOUR REPORT</Text>
+            </Button>           
+            </View>  
+           
+            <View style={{marginTop: 25}}>
+              <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>
+                PROGRESS
+              </Text>
+              <List>
+                  <ListItem iconRight >
+                    <Icon name='ios-stats-outline' style={{color:'#2B59AC'}} />
+                    <Text style={{color:'#2B59AC'}}>
+                      Completed: {percentCompleteStatus}
+                    </Text>
+                  </ListItem>                
+                  <ListItem iconRight >
+                    <Icon name='ios-stopwatch-outline' style={{color:'#2B59AC'}} />
+                    <Text style={{color:'#2B59AC'}}>
+                      Submitted: {submittedOn}         
+                    </Text>
+                  </ListItem>                            
+              </List>
+            </View> 
+          </View>
         );
       } else {
         return(
           <View>
+
+            <View style={{marginTop: 20}}>
+            <Button rounded block
+              style={{alignSelf: 'center',
+                      marginTop: 1,
+                      backgroundColor:'#2B59AC',
+                      borderRadius:45,
+                      width: 300,
+                      height:40}}
+                      onPress={() => this.replaceRoute('signup-property-photos')}>
+                <Text style={{color:'#fff', fontWeight: 'bold'}}>SNAP A PHOTO OF YOUR HOME</Text>
+            </Button>           
+            </View>                          
+
+            <View style={{marginTop: 20}}>
+            <Button rounded block
+              style={{alignSelf: 'center',
+                      marginTop: 1,
+                      backgroundColor:'#2B59AC',
+                      borderRadius:45,
+                      width: 300,
+                      height:40}}
+                      onPress={() => this.replaceRoute('categories')}>
+                <Text style={{color:'#fff', fontWeight: 'bold'}}>WALKTHRU YOUR HOME</Text>
+            </Button>           
+            </View>            
+
+            <View style={{marginTop: 20}}>
+            <Button rounded block
+              style={{alignSelf: 'center',
+                      marginTop: 1,
+                      backgroundColor:'#2B59AC',
+                      borderRadius:45,
+                      width: 300,
+                      height:40}}
+                      onPress={() => this.replaceRoute('report')}>
+                <Text style={{color:'#fff', fontWeight: 'bold'}}>VIEW YOUR REPORT</Text>
+            </Button>           
+            </View>              
+
+            <View style={{marginTop: 20}}>
+              <Button rounded block
+                style={{alignSelf: 'center',
+                        marginTop: 1,
+                        backgroundColor:'#2B59AC',
+                        borderRadius:45,
+                        width: 300,
+                        height:40}}
+                        onPress={() => this.replaceRoute('submittal')}>
+                  <Text style={{color:'#fff', fontWeight: 'bold'}}>SUBMIT YOUR WALKTHRU</Text>
+              </Button>           
+            </View> 
+
             <View style={{marginTop: 25}}>
               <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>
                 PROGRESS
@@ -520,19 +615,8 @@ class Home extends Component {
                     </Text>
                   </ListItem>                            
               </List>
-            </View>           
-            <View style={{marginTop: 20}}>
-              <Button rounded block
-                style={{alignSelf: 'center',
-                        marginTop: 1,
-                        backgroundColor:'#2B59AC',
-                        borderRadius:45,
-                        width: 300,
-                        height:40}}
-                        onPress={() => this.replaceRoute('submittal')}>
-                  <Text style={{color:'#fff', fontWeight: 'bold'}}>SUBMIT YOUR WALKTHRU</Text>
-              </Button>           
-            </View> 
+            </View>  
+
           </View>
         );
       }
@@ -556,13 +640,9 @@ class Home extends Component {
      let screenHeight = Dimensions.get('window').height;     
 
      let address1 = '';
-     if(this.state.user&&this.state.user.property&&this.state.user.property.address1){
-      address1 = this.state.user.property.address1;
+     if (this.state.user&&this.state.user.property&&this.state.user.property.address1){
+        address1 = this.state.user.property.address1;
      }
-
-    //  let { isWalkthruSubmitted } = this.state;
-
-    //  let isWalkthruSubmitted = this.state.isWalkthruSubmitted;
       
       return (
           <Container theme={theme} style={{backgroundColor: '#fff'}}>
@@ -628,7 +708,7 @@ class Home extends Component {
 
                         </View>        */}
 
-                        <View style={{marginTop: 20}}>
+                        {/*<View style={{marginTop: 20}}>
                         <Button rounded block
                           style={{alignSelf: 'center',
                                   marginTop: 1,
@@ -652,9 +732,9 @@ class Home extends Component {
                                   onPress={() => this.replaceRoute('categories')}>
                             <Text style={{color:'#fff', fontWeight: 'bold'}}>WALKTHRU YOUR HOME</Text>
                         </Button>           
-                        </View>     
+                        </View>     */}
 
-                        <View style={{marginTop: 20}}>
+                        {/*<View style={{marginTop: 20}}>
                         <Button rounded block
                           style={{alignSelf: 'center',
                                   marginTop: 1,
@@ -665,7 +745,7 @@ class Home extends Component {
                                   onPress={() => this.replaceRoute('report')}>
                             <Text style={{color:'#fff', fontWeight: 'bold'}}>VIEW YOUR REPORT</Text>
                         </Button>           
-                        </View>                          
+                        </View>                          */}
 
                         { this.maybeRenderSubmitYourWalkthru() }
          
