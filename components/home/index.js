@@ -35,6 +35,8 @@ import { Indicator } from 'nachos-ui';
 
 import Expo from 'expo';
 
+import Config from '../../config'
+
 const stepIndicatorStyles = {
   stepIndicatorSize: 30,
   currentStepIndicatorSize:40,
@@ -76,15 +78,18 @@ class Home extends Component {
             progressColor: '#fe7013',
             categories: [],
             categoryCount: 0,
-            items: [],
-            itemCount: 0,            
+            items: [],           
             userId: '', 
             completed: [],
             pending: [],
             alreadySubmitted: false,
             snappedFront: '',
             reviewDate: '',
-            walkthruCompletedDate: ''        
+            isWalkthruSubmitted: false,
+            submittedDate: '',
+            completedCount: 0,   
+            itemCount: 0,
+            percentComplete: 0   
        };
     }
 
@@ -122,11 +127,13 @@ class Home extends Component {
                     this.setState({currentPosition: 1});
                     progressValue = 0.15;
                     //// snappedFront
-                    AsyncStorage.getItem("snappedFront")
-                    .then((snappedFront) =>
+                    AsyncStorage.getItem("submittedDate")
+                    .then((submittedDate) =>
                     {
-                        if(snappedFront && snappedFront.length>0){
-                            this.setState({snappedFront: snappedFront});
+                        if(submittedDate && submittedDate.length>0){
+                          // alert(submittedDate);
+                            this.setState({submittedDate: submittedDate});
+                            this.setState({isWalkthruSubmitted: true});
                             this.setState({currentPosition: 2});
                             progressValue = 0.20;
                         }
@@ -311,24 +318,111 @@ class Home extends Component {
 
                 fetch(query).then((response) => response.json()).then((responseData) => {
                   this.setState({user: responseData[0]});
+
+                  this.fetchWalkthroughItems(responseData[0].userId);
+
                 }).done();
           })
           .done();      
     } 
 
-    fetchItems(userId, cb) {
+    fetchWalkthroughItems(userId) {
+        console.log('>>> ENTERED: fetchWalkthroughItems');
+        // let filter = '{"where": {"and": [{"rank": "999"},{"userId": "' + userId + '"}]}}';
+        let query = Config.PROPERTY_ITEMS_API + '?filter={"where": {"rank": 999, "userId": "' + userId + '", "active": true}}';
+        let count = 0;
+        let categoryName = this.state.categoryName;
+        let subcategories = [];
+        let itemCount = 0;
+        let pending = false;
+        let completed = false;
 
-      // todo: hange this query to get the relation category with the items
-      let query = 'https://mywalkthruapi.herokuapp.com/api/v1/PropertyCategory?filter={"where": {"rank": 999, "userId": "'+userId+'", "active": true}}';          
+        Array.prototype.contains = function (element) {
+          return this.indexOf(element) > -1;
+        };
 
-      console.log('>>>home>>>fetchItems>>>query:', query);
-      console.log('>>>home>>>fetchItems>>>userId:', userId);
+        fetch(query).then((response) => response.json()).then((responseData) => {
+          let count = responseData.length;
+          if (categoryName === 'Hallway / Stairway') {
+            let ds = [];
+            let filter = [];
+            filter.push('Flooring');
+            filter.push('Ceiling');
+            filter.push('Walls/Paint');
+            filter.push('Doors');
+            filter.push('Smoke Alarm');
+            filter.push('Windows');
+            filter.push('Switch Covers');
+            responseData.forEach(function (item) {
+              if (item.name) {
+                if (filter.contains(item.name)) {
+                  ds.push(item);
+                }
+              }
+            });
+            const data = ds;
+            let seenNames = {};
+            data = data.filter(function (currentObject) {
+              if (currentObject.name in seenNames) {
+                return false;
+              } else {
+                seenNames[currentObject.name] = true;
+                return true;
+              }
+            });
+            itemCount = data.length;
 
-      fetch(query).then((response) => response.json()).then((responseData) => {
-        this.setState({items: responseData, itemCount: responseData.length});
-        cb(null, responseData);
-      }).done();
-    }       
+            subcategories = data;
+
+          } else {
+
+            itemCount = responseData.length;
+
+            subcategories = responseData;
+          }
+
+          let completedCount = 0;
+
+          // console.log(subcategories);
+
+          subcategories.forEach(function(item) {
+            if (item.dateObserved && item.dateObserved.length > 0) {
+              completedCount++;
+            }
+          });
+
+          console.log('itemCount/completedCount: ', itemCount, completedCount);
+
+          let percentComplete = 0;
+          if (itemCount>0&&completedCount>0){
+            percentComplete = ((completedCount/itemCount)*100);
+          }
+
+          let status = '';
+          let iconName = 'ios-arrow-dropright-outline';
+          let iconColor = 'rgba(0, 122, 255, 1)';          
+
+          if (itemCount === completedCount) {
+            status = 'compeleted';
+            iconName = 'ios-checkmark-circle-outline';
+            iconColor = 'green'; 
+          } else {
+            status = 'pending';
+            iconName = 'ios-arrow-dropright-outline';
+            iconColor = '#fe7013';            
+          }
+
+          this.setState({
+            itemCount: count, 
+            completedCount: completedCount, 
+            subcategories: subcategories, 
+            status: status, 
+            percentComplete: percentComplete
+          });
+
+        }).done();
+    }
+    
 
     componentWillMount() {
       this.getUserId();
@@ -368,6 +462,83 @@ class Home extends Component {
       // this.replaceRoute('signup-step-0');
     }
 
+    maybeRenderSubmitYourWalkthru(){
+      let isWalkthruSubmitted = this.state.isWalkthruSubmitted;
+      let submittedDate = this.state.submittedDate;
+      let percentComplete = this.state.percentComplete;
+      if (!percentComplete) percentComplete = 0;
+      percentComplete = Math.ceil(percentComplete);
+      let percentCompleteStatus = percentComplete.toString() + '%';
+      let submittedOn = '';
+      if (submittedDate&&submittedDate.length>0){
+        let submittedOnDate = new Date(submittedDate);
+        if (submittedOnDate){
+          submittedOn = submittedOnDate.toDateString();
+        }
+      }
+      console.log('>>>>> maybeRenderSubmitYourWalkthru');
+      if (isWalkthruSubmitted===true){
+        return(
+          <View style={{marginTop: 25}}>
+            <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>
+              PROGRESS
+            </Text>
+            <List>
+                <ListItem iconRight >
+                  <Icon name='ios-stats-outline' style={{color:'#2B59AC'}} />
+                  <Text style={{color:'#2B59AC'}}>
+                    Completed: {percentCompleteStatus}
+                  </Text>
+                </ListItem>                
+                <ListItem iconRight >
+                  <Icon name='ios-stopwatch-outline' style={{color:'#2B59AC'}} />
+                  <Text style={{color:'#2B59AC'}}>
+                    Submitted: {submittedOn}         
+                  </Text>
+                </ListItem>                            
+            </List>
+          </View> 
+        );
+      } else {
+        return(
+          <View>
+            <View style={{marginTop: 25}}>
+              <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>
+                PROGRESS
+              </Text>
+              <List>
+                  <ListItem iconRight >
+                    <Icon name='ios-stats-outline' style={{color:'#2B59AC'}} />
+                    <Text style={{color:'#2B59AC'}}>
+                      Completed: {percentCompleteStatus}
+                    </Text>
+                  </ListItem>                
+                  <ListItem iconRight >
+                    <Icon name='ios-stopwatch-outline' style={{color:'#2B59AC'}} />
+                    <Text style={{color:'#2B59AC'}}>
+                      Submitted: Pending         
+                    </Text>
+                  </ListItem>                            
+              </List>
+            </View>           
+            <View style={{marginTop: 20}}>
+              <Button rounded block
+                style={{alignSelf: 'center',
+                        marginTop: 1,
+                        backgroundColor:'#2B59AC',
+                        borderRadius:45,
+                        width: 300,
+                        height:40}}
+                        onPress={() => this.replaceRoute('submittal')}>
+                  <Text style={{color:'#fff', fontWeight: 'bold'}}>SUBMIT YOUR WALKTHRU</Text>
+              </Button>           
+            </View> 
+          </View>
+        );
+      }
+
+    }
+
     render() {
 
       const IndicatorExample = () => {
@@ -388,6 +559,10 @@ class Home extends Component {
      if(this.state.user&&this.state.user.property&&this.state.user.property.address1){
       address1 = this.state.user.property.address1;
      }
+
+    //  let { isWalkthruSubmitted } = this.state;
+
+    //  let isWalkthruSubmitted = this.state.isWalkthruSubmitted;
       
       return (
           <Container theme={theme} style={{backgroundColor: '#fff'}}>
@@ -492,20 +667,8 @@ class Home extends Component {
                         </Button>           
                         </View>                          
 
-                        <View style={{marginTop: 20}}>
-                        <Button rounded block
-                          style={{alignSelf: 'center',
-                                  marginTop: 1,
-                                  backgroundColor:'#87B6D8',
-                                  borderRadius:45,
-                                  width: 300,
-                                  height:40}}
-                                  onPress={() => this.replaceRoute('submittal')}>
-                            <Text style={{color:'#fff', fontWeight: 'bold'}}>SUBMIT YOUR WALKTHRU</Text>
-                        </Button>           
-                        </View>                          
-
-                                 
+                        { this.maybeRenderSubmitYourWalkthru() }
+         
 
                         <View style={{marginTop: 25}}>
                           <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>
@@ -517,13 +680,13 @@ class Home extends Component {
                                 <Text style={{color:'#666666'}} >Today: {this.state.todaysDate}</Text>
                               </ListItem>                            */}
                               <ListItem iconRight >
-                                <Icon name='ios-time-outline' style={{color:'#2B59AC'}} />
+                                <Icon name='ios-calendar-outline' style={{color:'#2B59AC'}} />
                                 <Text style={{color:'#2B59AC'}}>
                                   Lease Begins: {this.state.leaseBeginDate}         
                                 </Text>
                               </ListItem>
                               <ListItem iconRight >
-                                <Icon name='ios-time-outline' style={{color:'#2B59AC'}} />
+                                <Icon name='ios-calendar-outline' style={{color:'#2B59AC'}} />
                                 <Text style={{color:'#2B59AC'}}>
                                   Walkthru Expires: {this.state.expiresOn}
                                 </Text>

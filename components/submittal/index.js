@@ -340,7 +340,15 @@ class Submittal extends Component {
                     reject(error);
                 }).done();
             }});
-            this.replaceRoute('report');
+
+            AsyncStorage.setItem("submittedDate", now.toISOString())
+            .then( () => {
+                this.replaceRoute('report');
+
+            }
+            ).done();
+
+            
             // }}); // promise       
     }
 
