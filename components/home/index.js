@@ -9,7 +9,8 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  View
+  View,
+  Dimensions
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -29,6 +30,8 @@ import * as Progress from 'react-native-progress';
 import StepIndicator from 'react-native-step-indicator';
 
 // import MapView from 'react-native-maps';
+
+import { Indicator } from 'nachos-ui';
 
 import Expo from 'expo';
 
@@ -165,18 +168,22 @@ class Home extends Component {
                                       }
 
                                       let begin = new Date(leaseBeginDate);
-                                      let df = moment(begin).format('MMMM Do YYYY, h:mm:ss a');
+                                      let df = moment(begin).format('MMMM Do YYYY');
+                                      // let df = moment(begin).format('MMMM Do YYYY, h:mm:ss a');
 
                                       this.setState({leaseBeginDate: df.toString()});
 
                                       let now = moment().format('M/D/YYYY');
-                                      let dn = moment().format('MMMM Do YYYY, h:mm:ss a');
+
+                                      let dn = moment().format('MMMM Do YYYY');
+                                      // let dn = moment().format('MMMM Do YYYY, h:mm:ss a');
 
                                       this.setState({todaysDate: dn.toString()});
                                       
                                       let end = moment(begin).add(5, 'days');
 
-                                      let expiresOn = moment(end).format('MMMM Do YYYY, h:mm:ss a');
+                                      let expiresOn = moment(end).format('MMMM Do YYYY');
+                                      // let expiresOn = moment(end).format('MMMM Do YYYY, h:mm:ss a');
 
                                       this.setState({expiresOn: expiresOn.toString()});
 
@@ -291,7 +298,23 @@ class Home extends Component {
        .done();       
     }
 
+    fetchUser() {
+        AsyncStorage
+          .getItem("userId")
+          .then((userId) => {
+              this.setState({userId: userId}); 
+                if(!userId) return;
+                let query = 'https://mywalkthruapi.herokuapp.com/api/v1/users?filter={"where": {"userId": "'+userId+'"}}';          
 
+                console.log('>>>home>>>fetchUser>>>query:', query);
+                console.log('>>>home>>>fetchUser>>>userId:', userId);
+
+                fetch(query).then((response) => response.json()).then((responseData) => {
+                  this.setState({user: responseData[0]});
+                }).done();
+          })
+          .done();      
+    } 
 
     fetchItems(userId, cb) {
 
@@ -309,9 +332,11 @@ class Home extends Component {
 
     componentWillMount() {
       this.getUserId();
+      
     }    
 
     componentDidMount() {
+      this.fetchUser();
       this.getDaysLeft();
     }
 
@@ -344,29 +369,73 @@ class Home extends Component {
     }
 
     render() {
+
+      const IndicatorExample = () => {
+        const imageStyle = {
+          width: 50,
+          height: 50,
+          borderRadius: 10,
+        };
+        const indicatorStyle = {
+          marginRight: 1,
+        };  
+      };  
+
+     let screenWidth = Dimensions.get('window').width - 20;
+     let screenHeight = Dimensions.get('window').height;     
+
+     let address1 = '';
+     if(this.state.user&&this.state.user.property&&this.state.user.property.address1){
+      address1 = this.state.user.property.address1;
+     }
+      
       return (
           <Container theme={theme} style={{backgroundColor: '#fff'}}>
               <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
-                   <Header>
 
-                       <Button transparent>
-                           <Icon name='ios-sad-outline' 
-                           onPress={() => this.signout()}
-                           style={{fontSize: 30, lineHeight: 32}} />
+                   <Header  style={{backgroundColor: '#2B59AC'}}>
+                       <Button transparent onPress={() => this.replaceRoute('signup-property-photos')}>
+        <Indicator
+          position='right top'
+          value='1'
+          style={IndicatorExample.indicatorStyle} 
+          
+        >
+          <Image
+            style={{width:28,height:28}}
+            source={require('../../assets/images/notification-outline.png')}
+          />
+        </Indicator>
                        </Button>                     
 
                        <Title>Home</Title>
 
                        <Button transparent onPress={this.props.openDrawer} >
-                           <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
+                           <Icon name='ios-menu' style={{fontSize: 30, color: '#fff'}} />
                        </Button>
                    </Header>
                    
 
                    <Content padder style={{backgroundColor: 'transparent'}}>
                         <View style={{paddingBottom: 10, marginTop: 10}}>
-                          <Text style={{color:'#3B64C9', fontSize: 22, fontWeight: 'bold', alignSelf: 'center'}}>Welcome to your new Home!</Text>
-                        </View>                        
+                          <Text style={{color:'#C31826', fontSize: 18, fontWeight: 'bold', alignSelf: 'center'}}>
+                            WELCOME TO YOUR NEW HOME
+                          </Text>
+                        </View>  
+
+                        <View style={{marginTop: 10}}>
+                          <View style={{paddingBottom: 10}}>
+                            <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16, alignSelf: 'center'}}>
+                              {address1} 
+                            </Text>
+                          </View>
+                          <View style={{marginTop: 5}}>
+                            <Image
+                              style={{width:screenWidth,height:190}}
+                              source={require('../../assets/images/3d-house-1.png')}
+                            />
+                          </View>  
+                        </View>                                               
 
                         {/*<View style={styles.progressContainer}>
                           <Text style={{color:'#3B64C9', fontWeight: 'bold', fontSize: 20}}>YOU HAVE </Text>
@@ -388,7 +457,7 @@ class Home extends Component {
                         <Button rounded block
                           style={{alignSelf: 'center',
                                   marginTop: 1,
-                                  backgroundColor:'#87B6D8',
+                                  backgroundColor:'#2B59AC',
                                   borderRadius:45,
                                   width: 300,
                                   height:40}}
@@ -401,7 +470,7 @@ class Home extends Component {
                         <Button rounded block
                           style={{alignSelf: 'center',
                                   marginTop: 1,
-                                  backgroundColor:'#87B6D8',
+                                  backgroundColor:'#2B59AC',
                                   borderRadius:45,
                                   width: 300,
                                   height:40}}
@@ -414,7 +483,7 @@ class Home extends Component {
                         <Button rounded block
                           style={{alignSelf: 'center',
                                   marginTop: 1,
-                                  backgroundColor:'#87B6D8',
+                                  backgroundColor:'#2B59AC',
                                   borderRadius:45,
                                   width: 300,
                                   height:40}}
@@ -423,7 +492,7 @@ class Home extends Component {
                         </Button>           
                         </View>                          
 
-                        {/*<View style={{marginTop: 20}}>
+                        <View style={{marginTop: 20}}>
                         <Button rounded block
                           style={{alignSelf: 'center',
                                   marginTop: 1,
@@ -434,27 +503,29 @@ class Home extends Component {
                                   onPress={() => this.replaceRoute('submittal')}>
                             <Text style={{color:'#fff', fontWeight: 'bold'}}>SUBMIT YOUR WALKTHRU</Text>
                         </Button>           
-                        </View>                          */}
+                        </View>                          
 
                                  
 
-                        <View style={{marginTop: 20}}>
-                          <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>SCHEDULE</Text>
+                        <View style={{marginTop: 25}}>
+                          <Text style={{color:'#333', fontWeight: 'bold', fontSize: 16}}>
+                            SCHEDULE
+                          </Text>
                           <List>
                               {/*<ListItem iconRight >
                                 <Icon name='ios-time-outline' style={{color:'#666666'}} />
                                 <Text style={{color:'#666666'}} >Today: {this.state.todaysDate}</Text>
                               </ListItem>                            */}
                               <ListItem iconRight >
-                                <Icon name='ios-time-outline' style={{color:'#666666'}} />
-                                <Text style={{color:'#666666'}}>Lease Begins:         
-                                  <Text style={{color:'#666666'}}>           {this.state.leaseBeginDate}</Text>
+                                <Icon name='ios-time-outline' style={{color:'#2B59AC'}} />
+                                <Text style={{color:'#2B59AC'}}>
+                                  Lease Begins: {this.state.leaseBeginDate}         
                                 </Text>
                               </ListItem>
                               <ListItem iconRight >
-                                <Icon name='ios-time-outline' style={{color:'#666666'}} />
-                                <Text style={{color:'#666666'}}>Walkthru Expires: 
-                                  <Text style={{color:'#666666'}}>     {this.state.expiresOn}</Text>  
+                                <Icon name='ios-time-outline' style={{color:'#2B59AC'}} />
+                                <Text style={{color:'#2B59AC'}}>
+                                  Walkthru Expires: {this.state.expiresOn}
                                 </Text>
                               </ListItem>                              
                           </List>

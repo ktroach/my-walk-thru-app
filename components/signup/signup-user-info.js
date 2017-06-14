@@ -53,11 +53,7 @@ export class SignUpUserInfo extends Component {
             validated: false,
             phoneFormatted: '',
             loaded: false,
-            tenant: {
-                fullName: '',
-                email: '',
-                phoneNumber: ''
-            }
+            tenant: {}
         }
     } 
 
@@ -67,7 +63,7 @@ export class SignUpUserInfo extends Component {
 
     componentDidMount() {
         // this.getTenantId();
-        this.setState({loaded: true});
+        // this.setState({loaded: true});
 
         // if(this._confettiView) {
         //     this._confettiView.startConfetti();
@@ -101,24 +97,21 @@ export class SignUpUserInfo extends Component {
         AsyncStorage.getItem("tenantId")
         .then( (tenantId) =>
               {
-                this.setState({tenantId: tenantId});
-                this.fetchTenant(tenantId, function(err, res){
-                    if (!err){
-                        console.log('cool');
-                        // console.log('>>>> this.state.tenant:', this.state.tenant);
-                    }
-                });
+                if (tenantId){
+                    // this.setState({tenantId: tenantId});
+                    this.fetchTenant(tenantId, function(err, res){
+                        if (!err){
+                            console.log(fn, '>> TENANT FOUND');
+                            // this.setState({loaded: true});
+                            // console.log('>>>> this.state.tenant:', this.state.tenant);
+                        }
+                    });
+                }
               }
         )
         .done();
      } catch(err){
          console.log(fn, '>>> Failed to get tenantId: ' + err);
-
-        //  //REMOVE!!!
-        //  let tenantId = '58decc07583ad3e4bab8b0ce';
-        //  console.log('REMOVE!!! USING TEST TENANTID...')
-        //  this.setState({tenantId: tenantId});
-
      }       
    }   
 
@@ -128,17 +121,17 @@ export class SignUpUserInfo extends Component {
         let url = 'https://mywalkthruapi.herokuapp.com/api/v1/Tenants/' + id;
         fetch(url).then((response) => response.json()).then((tenant) => {
             console.log(fn, '>>> tenant: ', tenant);
-            this.setState({tenant: tenant});
+            let validated = (tenant&&tenant.id);
+            this.setState({tenant: tenant, tenantId: id, validated: validated});
             cb(null, tenant);
         }).catch((error) => {
-            console.error(fn, '>>> error: ', error);
+            console.error(error);
             cb(error, null);
         }).done();      
     }      
 
     onValidationError(ref, message) {
         console.log(ref, message);
-
     }
 
     handleChange(ref, change) {
@@ -247,6 +240,8 @@ export class SignUpUserInfo extends Component {
             // let gender = formData.GenderSection.genderActionCell;
             // let birthday = formData.BirthdaySection.birthdayDatePicker;
 
+            // and do address 
+
             var data = JSON.stringify({
                 "fullname": fullName,
                 "phoneNumber": phoneNumber,
@@ -257,7 +252,7 @@ export class SignUpUserInfo extends Component {
                 "modified": now
             });
 
-            this.saveFormData(tenantId, data, 'signup-lease-info');
+            this.saveFormData(tenantId, data, 'signup-property-info');
         }
     }
 
@@ -340,12 +335,11 @@ export class SignUpUserInfo extends Component {
         return(
             <Button rounded block
                 style={{alignSelf: 'center',
-                    marginTop: 20,
-                    marginBottom: 20,
-                    backgroundColor: '#ad241f',
-                    borderRadius:90,
-                    width: 300,
-                    height:65}}
+                        marginTop: 10,
+                        backgroundColor: '#2B59AC',
+                        borderRadius:90,
+                        width: 300,
+                        height:44}}
                     onPress={() => {
                         this.saveData();
                     }}
@@ -354,123 +348,146 @@ export class SignUpUserInfo extends Component {
             </Button> 
         );
         } else {
-            return (<View></View>);
+            return (
+            <View>
+                <Text
+                style={{alignSelf: 'center',marginTop: 30}}                
+                >VERIFY YOUR PROFILE INFO</Text>
+            </View>);
         }
     }
 
     render() {
-        const title = 'User Profile';
+        const title = 'Your Profile';
         const forwardIcon = <Icon name={'ios-arrow-forward'} color={'gray'} size={20} />;
-        const alertIcon = <Icon name={'ios-alert'} color={'red'} size={20} />;        
-        
-        return (
+        const alertIcon = <Icon name={'ios-alert'} color={'red'} size={20} />;   
 
-            <Container  style={{backgroundColor: '#fff'}} >
-                
-               
-                <Header>
-                    {/*<Button transparent onPress={() => this.replaceRoute('signup-instructions')}>
-                        <Icon name='ios-arrow-back' style={{fontSize: 30}} />
-                    </Button>                     */}
-                    <Title style={{fontSize: 20}}>{title}</Title>
-                </Header>            
+        const fullname = this.state.tenant.fullname;  
+        const email = this.state.tenant.email;  
+        const phoneNumber = this.state.tenant.phoneNumber;  
 
-        <View style={{ flex: 1, backgroundColor: '#9DD6EB' }}>
-
+        if (this.state.tenant && this.state.tenant.email){
             
+            return (
 
-        {this.renderNextButton()}
+                <Container  style={{backgroundColor: '#2B59AC'}} >
+                
+                    <Header  style={{backgroundColor: '#2B59AC'}}>
+                        <Button transparent onPress={() => this.replaceRoute('signup-instructions')}>
+                            <Icon name='ios-arrow-back' style={{fontSize: 30, color: '#fff'}} />
+                        </Button>                     
+                        <Title style={{fontSize: 20, color: '#fff'}}>{title}</Title>
+                    </Header>            
 
-        <Form
-          ref={(ref) => { this.form = ref; }}
-          onPress={this.handlePress.bind(this)}
-          onChange={this.handleChange.bind(this)}
-        >
-            <Section
-                ref={'FullNameSection'}
-                title={'FULL NAME'}
-                helpText={'Enter your Full Legal Name'}
-            >
-                <TextInputCell
-                    ref="fullName"
-                    inputProps={{ placeholder: 'Your Full Name' }}
-                    autoCapitalize="words"
-                />   
-            </Section> 
+                    <View style={{  backgroundColor: '#ffffff', height: 64 }}>
+                        {this.renderNextButton()}
+                    </View>
 
-            <Section
-                ref={'EmailSection'}
-                title={'EMAIL ADDRESS'}
-                helpText={'Enter the primary email address that you have given your Property Manager.'}
-            >
-                <TextInputCell
-                    ref="primaryEmail"
-                    inputProps={{ 
-                        placeholder: 'Your Primary Email', 
-                        keyboardType: 'email-address',
-                        autoCapitalize: "none",
-                        returnKeyType: 'done' 
-                    }}
-                />   
-            </Section>   
+                    <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
 
-            <Section
-                ref={'PhoneSection'}
-                title={'Phone Number'}
-                helpText={'Enter the primary phone number that you have given your Property Manager.  DDO NOT USE PARENTHESIS, DASHES, or DOTS'}
-            >
-                <TextInputCell
-                    ref="phoneNumber"
-                    inputProps={{ 
-                        placeholder: '0000000000',
-                        autoCapitalize: "none",
-                        autoCorrect: false,
-                        keyboardType: 'phone-pad'
-                    }}
-                />   
-            </Section>               
 
-            {/*<Section
-                ref={'GenderSection'}
-                title={'GENDER'}
-                helpText={'Select your gender.'}
-            >
-                <ActionSheetCell
-                    ref={'genderActionCell'}
-                    title={'Your Gender'}
-                    options={[' ',' Male', 'Female', 'Other']}
-                    selectedValueIndex={0}
-                />
-            </Section>
+        
+                    <Form
+                    ref={(ref) => { this.form = ref; }}
+                    onPress={this.handlePress.bind(this)}
+                    onChange={this.handleChange.bind(this)}
+                    >
+                        <Section
+                            ref={'FullNameSection'}
+                            title={'FULL NAME'}
+                            helpText={'Enter your Full Legal Name'}
+                        >
+                            <TextInputCell
+                                ref="fullName"
+                                inputProps={{ placeholder: 'Your Full Name' }}
+                                autoCapitalize="words"
+                                value={fullname} 
+                            />   
+                        </Section> 
 
-            <Section
-                ref={'BirthdaySection'}
-                title={'BIRTHDAY'}
-                helpText={'Select your birthday (optional)'}
-            >
-                <DatePickerCell
-                ref={'birthdayDatePicker'}
-                title={'Your Birthday'}
-                datePickerProps={{ mode: 'date' }}
-                value={new Date('1/1/1970')}
-                getDateString={(date) => {
-                    const options = {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    timeZone: 'UTC',
-                    timeZoneName: 'short',
-                    };
-                    return date.toLocaleDateString('en-US', options);
-                }}
-                />
-            </Section>*/}
+                        <Section
+                            ref={'EmailSection'}
+                            title={'EMAIL ADDRESS'}
+                            helpText={'Enter your primary email address'}
+                        >
+                            <TextInputCell
+                                ref="primaryEmail"
+                                value={email}
+                                inputProps={{ 
+                                    placeholder: 'Your Primary Email', 
+                                    keyboardType: 'email-address',
+                                    autoCapitalize: "none",
+                                    returnKeyType: 'done' 
+                                }}
+                            />   
+                        </Section>   
 
-        </Form>
-      </View>
-    </Container>
-    );
+                        <Section
+                            ref={'PhoneSection'}
+                            title={'Phone Number'}
+                            helpText={'Enter your primary phone number (5555555555)'}
+                        >
+                            <TextInputCell
+                                ref="phoneNumber"
+                                value={phoneNumber}
+                                inputProps={{ 
+                                    placeholder: '0000000000',
+                                    autoCapitalize: "none",
+                                    autoCorrect: false,
+                                    keyboardType: 'phone-pad'
+                                }}
+                            />   
+                        </Section>               
+
+                        {/*<Section
+                            ref={'GenderSection'}
+                            title={'GENDER'}
+                            helpText={'Select your gender.'}
+                        >
+                            <ActionSheetCell
+                                ref={'genderActionCell'}
+                                title={'Your Gender'}
+                                options={[' ',' Male', 'Female', 'Other']}
+                                selectedValueIndex={0}
+                            />
+                        </Section>
+
+                        <Section
+                            ref={'BirthdaySection'}
+                            title={'BIRTHDAY'}
+                            helpText={'Select your birthday (optional)'}
+                        >
+                            <DatePickerCell
+                            ref={'birthdayDatePicker'}
+                            title={'Your Birthday'}
+                            datePickerProps={{ mode: 'date' }}
+                            value={new Date('1/1/1970')}
+                            getDateString={(date) => {
+                                const options = {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                timeZone: 'UTC',
+                                timeZoneName: 'short',
+                                };
+                                return date.toLocaleDateString('en-US', options);
+                            }}
+                            />
+                        </Section>*/}
+
+                    </Form>
+                    </View>
+                </Container>
+        );
+
+    } else {
+        return(  
+            <View>
+                <Text>Loading your profile...</Text>
+            </View>
+        );
+    }    
   }
 }
 

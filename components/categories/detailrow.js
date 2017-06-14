@@ -72,6 +72,7 @@ class DetailRow extends React.Component {
            userId: 'rJirzIMsx',
            summaryComments: '',
            summaryPhoto: '',
+           dateObserved: '',
            behavior: 'padding'
       };
    }
@@ -169,13 +170,18 @@ class DetailRow extends React.Component {
    }
 
    maybeRenderSummaryPhotosComments = () => {
+
      let { summaryPhoto } = this.state;
+     
      if (!summaryPhoto) {
        return;
      }
 
-     var screenWidth = Dimensions.get('window').width;
-     var screenHeight = Dimensions.get('window').height;
+     let screenWidth = Dimensions.get('window').width;
+     let screenHeight = Dimensions.get('window').height;
+
+    //  let now = new Date();
+    //  let dateObserved = moment(now).format("MM-DD-YYYY h:mm:ss a");
 
      return (
 
@@ -255,9 +261,12 @@ class DetailRow extends React.Component {
                   source={{uri: summaryPhoto}}
                   style={{width: screenWidth *.8, height: 200}}
                 >
-                  <Text style={{fontSize: 8, color: '#333'}}>{new Date().toISOString()}</Text>
                 </Image> 
-               
+                  <Text style={{fontSize: 8, color: '#333'}}>
+                  {
+                    this.state.dateObserved
+                  }
+                  </Text>
               </View>          
               </CardItem>
 
@@ -300,10 +309,17 @@ class DetailRow extends React.Component {
    }
 
    saveSummaryComments() {
-     let now = new Date();
-     let data = {summaryComments: this.state.summaryComments};
-     let item = this.state.item;
-     this.persistData(item.id, data, null);
+
+     console.log('>>>>>>>>>>> saveSummaryComments triggered >>>>>>>>>>>>>');
+
+      let now = Date.now();
+      let t = moment.tz(now, "America/Chicago");
+      let dateObserved = t.format("MM-DD-YYYY h:mm:ss a");
+      console.log('>>>>>> dateObserved: ', dateObserved);
+
+      let data = {summaryComments: this.state.summaryComments, dateObserved: dateObserved};
+      let item = this.state.item;
+      this.persistData(item.id, data, null);
    }
 
    navigateTo(route) {
@@ -324,6 +340,7 @@ class DetailRow extends React.Component {
      });
 
      console.log('pickerResult:', pickerResult);
+
      this._handleImagePicked(pickerResult);
 
 
@@ -379,12 +396,24 @@ class DetailRow extends React.Component {
 
            console.log('SUMMARY PHOTO URI:', location);
 
-           let now = new Date();
-           let data = {summaryComments: this.state.summaryComments, summaryPhoto: location, dateObserved: now};
+           // 2017.06.13: date time is not in the right timezone
+          //  so this is displaying correctly on the app screen, but it is saved incorrectly on the api server ???
+          // the api shows: "dateObserved": "2017-06-13T15:05:32.981Z"
+          // the app shows: "dateObserved":"06-13-2017 10:05:48 am"
+          // i dont do any conversion in the api !
+          // ???
+           let now = Date.now();
+           let t = moment.tz(now, "America/Chicago");
+           let dateObserved = t.format("MM-DD-YYYY h:mm:ss a");
+           console.log('>>>>>> dateObserved: ', dateObserved);
+
+          //  let dateObserved = moment(now).format("MM-DD-YYYY h:mm:ss a");           
+
+           let data = {summaryComments: this.state.summaryComments, summaryPhoto: location, dateObserved: dateObserved};
            let item = this.state.item;
 
-
-           this.setState({summaryPhoto: location});
+           // 2017.06.13: kroach: this is where you could open a modal for the comments 
+           this.setState({summaryPhoto: location, dateObserved: dateObserved});
 
            this.persistData(item.id, data, null);
 
@@ -524,12 +553,22 @@ class DetailRow extends React.Component {
              let item = responseData[0];
             //  console.log('>>> item:', item);
              if (item) {
+
+              // 2017.06.13: kroach: render the dateObserved in proper timezone
+              let dateObserved = '';
+              if (item.dateObserved&&item.dateObserved.length>0){
+                let t = moment.tz(item.dateObserved, "America/Chicago");
+                dateObserved = t.format("MM-DD-YYYY h:mm:ss a");
+                console.log('>>>>>> dateObserved: ', dateObserved);
+              }
+
                this.setState({
                  item: item,
                  selectedOption: item.selectedOption,
                  loaded: true,
                  summaryPhoto: item.summaryPhoto,
-                 summaryComments: item.summaryComments
+                 summaryComments: item.summaryComments,
+                 dateObserved: dateObserved
                });
              }
           }).done();

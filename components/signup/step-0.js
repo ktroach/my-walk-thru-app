@@ -237,7 +237,7 @@ class Step0 extends Component {
     renderLoading() {
       return (
          <Content style={styles.sidebar}>
-             <Image source={require('../../assets/images/house02.jpg')} style={styles.container} >
+             <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                  <ActivityIndicator
                     animating={!this.state.loaded}
                     style={[{height: 80}]}
@@ -267,7 +267,7 @@ class Step0 extends Component {
     verifyUser() {
         let verificationCode = this.state.verificationCode;
         if (!verificationCode){
-            alert('Verification Failed: Invite Code not found');
+            alert('Verification Code invalid');
             return;
         } 
         this.assertVerificationCode(verificationCode);
@@ -311,7 +311,7 @@ class Step0 extends Component {
                                     } else {
                                         greeting = timeOfDay + ', ' + s + '!';
                                     }
-                                    alert(greeting);                                    
+                                    // alert(greeting);                                    
                                 }
                             }
 
@@ -325,17 +325,23 @@ class Step0 extends Component {
                                         .then( () =>
                                             {
                                                 console.log('Added storage item: signUpDate');
-                                                AsyncStorage.setItem("leaseBeginDate", result.leaseBegin)
-                                                    .then( () => {
-                                                        console.log('Adding storage item: leaseBegin');
-                                                        AsyncStorage.setItem("userId", result.userId)
-                                                            .then( () => {
-                                                                console.log('Adding storage item: userId');
-                                                                this.replaceRoute('home');
-                                                            }
-                                                        ).done();                                                    
-                                                    }
-                                                    ).done();
+                                                if (result.leaseBegins || result.leaseBegin) {
+                                                    let lb = '';
+                                                    if (result.leaseBegins) lb = result.leaseBegins;
+                                                    if (result.leaseBegin) lb = result.leaseBegin;
+                                                    AsyncStorage.setItem("leaseBeginDate", lb)
+                                                        .then( () => {
+                                                            console.log('Adding storage item: leaseBegin');
+                                                            AsyncStorage.setItem("userId", result.userId)
+                                                                .then( () => {
+                                                                    console.log('Adding storage item: userId');
+                                                                    this.replaceRoute('home');
+                                                                }
+                                                            ).done();                                                    
+                                                        }
+                                                        ).done();
+                                                }
+
                                             }
                                         )
                                         .done( );                                   
@@ -352,10 +358,10 @@ class Step0 extends Component {
                         }
                     ).done();
                 } else {
-                    alert('Verification Failed: Please check with your Property Manager to get a new Invite Code.');
+                    alert('Verification Failed: Please request a new Invite Code.');
                 }
             } else {
-                alert('Invalid Invite Code or the Code has expired. Please check with your Property Manager to get a new Invite Code.');
+                alert('Invite Code has expired. Please request a new Invite Code.');
                 // this.replaceRoute('signup-user-info');
             }
         }).done();
@@ -386,29 +392,25 @@ class Step0 extends Component {
     
     renderVerification() {
       return (
-            <Container theme={theme} style={{backgroundColor: '#ffffff'}} >
+            <Container theme={theme} style={{backgroundColor: '#fff'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
-                    <Header>
-                        <Title>USER VERIFICATION</Title>
+                    <Header  style={{backgroundColor: '#2B59AC'}}>
+                        <Title>
+                            SIGN IN 
+                        </Title>
                     </Header>
                     <Content padder style={{backgroundColor: 'transparent'}} >
                        <View style={welcomeStyle.welcomeContainer}>
                         <View>
                            <Image
-                            source={require('../../assets/images/logo.png')}
-                            style={welcomeStyle.welcomeImage}
+                            source={require('../../assets/images/mwtlogo.png')}
+                            style={{width:175,height:200, marginTop: 20}}
                            />
                         </View>
                         <View>
-                            <Text style={{color: '#0066cc', textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
-                                Enter the Invite Code 
-                            </Text>
-                            <Text style={{color: '#0066cc', textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
-                                you recieved from  
-                            </Text>  
-                            <Text style={{color: '#0066cc', textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
-                                MyWalkThru.com
-                            </Text>                                                       
+                            <Text style={{marginTop: 20, color: '#282333', textAlign: 'center', fontWeight: 'bold', fontSize: 20, paddingBottom: 10}}>
+                                Enter your Invite Code 
+                            </Text>                                                 
                         </View>
                         
                         <View style={{paddingTop: 20}}>
@@ -418,7 +420,7 @@ class Step0 extends Component {
                         <View style={{paddingTop: 20}}>
                             <TextInput
                                 style={{borderWidth: 2,
-                                        borderColor: '#0066cc', 
+                                        borderColor: '#282333', 
                                         textAlign: 'center', 
                                         fontSize: 20, 
                                         height:60, 
@@ -438,11 +440,11 @@ class Step0 extends Component {
                        
                     </Content>
 
-                    <View style={{alignSelf: 'center'}}>
+                    {/*<View style={{alignSelf: 'center'}}>
                         <Text style={{color: '#333', textAlign: 'left', fontSize: 10, paddingBottom: 10, marginLeft: 10}}>
                              MyWalkThru.com © 2017, Build: Z281X3HX5ZM, Version: 1.8.2
                         </Text>                          
-                    </View>
+                    </View>*/}
 
                 </Image>
             </Container>
@@ -479,11 +481,11 @@ class Step0 extends Component {
                        </View>
                     </Content>
 
-                    <View style={{alignSelf: 'center'}}>
+                    {/*<View style={{alignSelf: 'center'}}>
                         <Text style={{color: '#333', textAlign: 'left', fontSize: 10, paddingBottom: 10, marginLeft: 10}}>
                              MyWalkThru.com © 2017, Build: {this.state.build.buildNumber}, Version: {this.state.build.version}
                         </Text>                          
-                    </View>
+                    </View>*/}
 
                 </Image>
             </Container>
@@ -543,10 +545,10 @@ class Step0 extends Component {
           <Button rounded block
             style={{alignSelf: 'center',
                     marginTop: 10,
-                    backgroundColor: '#ad241f',
+                    backgroundColor: '#2B59AC',
                     borderRadius:90,
                     width: 300,
-                    height:65}}
+                    height:44}}
               onPress={() => this.replaceRoute('home')}>
               <Text style={{color:'#fff', fontWeight: 'bold'}}>CONTINUE</Text>
           </Button>
@@ -557,10 +559,10 @@ class Step0 extends Component {
                 ref='pin_verfied_button'
               style={{alignSelf: 'center',
                       marginTop: 10,
-                      backgroundColor: '#ad241f',
+                      backgroundColor: '#2B59AC',
                       borderRadius:90,
                       width: 300,
-                      height:65}}
+                      height:44}}
                 onPress={() => this.verifyUser()}>
                 <Text style={{color:'#fff', fontWeight: 'bold'}}>GET STARTED</Text>
             </Button>

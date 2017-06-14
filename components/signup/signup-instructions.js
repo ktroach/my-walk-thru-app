@@ -28,6 +28,9 @@ import Swiper from 'react-native-swiper';
 
 import Confetti from 'react-native-confetti';
 
+import moment from 'moment';
+import tz from 'moment-timezone';
+
 var styles = StyleSheet.create({
   wrapper: {
   },
@@ -35,7 +38,7 @@ var styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#9DD6EB',
+    backgroundColor: '#fff',
   },
   slide2: {
     flex: 1,
@@ -73,14 +76,39 @@ export class SignUpInstructions extends Component {
     constructor(props){
         super(props);
         this.state = {
-            formData:{}
+            formData:{},
+            welcometext: '' 
         }
     } 
 
     componentDidMount() {
-        if(this._confettiView) {
-        this._confettiView.startConfetti();
+
+        this.setWelcomeText();
+
+        if (this._confettiView) {
+            this._confettiView.startConfetti();
         }
+    }
+
+    setWelcomeText(){
+        let timeOfDay = '';  
+        let greeting = '';
+        let date = new Date();
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const currentTime = moment().tz(timezone).format();
+        let hours = new Date(currentTime).getHours();
+        if (hours >= 12) {
+            timeOfDay = 'Good Afternoon';
+        } else {
+            timeOfDay = 'Good Morning';
+        }
+        greeting = timeOfDay + ', You\'re In!';
+        // if (firstName && firstName.length>0){
+        //     greeting = timeOfDay + ', ' + firstName + '!';
+        // } else {
+        //     greeting = timeOfDay + ', ' + s + '!';
+        // }        
+        this.setState({welcometext: greeting});
     }
   
     componentWillUnmount() {
@@ -107,7 +135,7 @@ export class SignUpInstructions extends Component {
     }
 
     proceedToSignUp(){
-        this.replaceRoute('signup-property-info');
+        this.replaceRoute('signup-user-info');
     }
 
     render(){
@@ -116,30 +144,30 @@ export class SignUpInstructions extends Component {
                 <View style={styles.slide1}>
 
                      <Confetti ref={(node) => this._confettiView = node} 
-                         confettiCount={200} 
-                         timeOut={10} /> 
+                         confettiCount={100} 
+                         timeOut={2} /> 
                    
                     <Image
-                        source={require('../../assets/images/logo.png')}
-                        style={{width: 200, height: 200}}
+                        source={require('../../assets/images/mwtlogo.png')}
+                        style={{width: 175, height: 200}}
                     />
                                         
-                    <Text style={styles.text}>Welcome to MyWalkThru!</Text>
+                    <Text style={{marginTop: 20}}>{this.state.welcometext}</Text>
 
-                    <Text style={styles.text}>Let's begin!</Text>
+                    {/*<Text style={styles.text}>Let's Begin!</Text>*/}
 
                         <Button rounded block
                             style={{alignSelf: 'center',
-                                marginTop: 40,
-                                backgroundColor: '#ad241f',
-                                borderRadius:90,
-                                width: 200,
-                                height:40}}
+                                    marginTop: 20,
+                                    backgroundColor: '#2B59AC',
+                                    borderRadius:90,
+                                    width: 300,
+                                    height:44}}
                                 onPress={() => {
                                     this.proceedToSignUp();
                                 }}
                             >
-                            <Text style={{color:'#fff', fontWeight: 'bold'}}>Sign Up</Text>
+                            <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
                         </Button>                     
                 </View>
 

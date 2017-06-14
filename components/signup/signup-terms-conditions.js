@@ -56,7 +56,8 @@ export class SignUpTermsConditions extends Component {
             validated:  false,
             responseData: {},
             termscolor: '#333',
-            tenantInfo: []
+            tenantInfo: [],
+            termsAccepted: false
         }
     } 
 
@@ -111,9 +112,9 @@ export class SignUpTermsConditions extends Component {
 
             if(ref && ref === 'acceptTermsSwitchCell'){
                 if (change === true){
-                    this.setState({termscolor: 'green'});
+                    this.setState({termscolor: 'green', termsAccepted: true});
                 } else {
-                    this.setState({termscolor: 'red'});
+                    this.setState({termscolor: 'red', termsAccepted: false});
                 }
             }            
         }
@@ -296,7 +297,6 @@ export class SignUpTermsConditions extends Component {
                     if (values.zip) user.zip = values.zip;
 
 
-
                     if (user.street1 && user.city && user.state && user.zip){
                         user.addressLine = user.street1 + ' ' + user.street2 + ' ' + user.city + ', ' + user.stateName + ' ' + user.zip;
                     }
@@ -305,8 +305,6 @@ export class SignUpTermsConditions extends Component {
 
                     if (values.bedrooms) user.bedrooms = values.bedrooms;
                     if (values.bathrooms) user.bathrooms = values.bathrooms;
-
-
 
                     if (values.dining) user.dining = values.dining;
                     if (values.laundry) user.laundry = values.laundry;
@@ -331,7 +329,7 @@ export class SignUpTermsConditions extends Component {
                         "id": shortid.generate(),
                         "tenantId": tenantId,
                         "userId": userId,
-                        "email": shortid.generate()+"@me.com",
+                        "email": user.email,
                         "password": shortid.generate(),
                         "username": shortid.generate(),
                         "usertype": user.userType,  
@@ -357,9 +355,9 @@ export class SignUpTermsConditions extends Component {
                             "address1": user.street1,
                             "address2": user.street2,
                             "city": user.city,
-                            "state": user.stateName,
+                            "stateName": user.stateName,
                             "zip": user.zip,
-                            "photoUrl": "https://mywalkthru-pm-files.s3.amazonaws.com/photos%2FHyFcYY5nl___ry53ctchl.jpg",
+                            "photoUrl": "",
                             "dateObserved": "",
                             "bedrooms": user.bedrooms,
                             "bathrooms": user.bathrooms,
@@ -587,7 +585,7 @@ export class SignUpTermsConditions extends Component {
 
         });
 
-        this.replaceRoute('signup-complete'); 
+        this.replaceRoute('home'); 
 
         // alert('Thank you for Signing Up!');
 
@@ -655,25 +653,29 @@ export class SignUpTermsConditions extends Component {
     }      
 
     renderNextButton() {
-        if (this.state.validated){
-        return(
-            <Button rounded block
-                style={{alignSelf: 'center',
-                    marginTop: 20,
-                    marginBottom: 20,
-                    backgroundColor: '#ad241f',
-                    borderRadius:90,
-                    width: 300,
-                    height:65}}
-                    onPress={() => {
-                        this.saveData();
-                    }}
-                >
-                <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
-            </Button> 
-        );
+        if (this.state.termsAccepted){
+            return(
+                <Button rounded block
+                    style={{alignSelf: 'center',
+                            marginTop: 10,
+                            backgroundColor: '#2B59AC',
+                            borderRadius:90,
+                            width: 300,
+                            height:44}}
+                        onPress={() => {
+                            this.saveData();
+                        }}
+                    >
+                    <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
+                </Button> 
+            );
         } else {
-            return (<View></View>);
+            return (
+        <View style={{  backgroundColor: '#132431', height: 24 }}>
+            <Text style={{color:'#fff', fontSize: 16, fontWeight: 'bold', alignSelf: 'center'}}
+            >Please review the terms</Text>
+        </View>                 
+        );
         }
     }
 
@@ -687,17 +689,20 @@ export class SignUpTermsConditions extends Component {
         const alertIcon = <Icon name={'ios-alert'} color={'gray'} size={20} />;
         
         return (
-            <Container  style={{backgroundColor: '#fff'}} >
-                <Header>
-                    {/*<Button transparent onPress={() => this.replaceRoute('signup-property-manager-info')}>
-                        <Icon name='ios-arrow-back' style={{fontSize: 30}} />
-                    </Button>                      */}
-                    <Title style={{fontSize: 20}}>{title}</Title>
-                </Header>            
+                <Container  style={{backgroundColor: '#2B59AC'}} >
+                
+                    <Header  style={{backgroundColor: '#2B59AC'}}>
+                        <Button transparent onPress={() => this.replaceRoute('signup-property-info')}>
+                            <Icon name='ios-arrow-back' style={{fontSize: 30, color: '#fff'}} />
+                        </Button>                     
+                        <Title style={{fontSize: 20, color: '#fff'}}>{title}</Title>
+                    </Header>            
 
-        <View style={{ flex: 1, backgroundColor: '#9DD6EB' }}>
+                    <View style={{  backgroundColor: '#ffffff', height: 64 }}>
+                        {this.renderNextButton()}
+                    </View>
 
-        {this.renderNextButton()}
+                    <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
 
         <Form
           ref={(ref) => { this.form = ref; }}

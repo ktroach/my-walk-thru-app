@@ -59,7 +59,7 @@ module.exports = StyleSheet.create({
    // },
    arrow: {
       textAlign: 'right',
-      marginTop: -5,
+      marginTop: 0,
       paddingTop: 10,
       fontSize: 13,
       fontWeight: '400',

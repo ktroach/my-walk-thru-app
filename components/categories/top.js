@@ -97,7 +97,8 @@ class TopCategories extends Component {
       return (
          <Container theme={theme} style={{backgroundColor: '#fff'}} >
              <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
-                 <Header>
+
+                 <Header  style={{backgroundColor: '#2B59AC'}}>
 
                    <Button transparent onPress={() => this.replaceRoute('home')}>
                        <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
@@ -123,10 +124,11 @@ class TopCategories extends Component {
 
     renderListView() {
         let title = "Areas (" + this.state.categoryCount + ")";
+        //#FBFAFA
         return (
-            <Container theme={theme} style={{backgroundColor: '#FBFAFA'}} >
+            <Container theme={theme} style={{backgroundColor: '#fafafa'}} >
                     <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
-                    <Header>
+                    <Header  style={{backgroundColor: '#2B59AC'}}>
                         <Button transparent onPress={() => this.replaceRoute('home')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>

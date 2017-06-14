@@ -124,9 +124,11 @@ class CommentsAndPhotos extends Component {
                             thumbnails.push(imageItem.image);
 
                            // moment().format('MMMM Do YYYY, h:mm:ss a');
-                           let createdOn = item.created;
-                           if (!createdOn) createdOn = new Date().now;
-                           let formattedDate = moment(createdOn).format('YYYYMMDD h:mm:ss a');
+
+                           // 2017.06.13:kroach: not used 
+                          //  let createdOn = item.created;
+                          //  if (!createdOn) createdOn = new Date().now;
+                          //  let formattedDate = moment(createdOn).format('YYYYMMDD h:mm:ss a');
 
                            let photoUrl = '';
                            // if(photoUrl.indexOf('mywalkthru')){
@@ -238,7 +240,11 @@ class CommentsAndPhotos extends Component {
      saveCommentsAndPhotos(route){
         console.log('<<< ENTERED saveCommentsAndPhotos');
         let item = this.state.item;
-        let modified = new Date();
+        let now = Date.now();
+        let t = moment.tz(now, "America/Chicago");
+        let modified = t.format("MM-DD-YYYY h:mm:ss a");
+        console.log('>>>>>> modified: ', modified);        
+        // let modified = new Date();
         if (item){
           let data = {comments: this.state.comments, modified: modified, dateObserved: modified};
           this.persistData(item.id, data, route);
@@ -381,7 +387,7 @@ class CommentsAndPhotos extends Component {
       if(!this.state.images){
         return(
           <View>
-            <Text style={{color:'#333', fontSize: 14, fontWeight: 'bold'}}>Take close up photos to add some comments...</Text>
+            <Text style={{color:'#333', fontSize: 14, fontWeight: 'bold'}}>Take close up photos to add your comments...</Text>
           </View>
         );
       } else {
@@ -390,19 +396,33 @@ class CommentsAndPhotos extends Component {
           for(let i=0;i<imgs.length;i++){
             let ts = '';
             let tsf = '';
+            let dateObserved = '';
             if (imgs[i].timestamp){
-              ts = imgs[i].timestamp;
-              let d = new Date(ts);
-              if(d){
-                // tsf = d.toDateString() + ' ' + d.toTimeString();
-                tsf= moment(d.toISOString()).format('MM/DD/YYYY h:mm a');
-              }
+              
+              // 2017.06.13:kroach: you may have to convert between timezones here to display the correct date 
+              // the reason is that the server is converting the time we provide in the save to the server time 
+              dateObserved = imgs[i].timestamp;
+
+              // dateObserved = moment(d).utc().format("MM-DD-YYYY h:mm:ss a");
             }
-            if(tsf){
-              comments = comments + tsf + ' : ' + imgs[i].caption + '\r\n';
-            } else {
-              comments = comments + imgs[i].caption + '\r\n';
-            }
+            comments = comments + dateObserved + ' : ' + imgs[i].caption + '\r\n';
+            // if (imgs[i].timestamp){
+            //   ts = imgs[i].timestamp;
+            //   let d = new Date(ts);
+            //   if (d){
+            //     // tsf = d.toDateString() + ' ' + d.toTimeString();
+            //     // tsf = moment(d.toISOString()).format('MM/DD/YYYY h:mm a');
+
+            //     // 2017.06.13: date time is not in the right timezone
+            //     // let now = new Date();
+            //     dateObserved = moment(d).utc().format("MM-DD-YYYY h:mm:ss a");
+            //   }
+            // }
+            // if(tsf){
+            //   comments = comments + dateObserved + ' : ' + imgs[i].caption + '\r\n';
+            // } else {
+            //   comments = comments + imgs[i].caption + '\r\n';
+            // }
           }
         }
 
@@ -537,7 +557,17 @@ class CommentsAndPhotos extends Component {
     }
 
     saveCloseUp() {
-      let timestamp = new Date();
+
+      // 2017.06.03:kroach:timestamp needed to be converted to UTC time 
+      // let timestamp = new Date();
+      // let now = new Date();
+      // let timestamp = moment(now).utc().format("MM-DD-YYYY h:mm:ss a");
+
+      let now = Date.now();
+      let t = moment.tz(now, "America/Chicago");
+      let timestamp = t.format("MM-DD-YYYY h:mm:ss a");
+      console.log('>>>>>> timestamp: ', timestamp);  
+
       let newimages = [];
       let item = this.state.item;
       let images = item.images;
@@ -654,6 +684,14 @@ class CommentsAndPhotos extends Component {
         return;
       }
 
+      let now = Date.now();
+      let t = moment.tz(now, "America/Chicago");
+      let dateObserved = t.format("MM-DD-YYYY h:mm:ss a");
+      console.log('>>>>>> dateObserved: ', dateObserved);
+
+      let serialNumber = '';
+      serialNumber = now;     
+
       return (
         <View style={{
           marginTop: 30,
@@ -665,7 +703,7 @@ class CommentsAndPhotos extends Component {
           shadowOffset: {width: 4, height: 4},
           shadowRadius: 5,
         }}>
-          <Text>{new Date().toISOString()}</Text>
+          
           <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
               <Image source={require('../../assets/images/logo.png')} style={{width: 250, height: 250, resizeMode: 'cover', opacity: 1.8}}>
                 <Image
@@ -674,10 +712,13 @@ class CommentsAndPhotos extends Component {
                 />
               </Image>
           </View>
+          <View>
+            <Text>{dateObserved}</Text>
+          </View>
           <View style={{backgroundColor: '#333'}}>
             <Text
               style={{paddingVertical: 10, paddingHorizontal: 10, color: '#fff', fontSize: 14, fontWeight: '500'}}>
-              Close Up Comments (required)
+              You can type or edit your comments here (Comments are Required)
             </Text>
             <Textarea
                disabled

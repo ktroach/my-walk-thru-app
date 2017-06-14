@@ -9,7 +9,7 @@
   "primaryColor": "#cccccc",
   "icon": "https://s3-us-west-2.amazonaws.com/pros-storage-service/mwtlogo.png",
   "loading": {
-    "icon": "https://s3-us-west-2.amazonaws.com/pros-storage-service/mwtlogo.png",
+    "icon": "https://s3-us-west-2.amazonaws.com/pros-storage-service/mwt-logo-full.png",
     "hideExponentText": true
   },
   "packagerOpts": {

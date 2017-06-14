@@ -49,14 +49,60 @@ export class SignUpPropertyInfo extends Component {
         this.state = {
             tenantId: '',
             validated: false,
-            loaded: false
+            loaded: false,
+            tenant: {},
+            propertyAddress: ''
         }
     } 
 
-    componentDidMount() {
+    componentWillMount(){
         this.getTenantId();
-        this.setState({loaded: true});
     }
+
+   getTenantId() {
+     let fn = '>>> getTenantId ';
+     console.log(fn, '>>> ENTERED');
+     try {
+        AsyncStorage.getItem("tenantId")
+        .then( (tenantId) =>
+              {
+                if (tenantId){
+                    // this.setState({tenantId: tenantId});
+                    this.fetchTenant(tenantId, function(err, res){
+                        if (!err){
+                            console.log(fn, '>> TENANT FOUND');
+                            // this.setState({loaded: true});
+                            // console.log('>>>> this.state.tenant:', this.state.tenant);
+                        }
+                    });
+                }
+              }
+        )
+        .done();
+     } catch(err){
+         console.log(fn, '>>> Failed to get tenantId: ' + err);
+     }       
+   }  
+
+    fetchTenant(id, cb){
+        let fn = '>>> fetchTenant ';
+        console.log(fn, '>>> ENTERED');
+        let url = 'https://mywalkthruapi.herokuapp.com/api/v1/Tenants/' + id;
+        fetch(url).then((response) => response.json()).then((tenant) => {
+            console.log(fn, '>>> tenant: ', tenant);
+            let validated = (tenant&&tenant.id);
+            this.setState({tenant: tenant, tenantId: id, validated: validated, propertyAddress: tenant.propertyAddress});
+            cb(null, tenant);
+        }).catch((error) => {
+            console.error(error);
+            cb(error, null);
+        }).done();      
+    }              
+
+    // componentDidMount() {
+    //     this.getTenantId();
+    //     this.setState({loaded: true});
+    // }
 
     replaceRoute(route) {
         this.props.replaceRoute(route);
@@ -70,25 +116,25 @@ export class SignUpPropertyInfo extends Component {
         this.props.popRoute();
     }  
 
-   getTenantId() {
-     try {
-        AsyncStorage.getItem("tenantId")
-        .then( (tenantId) =>
-              {
-                this.setState({tenantId: tenantId});
-              }
-        )
-        .done();
-     } catch(err){
-         console.log('Failed to get tenantId: ' + err);
+//    getTenantId() {
+//      try {
+//         AsyncStorage.getItem("tenantId")
+//         .then( (tenantId) =>
+//               {
+//                 this.setState({tenantId: tenantId});
+//               }
+//         )
+//         .done();
+//      } catch(err){
+//          console.log('Failed to get tenantId: ' + err);
 
-        //  //REMOVE!!!
-        //  let tenantId = '58decc07583ad3e4bab8b0ce';
-        //  console.log('REMOVE!!! USING TEST TENANTID...')
-        //  this.setState({tenantId: tenantId});
+//         //  //REMOVE!!!
+//         //  let tenantId = '58decc07583ad3e4bab8b0ce';
+//         //  console.log('REMOVE!!! USING TEST TENANTID...')
+//         //  this.setState({tenantId: tenantId});
 
-     }       
-   }    
+//      }       
+//    }    
 
     onValidationError(ref, message) {
         console.log(ref, message);
@@ -123,12 +169,14 @@ export class SignUpPropertyInfo extends Component {
         console.log('>>ENTERED: saveData');
 
         if (!this.form) {
+            console.log('form undefined');
             return;
         }        
 
         let formData = this.form.getData();
 
         if (!formData) {
+            console.log('formData undefined');
             return;
         }
 
@@ -142,17 +190,17 @@ export class SignUpPropertyInfo extends Component {
 
             let now = new Date();
 
-            if (!formData){
-                alert('Failed to Save: Invalid tenantId');
-                return;                
-            }
+            // if (!formData){
+            //     alert('Failed to Save: Invalid tenantId');
+            //     return;                
+            // }
 
-            let street1 = '';
-            let street2 = '';
-            let city  = '';
-            let stateName = '';
-            let zip  = '';
-            let geocode = '';           
+            // let street1 = '';
+            // let street2 = '';
+            // let city  = '';
+            // let stateName = '';
+            // let zip  = '';
+            // let geocode = '';           
 
             let propertyType = '';
 
@@ -174,17 +222,18 @@ export class SignUpPropertyInfo extends Component {
 
             let parking = '';           
 
-            if (formData.PropertyLocationSection){
-                if (formData.PropertyLocationSection.street1) street1 = formData.PropertyLocationSection.street1;
-                if (formData.PropertyLocationSection.street2) street2 = formData.PropertyLocationSection.street2;
-                if (formData.PropertyLocationSection.city) city = formData.PropertyLocationSection.city;
-                if (formData.PropertyLocationSection.stateName) stateName = formData.PropertyLocationSection.stateActionCell;
-                if (formData.PropertyLocationSection.zip) zip = formData.PropertyLocationSection.zip;
-                // if (formData.PropertyLocationSection.geocode) geocode = formData.PropertyLocationSection.geocode;
-            }
+            // if (formData.PropertyLocationSection){
+            //     if (formData.PropertyLocationSection.street1) street1 = formData.PropertyLocationSection.street1;
+            //     if (formData.PropertyLocationSection.street2) street2 = formData.PropertyLocationSection.street2;
+            //     if (formData.PropertyLocationSection.city) city = formData.PropertyLocationSection.city;
+            //     if (formData.PropertyLocationSection.stateName) stateName = formData.PropertyLocationSection.stateActionCell;
+            //     if (formData.PropertyLocationSection.zip) zip = formData.PropertyLocationSection.zip;
+            //     // if (formData.PropertyLocationSection.geocode) geocode = formData.PropertyLocationSection.geocode;
+            // }
             
             if (formData.PropertyTypeSection){
-                if (formData.PropertyTypeSection.propertyType) propertyType = formData.PropertyTypeSection.propertyTypeActionCell;
+                if (formData.PropertyTypeSection.propertyTypeActionCell) propertyType = formData.PropertyTypeSection.propertyTypeActionCell;
+                console.log('>> propertyType: ', propertyType);
             }
 
             if (formData.BedsBathsSection){
@@ -214,17 +263,17 @@ export class SignUpPropertyInfo extends Component {
             //     if (formData.ParkingSection.parkingActionCell) parking = formData.ParkingSection.parkingActionCell;
             // }
 
-            if (!propertyType || propertyType.length===0){
-                propertyType = 'Single Family';
-            }            
+            // if (!propertyType || propertyType.length===0){
+            //     propertyType = 'Single Family';
+            // }            
             
-            if (!bedrooms || bedrooms.length===0){
-                bedrooms = '3';
-            }
+            // if (!bedrooms || bedrooms.length===0){
+            //     bedrooms = '3';
+            // }
 
-            if (!bathrooms || bathrooms.length===0){
-                bathrooms = '2';
-            } 
+            // if (!bathrooms || bathrooms.length===0){
+            //     bathrooms = '2';
+            // } 
 
             if (!stories || stories.length===0){
                 stories = 'Single Story';
@@ -244,13 +293,12 @@ export class SignUpPropertyInfo extends Component {
 
             var data = JSON.stringify({
                 "propertyType": propertyType,
-                "street1": street1,
-                "street2": street2, 
-                "city": city,
-                "stateName": stateName,
-                "zip": zip,
-                "geocode": geocode,
-                "propertyType": propertyType,
+                // "street1": street1,
+                // "street2": street2, 
+                // "city": city,
+                // "stateName": stateName,
+                // "zip": zip,
+                // "geocode": geocode,
                 "bedrooms": bedrooms,
                 "bathrooms": bathrooms,  
                 "dining": dining,  
@@ -266,6 +314,8 @@ export class SignUpPropertyInfo extends Component {
                 "modified": now
             });
 
+            console.log('>> property info save data: ', data);
+
             this.saveFormData(tenantId, data, 'signup-terms-conditions');
         }
     }
@@ -279,30 +329,30 @@ export class SignUpPropertyInfo extends Component {
             return false;
         }           
 
-        if (!formData.PropertyLocationSection) {
-            alert('Address is required');
-            return false;
-        }          
+        // if (!formData.PropertyLocationSection) {
+        //     alert('Address is required');
+        //     return false;
+        // }          
 
-        if (!formData.PropertyLocationSection.street1) {
-            alert('Street1 is required');
-            return false;
-        }     
+        // if (!formData.PropertyLocationSection.street1) {
+        //     alert('Street1 is required');
+        //     return false;
+        // }     
 
-        if (!formData.PropertyLocationSection.city) {
-            alert('City is required');
-            return false;
-        }    
+        // if (!formData.PropertyLocationSection.city) {
+        //     alert('City is required');
+        //     return false;
+        // }    
 
-        if (!formData.PropertyLocationSection.stateName) {
-            alert('State is required');
-            return false;
-        } 
+        // if (!formData.PropertyLocationSection.stateName) {
+        //     alert('State is required');
+        //     return false;
+        // } 
 
-        if (!formData.PropertyLocationSection.zip) {
-            alert('Zip Code is required');
-            return false;
-        }  
+        // if (!formData.PropertyLocationSection.zip) {
+        //     alert('Zip Code is required');
+        //     return false;
+        // }  
 
         if (!formData.PropertyTypeSection ||
             !formData.PropertyTypeSection.propertyTypeActionCell) {
@@ -368,12 +418,11 @@ export class SignUpPropertyInfo extends Component {
         return(
             <Button rounded block
                 style={{alignSelf: 'center',
-                    marginTop: 20,
-                    marginBottom: 20,
-                    backgroundColor: '#ad241f',
-                    borderRadius:90,
-                    width: 300,
-                    height:65}}
+                        marginTop: 10,
+                        backgroundColor: '#2B59AC',
+                        borderRadius:90,
+                        width: 300,
+                        height:44}}
                     onPress={() => {
                         this.saveData();
                     }}
@@ -382,7 +431,12 @@ export class SignUpPropertyInfo extends Component {
             </Button> 
         );
         } else {
-            return (<View></View>);
+            return (
+            <View>
+                <Text
+                style={{alignSelf: 'center',marginTop: 30}}                
+                >DESCRIBE THE PROPERTY AS YOU SEE IT</Text>
+            </View>);
         }
     }
 
@@ -392,18 +446,25 @@ export class SignUpPropertyInfo extends Component {
         const alertIcon = <Icon name={'ios-alert'} color={'red'} size={20} />;
         
         return (
-            <Container  style={{backgroundColor: '#fff'}} >
+            <Container  style={{backgroundColor: '#2B59AC'}} >
                
-                <Header>
-                    {/*<Button transparent onPress={() => this.replaceRoute('signup-lease-info')}>
-                        <Icon name='ios-arrow-back' style={{fontSize: 30}} />
-                    </Button>                     */}
-                    <Title style={{fontSize: 20}}>{title}</Title>
+                <Header  style={{backgroundColor: '#2B59AC'}}>
+                    <Button transparent onPress={() => this.replaceRoute('signup-user-info')}>
+                        <Icon name='ios-arrow-back' style={{fontSize: 30, color: '#fff'}} />
+                    </Button>                     
+                    <Title style={{fontSize: 20, color: '#fff'}}>{title}</Title>
                 </Header>            
 
-        <View style={{ flex: 1, backgroundColor: '#9DD6EB' }}>
+        <View style={{  backgroundColor: '#ffffff', height: 64 }}>
+            {this.renderNextButton()}
+        </View>
 
-        {this.renderNextButton()}
+        <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
+
+        <View style={{  backgroundColor: '#132431', height: 24 }}>
+            <Text style={{color:'#fff', fontSize: 16, fontWeight: 'bold', alignSelf: 'center'}}
+            >{this.state.propertyAddress}</Text>
+        </View>            
 
         <Form
           ref={(ref) => { this.form = ref; }}
@@ -424,7 +485,7 @@ export class SignUpPropertyInfo extends Component {
                 />
             </Section> 
 
-            <Section
+            {/*<Section
                 ref={'PropertyLocationSection'}
                 title={'LOCATION / ADDRESS'}
                 helpText={'Enter the exact location of the Property.'}
@@ -535,7 +596,7 @@ export class SignUpPropertyInfo extends Component {
                     }}
                 />                                             
 
-            </Section>  
+            </Section>  */}
 
             <Section
                 ref={'BedsBathsSection'}

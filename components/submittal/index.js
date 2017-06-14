@@ -45,7 +45,8 @@ class Submittal extends Component {
             userId: '',
             loaded: false,
             reportUrl: '',
-            alreadySubmitted: false 
+            alreadySubmitted: false,
+            submitted: false
        };
     }
 
@@ -272,6 +273,77 @@ class Submittal extends Component {
         }
     }    
 
+    fetchUser(userId, cb) {
+        console.log('>>> submittal >>> fetchUser >>> userId:', userId);
+        if(!userId) return;
+        let query = 'https://mywalkthruapi.herokuapp.com/api/v1/users?filter={"where": {"userId": "'+userId+'"}}';   
+        console.log('>>> submittal >>> fetchUser >>> query:', query);       
+        fetch(query).then((response) => response.json()).then((responseData) => {
+            if (responseData && responseData.length>0){
+                return cb(null, responseData[0]);
+            }
+        }).done();
+    } 
+
+    saveSignature(){
+        let now = new Date(); 
+        let userId = this.state.userId;
+        let signature = this.state.signature;
+        if (!userId) {
+            alert('UserId is undefined');
+            return;
+        } 
+        if (!signature) {
+            alert('Please sign the Form');
+            return;
+        }          
+
+        this.fetchUser(userId, function(err,res){
+            if (err){
+                console.log(err);
+                return;
+            } else {
+                let uid = res.id;
+                if (!uid) {
+                    alert('Invalid parameter: uid');
+                    return;
+                }                  
+                let data =
+                {
+                    signatureUrl: signature,
+                    modified: now
+                };                    
+                let now = new Date();
+                let url = 'https://mywalkthruapi.herokuapp.com/api/v1/users/' + uid;
+
+            //  return new Promise(function (resolve, reject) {
+                fetch(url, {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                }).then((response) => response.json()).then((responseData) => {
+                    // console.log('responseData: ', responseData);
+                    alert('Your Walkthru has been submitted');
+                    // resolve('signature saved');
+                    // this.setState({submitted: true});
+                    // return cb(null, 'success');
+                    // change navigation route post save
+                    //  if (route) {
+                    // this.replaceRoute('report');
+                    //  }
+                    //this.setState({comments: JSON.stringify(responseData)});
+                }).catch((error) => {
+                    console.log(error);
+                    reject(error);
+                }).done();
+            }});
+            this.replaceRoute('report');
+            // }}); // promise       
+    }
+
     persistData(id, data, route) {
       if (!data) {
         alert('Invalid parameter: data');
@@ -299,12 +371,12 @@ class Submittal extends Component {
          alert('Photo Saved');
 
          // change navigation route post save
-         if (route) {
-           this.replaceRoute(route);
-         }
+        //  if (route) {
+        //    this.replaceRoute(route);
+        //  }
          //this.setState({comments: JSON.stringify(responseData)});
       }).catch((error) => {
-         console.error(error);
+         console.log(error);
       }).done();
     }    
     
@@ -330,7 +402,15 @@ class Submittal extends Component {
             return;
         }
 
-        this.uploadSignature();
+        this.saveSignature();
+
+        // this.saveSignature().then( () => 
+        //     {
+        //         alert('Thank you for submitting your Walkthru');
+        //         this.replaceRoute('report');    
+        //     }
+        // )
+        // .done(); 
 
         // AsyncStorage.setItem("completionDate", completionDate)
         // .then( () => 
@@ -490,12 +570,12 @@ class Submittal extends Component {
                         <View style={styles.box}>
                             <Card foregroundColor='#000'>
 
-                                <CardItem header>
+                                {/*<CardItem header>
                                     <Image
                                         style={{width: 200, height: 200}}
                                         source={{uri: 'https://facebook.github.io/react/img/logo_og.png'}}
                                     />
-                                </CardItem>
+                                </CardItem>*/}
 
                                 <CardItem header>
                                     <Text>*** PLEASE READ ***</Text>

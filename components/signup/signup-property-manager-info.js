@@ -51,7 +51,8 @@ export class SignUpPropertyManagerInfo extends Component {
             validated: false,
             phoneFormatted: '',
             loaded: false,
-            companyTypeSelected: false
+            companyTypeSelected: false,
+            blarg: 'blargh!'
         }
     } 
 
@@ -252,12 +253,11 @@ export class SignUpPropertyManagerInfo extends Component {
         return(
             <Button rounded block
                 style={{alignSelf: 'center',
-                    marginTop: 20,
-                    marginBottom: 20,
-                    backgroundColor: '#ad241f',
-                    borderRadius:90,
-                    width: 300,
-                    height:65}}
+                        marginTop: 10,
+                        backgroundColor: '#2B59AC',
+                        borderRadius:90,
+                        width: 300,
+                        height:44}}
                     onPress={() => {
                         this.saveData();
                     }}
@@ -266,7 +266,12 @@ export class SignUpPropertyManagerInfo extends Component {
             </Button> 
         );
         } else {
-            return (<View></View>);
+            return (
+            <View>
+                <Text
+                style={{alignSelf: 'center',marginTop: 30}}                
+                >VERIFY YOUR PROPERTY MANAGER INFO</Text>
+            </View>);
         }
     }
 
@@ -274,19 +279,26 @@ export class SignUpPropertyManagerInfo extends Component {
         const title = 'Property Manager Info';
         const forwardIcon = <Icon name={'ios-arrow-forward'} color={'gray'} size={20} />;
         const alertIcon = <Icon name={'ios-alert'} color={'red'} size={20} />;
+
+        const blarg = this.state.blarg;
+        const pmTypeIndex = 2;
+        
         
         return (
             <Container  style={{backgroundColor: '#fff'}} >
                
-                <Header>
-                    {/*<Button transparent onPress={() => this.replaceRoute('signup-lease-info')}>
-                        <Icon name='ios-arrow-back' style={{fontSize: 30}} />
-                    </Button>                     */}
-                    <Title style={{fontSize: 20}}>{title}</Title>
-                </Header>            
-        <View style={{ flex: 1, backgroundColor: '#EFEFF4' }}>
+                <Header  style={{backgroundColor: '#2B59AC'}}>
+                    <Button transparent onPress={() => this.replaceRoute('signup-property-info')}>
+                        <Icon name='ios-arrow-back' style={{fontSize: 30, color: '#fff'}} />
+                    </Button>                     
+                    <Title style={{fontSize: 20, color: '#fff'}}>{title}</Title>
+                </Header>   
 
-        {this.renderNextButton()}
+        <View style={{  backgroundColor: '#ffffff', height: 64 }}>
+            {this.renderNextButton()}
+        </View>
+
+        <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
 
         <Form
           ref={(ref) => { this.form = ref; }}
@@ -302,7 +314,7 @@ export class SignUpPropertyManagerInfo extends Component {
                     ref={'pmTypeActionCell'}
                     title={'Select Property Manager Type'}
                     options={[' ',' Individual', 'Company', 'Other']}
-                    selectedValueIndex={0}
+                    selectedValueIndex={pmTypeIndex}
                 />
             </Section>
 
@@ -313,6 +325,7 @@ export class SignUpPropertyManagerInfo extends Component {
             >
                 <TextInputCell
                     ref="companyName"
+                    value={blarg} 
                     inputProps={{ placeholder: 'Company Name' }}
                     autoCapitalize="words"
                 />   
