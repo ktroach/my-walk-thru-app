@@ -344,7 +344,6 @@ class Submittal extends Component {
             AsyncStorage.setItem("submittedDate", now.toISOString())
             .then( () => {
                 this.replaceRoute('report');
-
             }
             ).done();
 

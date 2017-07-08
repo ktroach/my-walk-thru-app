@@ -1,7 +1,7 @@
 {
   "name": "my-walk-thru",
   "version": "1.7.1",
-  "description": "My Walk Thru App",
+  "description": "MyWalkThru App",
   "author": "Kyle Roach (kyle.roach.pros@gmail.com)",
   "main": "main.js",
   "scripts": {

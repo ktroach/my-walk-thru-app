@@ -19,7 +19,8 @@ import {
    Switch,
    ScrollView,
    KeyboardAvoidingView,
-   Dimensions
+   Dimensions,
+   Modal
 } from 'react-native';
 import Expo, {
    Components,
@@ -55,10 +56,13 @@ import { popRoute } from '../../actions/route';
 import { replaceOrPushRoute } from '../../actions/route';
 import { pushNewRoute, replaceRoute } from '../../actions/route';
 
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 class DetailRow extends React.Component {
    constructor(props, context) {
       super(props, context);
       this.state = {
+          modalVisible: false,        
            isRefreshing: false,
            isLoaded: false,
            item: {},
@@ -69,13 +73,17 @@ class DetailRow extends React.Component {
            thumbnails: [],
            comments: '',
            photolist: [],
-           userId: 'rJirzIMsx',
+           userId: '', // 2017.06.14: kroach: NO! 'rJirzIMsx' what the hell is this?
            summaryComments: '',
            summaryPhoto: '',
            dateObserved: '',
            behavior: 'padding'
       };
    }
+
+   setModalVisible(visible) {
+     this.setState({modalVisible: visible});
+   }   
 
    componentDidMount() {
      AsyncStorage.getItem("userId")
@@ -103,6 +111,7 @@ class DetailRow extends React.Component {
        this.props.popRoute();
    }
 
+
    renderWalkthroughItem() {
      return (
       <View style={rowStyles.container}>
@@ -123,6 +132,63 @@ class DetailRow extends React.Component {
             <Header style={{backgroundColor: '#9DD6EB'}}>
                 <Title style={{fontSize: 22, color: '#333', marginTop: -10}}>{this.state.item.name}</Title>
             </Header>
+
+            {/* Modal View triggered */}
+            {/* Start ScrollView */}
+            <View style={{marginTop: 1}}>
+            {/* Start Modal */}
+              <Modal
+                animationType={"slide"}
+                transparent={false}
+                visible={this.state.modalVisible}
+                onRequestClose={() => {alert("Modal has been closed.")}}
+                >
+                  <KeyboardAwareScrollView style={{marginTop: 15}}>
+                    <View style={{marginTop: 15}}>                        
+                      <View style={{backgroundColor: '#333', marginTop: 15}}>
+                        <Text
+                          style={{paddingVertical: 10, paddingHorizontal: 10, color: '#fff', fontSize: 14, fontWeight: 'bold'}}>
+                          Enter a Summary Comment (Required)
+                        </Text>
+                      </View>
+                      <View style={{marginTop: 15}}>
+                        <Textarea 
+                            autoFocus = {true} 
+                            placeholder='Type your Comments...'
+                            keyboardType='default'
+                            autoCapitalize='sentences' 
+                            autoCorrect={false}
+                            maxLength={1000}
+                            clearButtonMode='while-editing'
+                            returnKeyType='done'
+                            style={{
+                              fontSize: 14, 
+                              backgroundColor: '#fff', 
+                              color: '#333', 
+                              height: 200, 
+                              overflow: 'scroll'
+                            }}
+                            onChangeText={this.updateSummaryComments.bind(this)}
+                            value={this.state.summaryComments}>
+                        </Textarea>
+                      </View>                          
+                    </View>
+                    <Button rounded block style={{alignSelf: 'center',
+                        marginTop: 5,
+                        backgroundColor: 'rgba(0, 122, 255, 1)',
+                        borderRadius:45,
+                        width: 300,
+                        height:45}}
+                        onPress={() => this.saveSummaryComments()}>
+                        <Text style={{color:'#fff', fontWeight: 'bold'}}>Save Comments</Text>
+                    </Button>
+                  </KeyboardAwareScrollView>
+              </Modal>
+              {/*End Modal*/}
+
+            </View>
+            {/* End ScrollView*/}
+            
 
             <View padder style={{backgroundColor: '#fafbfc'}} >
                 <Card transparent foregroundColor="#333">
@@ -208,8 +274,8 @@ class DetailRow extends React.Component {
                   }}>Summary</Text>
             </CardItem>
 
-            <CardItem>
-              <Text
+            {/*<CardItem>*/}
+              {/*<Text
                 style={{ 
                     color: '#333', 
                     fontSize: 16, 
@@ -217,10 +283,10 @@ class DetailRow extends React.Component {
                     paddingVertical: 10,
                     backgroundColor: '#eff0f1'
                 }}>
-                Comments
-              </Text>
+                Comments 
+              </Text>*/}
 
-              <Textarea
+              {/*<Textarea
                   placeholder='Type your comments...'
                   keyboardType='default'
                   autoCapitalize='sentences' 
@@ -238,11 +304,28 @@ class DetailRow extends React.Component {
                   onChangeText={this.updateSummaryComments.bind(this)}
                   onBlur={this.saveSummaryComments()}
                   value={this.state.summaryComments}>
-              </Textarea>
-            </CardItem>
+              </Textarea>*/}
+            {/*</CardItem>*/}
+
+            {/*<CardItem>
+                <Text 
+                  placeholder=''
+                  style={{
+                    fontSize: 14, 
+                    backgroundColor: '#fff', 
+                    color: '#333', 
+                    height: 50, 
+                    overflow: 'scroll'
+                  }} 
+                  multiline = {true}
+                  editable={false}
+                  value={this.state.summaryComments}
+                  ></Text>              
+            </CardItem>*/}
+
 
             <CardItem>
-              <Text
+              {/*<Text
                 style={{
                   color: '#333', 
                   fontSize: 16, 
@@ -251,7 +334,7 @@ class DetailRow extends React.Component {
                   backgroundColor: '#eff0f1'                  
                 }}>
                 Photo
-              </Text>
+              </Text>*/}
               <View style={{ flex: 1,
                           justifyContent: 'center',
                           alignItems: 'center',
@@ -267,8 +350,30 @@ class DetailRow extends React.Component {
                     this.state.dateObserved
                   }
                   </Text>
-              </View>          
+              </View>     
+                   <Textarea 
+                      editable={false}
+                      placeholder='Type your comments...'
+                      keyboardType='default'
+                      autoCapitalize='sentences' 
+                      autoCorrect={false}
+                      ellipsizeMode={'tail'}
+                      maxLength={20}
+                      clearButtonMode='while-editing'
+                      returnKeyType='done'
+                      style={{
+                        fontSize: 14, 
+                        backgroundColor: '#fff', 
+                        color: '#333', 
+                        height: 50, 
+                        overflow: 'scroll'
+                      }}
+                      onChangeText={this.updateSummaryComments.bind(this)}
+                      value={this.state.summaryComments}>
+                  </Textarea>
               </CardItem>
+
+              {this.maybeRenderEditComments()}
 
             <CardItem>
                 <Text
@@ -304,22 +409,47 @@ class DetailRow extends React.Component {
      );
    }
 
+   maybeRenderEditComments(){
+     if (this.state.summaryComments&&this.state.summaryComments.length>0){
+      return(
+        <CardItem>
+            <Button rounded block
+              style={{alignSelf: 'center',
+                    marginTop: 5,
+                    backgroundColor: 'rgba(0, 122, 255, 1)',
+                    borderRadius:45,
+                    width: 300,
+                    height:45}} 
+                    onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                    >
+                  <Text style={{fontSize: 16, fontWeight: 'bold', color: '#fff'}}>Edit Summary Comments</Text>
+              </Button>              
+          </CardItem>
+      );
+     } else {
+       return(<View></View>);
+     }
+   }
+
    updateSummaryComments(value){
      this.setState({summaryComments: value});
    }
 
    saveSummaryComments() {
-
-     console.log('>>>>>>>>>>> saveSummaryComments triggered >>>>>>>>>>>>>');
-
+      console.log('>>>>>>>>>>> saveSummaryComments triggered >>>>>>>>>>>>>');
+      let summaryComments = this.state.summaryComments;
+      if (!summaryComments || summaryComments.length===0){
+        alert('Please enter a Comment.  Summary Comment is Required');
+        return;
+      }
       let now = Date.now();
       let t = moment.tz(now, "America/Chicago");
       let dateObserved = t.format("MM-DD-YYYY h:mm:ss a");
       console.log('>>>>>> dateObserved: ', dateObserved);
-
-      let data = {summaryComments: this.state.summaryComments, dateObserved: dateObserved};
+      let data = {summaryComments: summaryComments, dateObserved: dateObserved};
       let item = this.state.item;
       this.persistData(item.id, data, null);
+      this.setModalVisible(!this.state.modalVisible);
    }
 
    navigateTo(route) {
@@ -416,6 +546,8 @@ class DetailRow extends React.Component {
            this.setState({summaryPhoto: location, dateObserved: dateObserved});
 
            this.persistData(item.id, data, null);
+
+           this.setModalVisible(true);
 
           //  let newimages = [];
           //  let item = this.state.item;
@@ -596,6 +728,11 @@ class DetailRow extends React.Component {
          body: JSON.stringify(data)
        }).then((response) => response.json()).then((responseData) => {
           console.log('responseData: ', responseData);
+
+          if (responseData.summaryComments && responseData.summaryComments.length>0){
+            this.setState({summaryComments: responseData.summaryComments});
+          }
+
           if (doCheck) {
             this.checkAction(responseData);
           }

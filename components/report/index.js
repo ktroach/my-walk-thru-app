@@ -70,7 +70,7 @@ class Report extends Component {
         }).then((response) => response.json()).then((responseData) => {
                 console.log('RESPONSEDATA: ', responseData);
                 if (!responseData) {
-                    alert('Sorry, there was a problem Submitting your Walkthru');
+                    alert('Sorry, there was a problem generating your report');
                 } else {
 
                     this.setState({loaded: true});
