@@ -8,7 +8,7 @@ import {
    ActivityIndicator,
 } from 'react-native';
 
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 
 import { closeDrawer } from '../../actions/drawer';
 import { replaceOrPushRoute } from '../../actions/route';
@@ -27,8 +27,8 @@ class SideBar extends Component {
    }
 
     navigateTo(route) {
-        this.props.closeDrawer();
-        this.props.replaceOrPushRoute(route);
+        // this.props.closeDrawer();
+        // this.props.replaceOrPushRoute(route);
     }
 
     componentDidMount(){
@@ -197,11 +197,13 @@ class SideBar extends Component {
 
 }
 
-function bindAction(dispatch) {
-    return {
-        closeDrawer: ()=>dispatch(closeDrawer()),
-        replaceOrPushRoute:(route)=>dispatch(replaceOrPushRoute(route))
-    }
-}
+export default SideBar;
 
-export default connect(null, bindAction)(SideBar);
+// function bindAction(dispatch) {
+//     return {
+//         closeDrawer: ()=>dispatch(closeDrawer()),
+//         replaceOrPushRoute:(route)=>dispatch(replaceOrPushRoute(route))
+//     }
+// }
+
+// export default connect(null, bindAction)(SideBar);

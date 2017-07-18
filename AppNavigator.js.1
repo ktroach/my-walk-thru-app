@@ -1,0 +1,213 @@
+
+// import React, { Component } from 'react';
+// import { BackAndroid, NavigationExperimental } from 'react-native';
+// import { connect } from 'react-redux';
+// import { Drawer } from 'native-base';
+// import { actions } from 'react-native-navigation-redux-helpers';
+
+// // import NavigationExperimental from 'react-native-deprecated-custom-components';
+
+// import { closeDrawer } from './actions/drawer';
+
+// // import Login from './components/login/';
+// // import Home from './components/home/';
+// // import BlankPage from './components/blankPage';
+// // import SplashPage from './components/splashscreen/';
+// // import SideBar from './components/sideBar';
+// // import { statusBarColor } from './themes/base-theme';
+
+// import SideBar from './components/sideBar';
+// import Home from './components/home/';
+// import Report from './components/report/';
+// import Step0 from './components/signup/step-0';
+// import SignUpUserInfo from './components/signup/signup-user-info';
+// import SignUpPropertyInfo from './components/signup/signup-property-info';
+// import SignUpPropertyLocation from './components/signup/signup-property-location';
+// import SignUpLeaseInfo from './components/signup/signup-lease-info';
+// import SignUpPropertyManagerInfo from './components/signup/signup-property-manager-info';
+// import SignUpTermsConditions from './components/signup/signup-terms-conditions';
+// import SignUpPropertyPhotos from './components/signup/signup-property-photos';
+// import SignUpComplete from './components/signup/signup-complete';
+// import SignUpInstructions from './components/signup/signup-instructions';
+// import SignUpResetDemo from './components/signup/signup-reset-demo';
+// import Submittal from './components/submittal/';
+// import TopCategories from './components/categories/top';
+// import SubCategories from './components/categories/details';
+// import CommentsAndPhotos from './components/categories/commentsAndPhotos';
+// // import { statusBarColor } from './themes/base-theme';
+
+// const {
+//     popRoute,
+// } = actions;
+
+// // const {
+// //   CardStack: NavigationExperimental.NavigationCardStack 
+// // } = NavigationExperimental;
+
+// // const { NavigationCardStack } = NavigationExperimental;
+
+// const {
+//   CardStack: NavigationCardStack,
+// } = NavigationExperimental;
+
+// class AppNavigator extends Component {
+
+//     static propTypes = {
+//         drawerState: React.PropTypes.string,
+//         popRoute: React.PropTypes.func,
+//         closeDrawer: React.PropTypes.func,
+//         navigation: React.PropTypes.shape({
+//             key: React.PropTypes.string,
+//             routes: React.PropTypes.array,
+//         }),
+//     }
+
+//     componentDidMount() {
+//         BackAndroid.addEventListener('hardwareBackPress', () => {
+//         const routes = this.props.navigation.routes;
+
+//         if (routes[routes.length - 1].key === 'home' || routes[routes.length - 1].key === 'login') {
+//             return false;
+//         }
+
+//         this.props.popRoute(this.props.navigation.key);
+//         return true;
+//         });
+//     }
+
+//     componentDidUpdate() {
+//         if (this.props.drawerState === 'opened') {
+//         this.openDrawer();
+//         }
+
+//         if (this.props.drawerState === 'closed') {
+//         this._drawer._root.close();
+//         }
+//     }
+
+//     popRoute() {
+//         this.props.popRoute();
+//     }
+
+//     openDrawer() {
+//         this._drawer._root.open();
+//     }
+
+//     closeDrawer() {
+//         if (this.props.drawerState === 'opened') {
+//         this.props.closeDrawer();
+//         }
+//     }
+
+//     _renderScene(props) { // eslint-disable-line class-methods-use-this
+//         switch (props.scene.route.key) {
+//         case 'splashscreen':
+//             return <SplashPage />;
+//         case 'login':
+//             return <Login />;
+//         case 'home':
+//             return <Home />;
+//         case 'blankPage':
+//             return <BlankPage />;
+//         default :
+//             return <Login />;
+//         }
+//     }
+
+//     renderScene(route, navigator) {
+//         switch (route.id) {
+//             case 'home':
+//                 return <Home navigator={navigator} />;
+//             case 'report':
+//                 return <Report navigator={navigator} />;               
+//             case 'submittal':
+//                 return <Submittal navigator={navigator} />;
+//             case 'signup-step0':
+//                 return <Step0 navigator={navigator} />; 
+//             case 'signup-user-info':
+//                 return <SignUpUserInfo navigator={navigator} />;               
+//             case 'signup-property-info':
+//                 return <SignUpPropertyInfo navigator={navigator} />;               
+//             case 'signup-property-location':
+//                 return <SignUpPropertyLocation navigator={navigator} />;               
+//             case 'signup-lease-info':
+//                 return <SignUpLeaseInfo navigator={navigator} />;               
+//             case 'signup-property-manager-info':
+//                 return <SignUpPropertyManagerInfo navigator={navigator} />;               
+//             case 'signup-terms-conditions':
+//                 return <SignUpTermsConditions navigator={navigator} />;             
+//             case 'signup-reset-demo':
+//                 return <SignUpResetDemo navigator={navigator} />;                  
+//             case 'signup-property-photos':
+//                 return <SignUpPropertyPhotos navigator={navigator} />;               
+//             case 'signup-complete':
+//                 return <SignUpComplete navigator={navigator} />;    
+//             case 'signup-instructions':
+//                 return <SignUpInstructions navigator={navigator} />;                           
+//             case 'categories':
+//                 return <TopCategories navigator={navigator} />;
+//             case 'subcategories':
+//                 return <SubCategories navigator={navigator} />;
+//             case 'commentsAndPhotos':
+//                 return <CommentsAndPhotos navigator={navigator} />;
+//             default :
+//                 return <Home navigator={navigator} />;
+//         }
+//     }  
+
+//   render() {
+//     return (
+//       <Drawer
+//         ref={(ref) => { this._drawer = ref; }}
+//         type="overlay"
+//         tweenDuration={150}
+//         content={<SideBar />}
+//         tapToClose
+//         acceptPan={false}
+//         onClose={() => this.closeDrawer()}
+//         openDrawerOffset={0.2}
+//         panCloseMask={0.2}
+//         styles={{
+//           drawer: {
+//             shadowColor: '#000000',
+//             shadowOpacity: 0.8,
+//             shadowRadius: 3,
+//           },
+//         }}
+//         tweenHandler={(ratio) => {  //eslint-disable-line
+//           return {
+//             drawer: { shadowRadius: ratio < 0.2 ? ratio * 5 * 5 : 5 },
+//             main: {
+//               opacity: (2 - ratio) / 2,
+//             },
+//           };
+//         }}
+//         negotiatePan
+//       >
+//         {/*<StatusBar
+//           backgroundColor={statusBarColor}
+//           barStyle="default"
+//         />*/}
+//         <NavigationCardStack
+//           navigationState={this.props.navigation}
+//           renderOverlay={this._renderOverlay}
+//           renderScene={this._renderScene}
+//         />
+//       </Drawer>
+//     );
+//   }
+// }
+
+// function bindAction(dispatch) {
+//   return {
+//     closeDrawer: () => dispatch(closeDrawer()),
+//     popRoute: key => dispatch(popRoute(key)),
+//   };
+// }
+
+// const mapStateToProps = state => ({
+//   drawerState: state.drawer.drawerState,
+//   navigation: state.cardNavigation,
+// });
+
+// export default connect(mapStateToProps, bindAction)(AppNavigator);

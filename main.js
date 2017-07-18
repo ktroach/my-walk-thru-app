@@ -1,7 +1,13 @@
 import Expo from 'expo';
-import React from 'react';
+
+import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import configureStore from './configureStore'
+
+// import { createStore } from 'redux';
+// import AppReducer from './reducers';
+
+import configureStore from './configureStore';
+
 import {
   AppRegistry,
   Platform,
@@ -9,92 +15,46 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import {
-  NavigationProvider,
-  StackNavigation,
-} from '@expo/ex-navigation';
+
 import {
   FontAwesome,
 } from '@expo/vector-icons';
 
-import Router from './navigation/Router';
-import cacheAssetsAsync from './utilities/cacheAssetsAsync';
+import MainStackRouter from "./routes/MainStackRouter";
 
-import AppNavigator from './AppNavigator';
-import Signup from './components/signup';
+// import setup from './setup';
+
+// import App from './App';
+
+// import cacheAssetsAsync from './utilities/cacheAssetsAsync';
+
+// import AppWithNavigationState from './AppNavigator';
+
 
 class AppContainer extends React.Component {
+
+  // store = createStore(AppReducer);
 
    constructor() {
        super();
        this.state = {
            isLoading: false,
            store: configureStore(()=> this.setState({isLoading: false})),
-           appIsReady: false,
+           appIsReady: true,
            userIsRegistered: false
        };
    }
 
-  // state = {
-  //   appIsReady: false,
-  //   userIsRegistered: false
-  // }
-
-  componentWillMount() {
-    this._loadAssetsAsync();
-  }
-
-  async _loadAssetsAsync() {
-    try {
-      await cacheAssetsAsync({
-        images: [
-          require('./assets/images/exponent-wordmark.png'),
-        ],
-        fonts: [
-          FontAwesome.font,
-          {'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf')},
-        ],
-      });
-    } catch(e) {
-      console.warn(
-        'There was an error caching assets (see: main.js), perhaps due to a ' +
-        'network timeout, so we skipped caching. Reload the app to try again.'
-      );
-      console.log(e.message);
-    } finally {
-      this.setState({appIsReady: true});
-    }
-  }
-
   render() {
     if (this.state.appIsReady) {
+      // return(
+      //     <App />
+      // );      
       return(
          <Provider store={this.state.store}>
-             <AppNavigator store={this.state.store} />
+             <MainStackRouter store={this.state.store}  />
          </Provider>
-
       );
-      // if (this.state.userIsRegistered) {
-      //    return (
-      //      <View style={styles.container}>
-      //        <NavigationProvider router={Router}>
-      //          <StackNavigation id="root" initialRoute={Router.getRoute('rootNavigation')} />
-      //        </NavigationProvider>
-      //        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-      //        {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
-      //      </View>
-      //    );
-      // } else {
-      //    return (
-      //      <View style={styles.container}>
-      //        <NavigationProvider router={Router}>
-      //          <StackNavigation id="signup" initialRoute={Router.getRoute('signup')} />
-      //        </NavigationProvider>
-      //        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-      //        {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
-      //      </View>
-      //    );
-      // }
     } else {
       return (
         <Expo.Components.AppLoading />

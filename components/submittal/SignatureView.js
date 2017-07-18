@@ -6,7 +6,7 @@ import ReactNative, {
   View, Text, Modal, Platform, Alert
 } from 'react-native';
 
-import SignatureCapture from 'react-native-signature-capture';
+// import SignatureCapture from 'react-native-signature-capture';
 
 const toolbarHeight = Platform.select({
   android: 0,
@@ -48,10 +48,10 @@ class SignatureView extends Component {
               <Text style={{fontSize: 14}}>PLEASE WRITE YOUR SIGNATURE</Text>
             </View>
           </View>
-          <SignatureCapture
+          {/*<SignatureCapture
             onDragEvent={this._onDragEvent.bind(this)}
             onSaveEvent={this._onSaveEvent.bind(this)}
-          />
+          />*/}
         </View>
       </Modal>
     );

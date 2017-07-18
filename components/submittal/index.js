@@ -11,7 +11,7 @@ import { Container, Header, Title, Content, Text, Button, Icon, Card, CardItem, 
 
 // import { Checkbox } from 'nachos-ui';
 
-import SignatureView from './SignatureView';
+// import SignatureView from './SignatureView';
 
 import theme from '../../themes/form-theme';
 import styles from './styles';
@@ -135,7 +135,7 @@ class Submittal extends Component {
     }
 
     _showSignatureView() {
-      this._signatureView.show(true);
+    //   this._signatureView.show(true);
     }
 
     _onSave(result) {
@@ -164,7 +164,7 @@ class Submittal extends Component {
         //     this._signatureView.show(false);
         // });      
 
-        this._signatureView.show(false);
+        // this._signatureView.show(false);
     }
 
     // saveToCameraRoll = (image) => {
@@ -633,14 +633,14 @@ class Submittal extends Component {
                                 <CardItem>
                                     <Text>By Signing and Submitting your WALKTHRU, you authorize a copy of this property review to go to your Property Manager for their records:</Text>
                                 </CardItem>                                    
-
+{/*
                                 <CardItem style={{height: 200}}>
                                   <View style={{flex: 1, borderWidth: 1,  borderColor: '#333'}}>
                                       <SignaturePad onError={this._signaturePadError}
                                                     onChange={this._signaturePadChange}
                                                     style={{flex: 1, backgroundColor: '#fff', borderWidth: 1,  borderColor: '#333'}}/>
                                   </View>
-                                </CardItem>
+                                </CardItem>*/}
 
 
                                 <CardItem header>

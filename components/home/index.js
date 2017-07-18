@@ -17,8 +17,13 @@ import { connect } from 'react-redux';
 
 import moment from 'moment';
 
-import { openDrawer } from '../../actions/drawer';
-import { popRoute, replaceRoute } from '../../actions/route';
+// import { openDrawer } from '../../actions/drawer';
+// import { popRoute, replaceRoute } from '../../actions/route';
+
+import DrawBar from "../DrawBar";
+import { DrawerNavigator, NavigationActions } from "react-navigation";
+import { setIndex } from "../../actions/list";
+import { openDrawer } from "../../actions/drawer";
 
 import { Container, Header, Title, Content, Button, Icon, List, ListItem, Text } from 'native-base';
 
@@ -109,7 +114,14 @@ class Home extends Component {
     }    
 
     replaceRoute(route) {
-        this.props.replaceRoute(route);
+      console.log('>>>>> entered: [replaceRoute]: ', route);
+
+      console.log('>>>>> [this.props.navigation]: ', this.props.navigation);
+
+      this.props.navigation.navigate("Step0");
+
+      // NavigationActions.navigate({ routeName: route});
+        // this.props.replaceRoute(route);
     }
 
     popRoute() {
@@ -481,7 +493,7 @@ class Home extends Component {
         return(
           <View>
 
-            <View style={{marginTop: 20}}>
+            <View style={{marginTop: 5}}>
             <Button rounded block
               style={{alignSelf: 'center',
                       marginTop: 1,
@@ -489,7 +501,7 @@ class Home extends Component {
                       borderRadius:45,
                       width: 300,
                       height:40}}
-                      onPress={() => this.replaceRoute('signup-property-photos')}>
+                      onPress={() => this.replaceRoute('Home')}>
                 <Text style={{color:'#fff', fontWeight: 'bold'}}>SNAP A PHOTO OF YOUR HOME</Text>
             </Button>           
             </View>                          
@@ -649,23 +661,50 @@ class Home extends Component {
               <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
 
                    <Header  style={{backgroundColor: '#2B59AC'}}>
-                       <Button transparent onPress={() => this.replaceRoute('signup-property-photos')}>
-        <Indicator
-          position='right top'
-          value='1'
-          style={IndicatorExample.indicatorStyle} 
-          
-        >
-          <Image
-            style={{width:28,height:28}}
-            source={require('../../assets/images/notification-outline.png')}
-          />
-        </Indicator>
-                       </Button>                     
+
+                      <Button
+                        transparent
+                        onPress={() => {
+                          DrawerNav.dispatch(
+                            NavigationActions.reset({
+                              index: 0,
+                              actions: [NavigationActions.navigate({ routeName: "Home" })]
+                            })
+                          );
+                          DrawerNav.goBack();
+                        }}
+                      >
+                        <Indicator
+                          position='right top'
+                          value='1'
+                          style={IndicatorExample.indicatorStyle} 
+                          
+                        >
+                          <Image
+                            style={{width:28,height:28}}
+                            source={require('../../assets/images/notification-outline.png')}
+                          />
+                        </Indicator>
+                      </Button>          
+
+
+                       {/* <Button transparent onPress={() => this.replaceRoute('signup-property-photos')}>
+                          <Indicator
+                            position='right top'
+                            value='1'
+                            style={IndicatorExample.indicatorStyle} 
+                            
+                          >
+                            <Image
+                              style={{width:28,height:28}}
+                              source={require('../../assets/images/notification-outline.png')}
+                            />
+                          </Indicator>
+                       </Button>                      */}
 
                        <Title>Home</Title>
 
-                       <Button transparent onPress={this.props.openDrawer} >
+                       <Button transparent onPress={() => DrawerNav.navigate("DrawerOpen")} >
                            <Icon name='ios-menu' style={{fontSize: 30, color: '#fff'}} />
                        </Button>
                    </Header>
@@ -686,7 +725,7 @@ class Home extends Component {
                           </View>
                           <View style={{marginTop: 5}}>
                             <Image
-                              style={{width:screenWidth,height:190}}
+                              style={{width:screenWidth,height:210}}
                               source={require('../../assets/images/3d-house-1.png')}
                             />
                           </View>  
@@ -983,12 +1022,42 @@ class Home extends Component {
 }
 
 
-function bindAction(dispatch) {
-    return {
-        openDrawer: ()=>dispatch(openDrawer()),
-        popRoute: () => dispatch(popRoute()),
-        replaceRoute:(route)=>dispatch(replaceRoute(route))
-    }
-}
+// function bindAction(dispatch) {
+//     return {
+//         openDrawer: ()=>dispatch(openDrawer()),
+//         popRoute: () => dispatch(popRoute()),
+//         replaceRoute:(route)=>dispatch(replaceRoute(route))
+//     }
+// }
 
-export default connect(null, bindAction)(Home);
+// export default connect(null, bindAction)(Home);
+
+
+function bindAction(dispatch) {
+  return {
+    setIndex: index => dispatch(setIndex(index)),
+    openDrawer: () => dispatch(openDrawer())
+  };
+}
+const mapStateToProps = state => ({
+  name: state.user.name,
+  list: state.list.list
+});
+
+const HomeSwagger = connect(mapStateToProps, bindAction)(Home);
+const DrawNav = DrawerNavigator(
+  {
+    Home: { screen: HomeSwagger }
+  },
+  {
+    contentComponent: props => <DrawBar {...props} />
+  }
+);
+const DrawerNav = null;
+DrawNav.navigationOptions = ({ navigation }) => {
+  DrawerNav = navigation;
+  return {
+    header: null
+  };
+};
+export default DrawNav;
