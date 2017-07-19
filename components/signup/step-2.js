@@ -38,7 +38,7 @@ class Step2 extends Component {
             AsyncStorage.setItem("state", this.state.stateabbr);
             AsyncStorage.setItem("zip", this.state.zip);
 
-            this.props.replaceRoute(route);
+            this.replaceRouteProxy(route);
          } catch(err) {
             console.log(err);
          }
@@ -62,6 +62,11 @@ class Step2 extends Component {
    replaceRoute(route) {
       this.saveInputs(route);
    }
+
+    replaceRouteProxy(route) {
+        console.log('>>>>> entered: [replaceRoute]: ', route);
+        this.props.navigation.navigate(route);
+    }       
 
    pushNewRoute(route) {
         this.props.pushNewRoute(route);

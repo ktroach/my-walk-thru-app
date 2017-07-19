@@ -73,9 +73,14 @@ class TopCategories extends Component {
       
    }
 
-   replaceRoute(route) {
-      this.props.replaceRoute(route);
-   }
+//    replaceRoute(route) {
+//       this.props.replaceRoute(route);
+//    }
+
+    replaceRoute(route) {
+      console.log('>>>>> entered: [replaceRoute]: ', route);
+      this.props.navigation.navigate(route);
+    }
 
    pushNewRoute(route) {
         this.props.pushNewRoute(route);
@@ -100,7 +105,7 @@ class TopCategories extends Component {
 
                  <Header  style={{backgroundColor: '#2B59AC'}}>
 
-                   <Button transparent onPress={() => this.replaceRoute('home')}>
+                   <Button transparent onPress={() => this.replaceRoute('Home')}>
                        <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                    </Button>
 
@@ -129,7 +134,7 @@ class TopCategories extends Component {
             <Container theme={theme} style={{backgroundColor: '#fafafa'}} >
                     <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header  style={{backgroundColor: '#2B59AC'}}>
-                        <Button transparent onPress={() => this.replaceRoute('home')}>
+                        <Button transparent onPress={() => this.replaceRoute('Home')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
                         <Title style={{fontSize: 20}}>{title}</Title>
@@ -189,6 +194,7 @@ class TopCategories extends Component {
      return (
          <CategoryRow
              category={category}
+             navigation={this.props.navigation}
          />
         );
    }

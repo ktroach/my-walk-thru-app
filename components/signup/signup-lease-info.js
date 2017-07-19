@@ -58,9 +58,14 @@ export class SignUpLeaseInfo extends Component {
         this.getTenantId();
     }
 
+    // replaceRoute(route) {
+    //     this.props.replaceRoute(route);
+    // }
+
     replaceRoute(route) {
-        this.props.replaceRoute(route);
-    }
+      console.log('>>>>> entered: [replaceRoute]: ', route);
+      this.props.navigation.navigate(route);
+    }    
 
     pushNewRoute(route) {
         this.props.pushNewRoute(route);
@@ -178,7 +183,7 @@ export class SignUpLeaseInfo extends Component {
                 "modified": now
             });
 
-            this.saveFormData(tenantId, data, 'signup-property-info');
+            this.saveFormData(tenantId, data, 'signupPropertyInfo');
         }
     }
 
@@ -304,7 +309,7 @@ export class SignUpLeaseInfo extends Component {
         return (
             <Container  style={{backgroundColor: '#fff'}} >
                 <Header>
-                    {/*<Button transparent onPress={() => this.replaceRoute('signup-user-info')}>
+                    {/*<Button transparent onPress={() => this.replaceRoute('signupUserInfo')}>
                         <Icon name='ios-arrow-back' style={{fontSize: 30}} />
                     </Button>                      */}
                     <Title style={{fontSize: 20}}>{title}</Title>

@@ -88,7 +88,7 @@ class Report extends Component {
             <Container theme={theme} style={{backgroundColor: '#fff'}}>
                <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
-                        <Button transparent onPress={() => this.replaceRoute('home')}>
+                        <Button transparent onPress={() => this.replaceRoute('Home')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
@@ -121,9 +121,14 @@ class Report extends Component {
         this.props.popRoute();
     }
 
+    // replaceRoute(route) {
+    //     this.props.replaceRoute(route);
+    // }
+
     replaceRoute(route) {
-        this.props.replaceRoute(route);
-    }
+      console.log('>>>>> entered: [replaceRoute]: ', route);
+      this.props.navigation.navigate(route);
+    }    
 
     handleFirstCheckboxChange = (firstChecked) => {
       this.setState({ firstChecked })
@@ -151,7 +156,7 @@ class Report extends Component {
             <Container theme={theme} style={{backgroundColor: '#fff'}}>
                <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
-                        <Button transparent onPress={() => this.replaceRoute('home')}>
+                        <Button transparent onPress={() => this.replaceRoute('Home')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 

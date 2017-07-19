@@ -57,7 +57,7 @@ class Step3 extends Component {
 
             console.log("<<< FINISHED: step-3 saveInputs AsyncStorage.setItem");
 
-            this.props.replaceRoute(route);
+            this.replaceRouteProxy(route);
          } catch(err) {
             console.log(err);
          }
@@ -80,6 +80,11 @@ class Step3 extends Component {
    replaceRoute(route) {
       this.saveInputs(route);
    }
+
+    replaceRouteProxy(route) {
+        console.log('>>>>> entered: [replaceRoute]: ', route);
+        this.props.navigation.navigate(route);
+    }       
 
    pushNewRoute(route) {
         this.props.pushNewRoute(route);

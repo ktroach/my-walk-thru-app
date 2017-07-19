@@ -61,7 +61,7 @@ class Step0 extends Component {
             // if (this.userLoggedIn()) {
             //     console.log('user logged in'); 
 
-            //     // this.replaceRoute('home');
+            //     // this.replaceRoute('Home');
             // } else {
             //     console.log('user is not logged in');
             // }
@@ -114,7 +114,7 @@ class Step0 extends Component {
                     this.setState({userId: userId});
                     // this.getSignUpDate();
                     if (userId && userId.length>0) {
-                        this.replaceRoute('home');
+                        this.replaceRoute('Home');
                     }
                 })
                 .done();
@@ -148,7 +148,7 @@ class Step0 extends Component {
                 {
                     this.setState({loggedin: loggedin});
                     // if (loggedin === '1') return true;
-                    this.replaceRoute('home');
+                    this.replaceRoute('Home');
                     return true;
                 }
             )
@@ -174,7 +174,7 @@ class Step0 extends Component {
 
 
 
-        //     this.replaceRoute('home');
+        //     this.replaceRoute('Home');
         // } else {
         //     console.log('>> haveTheySignedUp >> no user info found in storage >> user must login using pin');
         // }
@@ -190,7 +190,7 @@ class Step0 extends Component {
         //             } else {
         //                 let sud = signUpDate.toString();
         //                 if (sud) this.setState({signUpDate: sud});
-        //                 // this.replaceRoute('home');
+        //                 // this.replaceRoute('Home');
         //             }
         //         }
         //     )
@@ -222,9 +222,14 @@ class Step0 extends Component {
       }
     }  
 
-   replaceRoute(route) {
-      this.props.replaceRoute(route);
-   }
+//    replaceRoute(route) {
+//       this.props.replaceRoute(route);
+//    }
+
+    replaceRoute(route) {
+        console.log('>>>>> entered: [replaceRoute]: ', route);
+        this.props.navigation.navigate(route);
+    }   
 
    pushNewRoute(route) {
         this.props.pushNewRoute(route);
@@ -335,7 +340,7 @@ class Step0 extends Component {
                                                             AsyncStorage.setItem("userId", result.userId)
                                                                 .then( () => {
                                                                     console.log('Adding storage item: userId');
-                                                                    this.replaceRoute('home');
+                                                                    this.replaceRoute('Home');
                                                                 }
                                                             ).done();                                                    
                                                         }
@@ -351,7 +356,7 @@ class Step0 extends Component {
                                 AsyncStorage.setItem("loggedin", "0")
                                     .then( () => {
                                         console.log('user does not exist, user is not logged in');
-                                        this.replaceRoute('signup-instructions');
+                                        this.replaceRoute('signupInstructions');
                                     }
                                 ).done(); 
                             }
@@ -362,7 +367,7 @@ class Step0 extends Component {
                 }
             } else {
                 alert('Invite Code has expired. Please request a new Invite Code.');
-                // this.replaceRoute('signup-user-info');
+                // this.replaceRoute('signupUserInfo');
             }
         }).done();
     }    
@@ -463,7 +468,7 @@ class Step0 extends Component {
             <Container theme={theme} style={{backgroundColor: '#9DD6EB'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
-                        <Button transparent onPress={() => this.replaceRoute('signup-step0')}>
+                        <Button transparent onPress={() => this.replaceRoute('step0')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30}} />
                         </Button>
                         <Title>WELCOME TO YOUR NEW HOME!</Title>
@@ -524,7 +529,7 @@ class Step0 extends Component {
     // {/*
     // <Button rounded block
     //   style={{marginBottom: 20, backgroundColor: '#ad241f'}}
-    //   onPress={() => this.replaceRoute('home')}>
+    //   onPress={() => this.replaceRoute('Home')}>
     //     <Text>CONTINUE</Text>
     // // </Button>
     // {/*
@@ -556,7 +561,7 @@ class Step0 extends Component {
                     borderRadius:90,
                     width: 300,
                     height:44}}
-              onPress={() => this.replaceRoute('home')}>
+              onPress={() => this.replaceRoute('Home')}>
               <Text style={{color:'#fff', fontWeight: 'bold'}}>CONTINUE</Text>
           </Button>
         );

@@ -103,9 +103,14 @@ class DetailRow extends React.Component {
       // this.fetchTemplateItem(this.props.itemId);
    }
 
-   replaceRoute(route) {
-       this.props.replaceRoute(route);
-   }
+  //  replaceRoute(route) {
+  //      this.props.replaceRoute(route);
+  //  }
+
+    replaceRoute(route) {
+      console.log('>>>>> entered: [replaceRoute]: ', route);
+      this.props.navigation.navigate(route);
+    }  
 
    popRoute() {
        this.props.popRoute();
@@ -457,11 +462,17 @@ class DetailRow extends React.Component {
      AsyncStorage.setItem("subItemId", this.props.itemId)
      .then( () =>
          {
-             this.props.replaceOrPushRoute(route);
+            //  this.props.replaceOrPushRoute(route);
+            this.replaceRoute(route);
          }
      )
      .done( );
    }
+
+    replaceRoute(route) {
+      console.log('>>>>> entered: [replaceRoute]: ', route);
+      this.props.navigation.navigate(route);
+    }     
 
    _takePhoto = async () => {
      let pickerResult = await ImagePicker.launchCameraAsync({

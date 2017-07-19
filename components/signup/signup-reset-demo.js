@@ -61,9 +61,14 @@ export class SignUpResetDemo extends Component {
 
     }       
 
+    // replaceRoute(route) {
+    //     this.props.replaceRoute(route);
+    // }
+
     replaceRoute(route) {
-        this.props.replaceRoute(route);
-    }
+      console.log('>>>>> entered: [replaceRoute]: ', route);
+      this.props.navigation.navigate(route);
+    }    
 
     pushNewRoute(route) {
         this.props.pushNewRoute(route);
@@ -74,7 +79,7 @@ export class SignUpResetDemo extends Component {
     }  
 
     cancelLogout(){
-        this.replaceRoute('home');
+        this.replaceRoute('Home');
     }
 
     resetApp(){

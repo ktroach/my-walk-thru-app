@@ -144,9 +144,14 @@ export class SignUpComplete extends Component {
     componentWillUnmount() {
     }    
 
+    // replaceRoute(route) {
+    //     this.props.replaceRoute(route);
+    // }
+
     replaceRoute(route) {
-        this.props.replaceRoute(route);
-    }
+      console.log('>>>>> entered: [replaceRoute]: ', route);
+      this.props.navigation.navigate(route);
+    }    
 
     pushNewRoute(route) {
         this.props.pushNewRoute(route);
@@ -161,11 +166,11 @@ export class SignUpComplete extends Component {
     }
 
     proceedToWalkthru(){
-        this.replaceRoute('signup-property-photos');
+        this.replaceRoute('signupPropertyPhotos');
     }
 
     proceedToHome(){
-        this.replaceRoute('home');
+        this.replaceRoute('Home');
     }    
 
     proceedToAreas(){
@@ -299,7 +304,7 @@ export class SignUpComplete extends Component {
           }, function() {
               console.log('Photo Cancelled');
           });        
-        // this.replaceRoute('signup-property-photos');
+        // this.replaceRoute('signupPropertyPhotos');
     }    
 
     persistData(id, data, route) {

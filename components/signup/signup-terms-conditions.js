@@ -65,9 +65,14 @@ export class SignUpTermsConditions extends Component {
         this.getTenantId();
     }
 
+    // replaceRoute(route) {
+    //     this.props.replaceRoute(route);
+    // }
+
     replaceRoute(route) {
-        this.props.replaceRoute(route);
-    }
+      console.log('>>>>> entered: [replaceRoute]: ', route);
+      this.props.navigation.navigate(route);
+    }    
 
     pushNewRoute(route) {
         this.props.pushNewRoute(route);
@@ -503,7 +508,7 @@ export class SignUpTermsConditions extends Component {
                         }
 
                         // Houston, we have a problem. go back to square one
-                        // this.replaceRoute('signup-step0');                    
+                        // this.replaceRoute('step0');                    
 
                     } else {
 
@@ -530,7 +535,7 @@ export class SignUpTermsConditions extends Component {
 
                         // alert('Thank you for Signing Up!');
 
-                        // this.replaceRoute('signup-complete');
+                        // this.replaceRoute('signupComplete');
 
 
                         // console.log(fn, '>>> signUpDate: ', signUpDate);
@@ -540,7 +545,7 @@ export class SignUpTermsConditions extends Component {
                         // this.createTestUser(signUpDate, leaseBeginDate, userId, function(cb){
 
                         //         alert('Thank you for Signing Up! ');
-                        //         this.replaceRoute('signup-complete');                                
+                        //         this.replaceRoute('signupComplete');                                
 
                         // });
 
@@ -577,7 +582,7 @@ export class SignUpTermsConditions extends Component {
                 //     }
 
                 //     // Houston, we have a problem. go back to square one
-                //     // this.replaceRoute('signup-step0');
+                //     // this.replaceRoute('step0');
                 // }
 
             }).done();        
@@ -585,7 +590,7 @@ export class SignUpTermsConditions extends Component {
 
         });
 
-        this.replaceRoute('home'); 
+        this.replaceRoute('Home'); 
 
         // alert('Thank you for Signing Up!');
 
@@ -692,7 +697,7 @@ export class SignUpTermsConditions extends Component {
                 <Container  style={{backgroundColor: '#2B59AC'}} >
                 
                     <Header  style={{backgroundColor: '#2B59AC'}}>
-                        <Button transparent onPress={() => this.replaceRoute('signup-property-info')}>
+                        <Button transparent onPress={() => this.replaceRoute('signupPropertyInfo')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, color: '#fff'}} />
                         </Button>                     
                         <Title style={{fontSize: 20, color: '#fff'}}>{title}</Title>

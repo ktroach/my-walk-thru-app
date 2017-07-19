@@ -61,9 +61,14 @@ export class SignUpPropertyManagerInfo extends Component {
         this.setState({loaded: true});
     }
 
+    // replaceRoute(route) {
+    //     this.props.replaceRoute(route);
+    // }
+
     replaceRoute(route) {
-        this.props.replaceRoute(route);
-    }
+      console.log('>>>>> entered: [replaceRoute]: ', route);
+      this.props.navigation.navigate(route);
+    }    
 
     pushNewRoute(route) {
         this.props.pushNewRoute(route);
@@ -173,7 +178,7 @@ export class SignUpPropertyManagerInfo extends Component {
                 "modified": now
             });
 
-            this.saveFormData(tenantId, data, 'signup-terms-conditions');
+            this.saveFormData(tenantId, data, 'signupTermsConditions');
         }
     }
 
@@ -288,7 +293,7 @@ export class SignUpPropertyManagerInfo extends Component {
             <Container  style={{backgroundColor: '#fff'}} >
                
                 <Header  style={{backgroundColor: '#2B59AC'}}>
-                    <Button transparent onPress={() => this.replaceRoute('signup-property-info')}>
+                    <Button transparent onPress={() => this.replaceRoute('signupPropertyInfo')}>
                         <Icon name='ios-arrow-back' style={{fontSize: 30, color: '#fff'}} />
                     </Button>                     
                     <Title style={{fontSize: 20, color: '#fff'}}>{title}</Title>

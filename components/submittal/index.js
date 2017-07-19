@@ -91,7 +91,7 @@ class Submittal extends Component {
             <Container theme={theme} style={{backgroundColor: '#fff'}}>
                <Image source={require('../../assets/images/glow2.png')} style={styles.container} >          
                     <Header>
-                        <Button transparent onPress={() => this.replaceRoute('home')}>
+                        <Button transparent onPress={() => this.replaceRoute('Home')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
@@ -122,9 +122,14 @@ class Submittal extends Component {
         this.props.popRoute();
     }
 
+    // replaceRoute(route) {
+    //     this.props.replaceRoute(route);
+    // }
+
     replaceRoute(route) {
-        this.props.replaceRoute(route);
-    }
+      console.log('>>>>> entered: [replaceRoute]: ', route);
+      this.props.navigation.navigate(route);
+    }      
 
     // handleFirstCheckboxChange = (firstChecked) => {
     //   this.setState({ firstChecked })
@@ -465,7 +470,7 @@ class Submittal extends Component {
             
     //   }).done();
 
-      // this.replaceRoute('home');
+      // this.replaceRoute('Home');
     }
 
     render() {
@@ -481,7 +486,7 @@ class Submittal extends Component {
          <Container theme={theme} style={{backgroundColor: '#333'}}>
             <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                 <Header>
-                    <Button transparent onPress={() => this.replaceRoute('home')}>
+                    <Button transparent onPress={() => this.replaceRoute('Home')}>
                         <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                     </Button>
 
@@ -546,7 +551,7 @@ class Submittal extends Component {
             <Container theme={theme} style={{backgroundColor: '#fff'}}>
                <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
-                        <Button transparent onPress={() => this.replaceRoute('home')}>
+                        <Button transparent onPress={() => this.replaceRoute('Home')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 

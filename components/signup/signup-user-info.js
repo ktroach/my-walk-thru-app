@@ -78,9 +78,14 @@ export class SignUpUserInfo extends Component {
     }
     
 
+    // replaceRoute(route) {
+    //     this.props.replaceRoute(route);
+    // }
+
     replaceRoute(route) {
-        this.props.replaceRoute(route);
-    }
+      console.log('>>>>> entered: [replaceRoute]: ', route);
+      this.props.navigation.navigate(route);
+    }    
 
     pushNewRoute(route) {
         this.props.pushNewRoute(route);
@@ -252,7 +257,7 @@ export class SignUpUserInfo extends Component {
                 "modified": now
             });
 
-            this.saveFormData(tenantId, data, 'signup-property-info');
+            this.saveFormData(tenantId, data, 'signupPropertyInfo');
         }
     }
 
@@ -373,7 +378,7 @@ export class SignUpUserInfo extends Component {
                 <Container  style={{backgroundColor: '#2B59AC'}} >
                 
                     <Header  style={{backgroundColor: '#2B59AC'}}>
-                        <Button transparent onPress={() => this.replaceRoute('signup-instructions')}>
+                        <Button transparent onPress={() => this.replaceRoute('signupInstructions')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, color: '#fff'}} />
                         </Button>                     
                         <Title style={{fontSize: 20, color: '#fff'}}>{title}</Title>

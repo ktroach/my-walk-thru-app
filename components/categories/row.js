@@ -172,8 +172,17 @@ class CategoryRow extends React.Component {
       AsyncStorage.setItem("categoryName", this.props.category.name);
       this.props.toggleTodo(this.props.category.id);
       this.props.closeDrawer();
-      this.props.replaceOrPushRoute(route);
+
+      this.replaceRoute(route);
+
+      //this.props.replaceOrPushRoute(route);
+
     }
+
+    replaceRoute(route) {
+      console.log('>>>>> entered: [replaceRoute]: ', route);
+      this.props.navigation.navigate(route);
+    }     
 
    render() {
       // Category name ( trim it )
@@ -295,7 +304,8 @@ CategoryRow.propTypes = {
 function bindAction(dispatch) {
     return {
     	closeDrawer: ()=>dispatch(closeDrawer()),
-      replaceOrPushRoute:(route)=>dispatch(replaceOrPushRoute(route)),
+      replaceRoute:(route)=>dispatch(replaceRoute(route)),
+      replaceOrPushRoute:(route)=>dispatch(replaceOrPushRoute(route)),      
       toggleTodo: (id)=>dispatch(toggleTodo(id))
     }
 }

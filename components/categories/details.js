@@ -183,9 +183,14 @@ class CategoryDetails extends React.Component {
     //     }).done();
     // }  
 
+    // replaceRoute(route) {
+    //     this.props.replaceRoute(route);
+    // }
+
     replaceRoute(route) {
-        this.props.replaceRoute(route);
-    }
+      console.log('>>>>> entered: [replaceRoute]: ', route);
+      this.props.navigation.navigate(route);
+    }    
 
     popRoute() {
         this.props.popRoute();

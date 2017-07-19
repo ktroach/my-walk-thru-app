@@ -115,18 +115,12 @@ class Home extends Component {
 
     replaceRoute(route) {
       console.log('>>>>> entered: [replaceRoute]: ', route);
-
-      console.log('>>>>> [this.props.navigation]: ', this.props.navigation);
-
-      this.props.navigation.navigate("Step0");
-
-      // NavigationActions.navigate({ routeName: route});
-        // this.props.replaceRoute(route);
+      this.props.navigation.navigate(route);
     }
 
-    popRoute() {
-        this.props.popRoute();
-    }
+    // popRoute() {
+    //     this.props.popRoute();
+    // }
 
     getUserId() {
         let progressValue = 0.00;
@@ -501,7 +495,7 @@ class Home extends Component {
                       borderRadius:45,
                       width: 300,
                       height:40}}
-                      onPress={() => this.replaceRoute('Home')}>
+                      onPress={() => this.replaceRoute('signupPropertyPhotos')}>
                 <Text style={{color:'#fff', fontWeight: 'bold'}}>SNAP A PHOTO OF YOUR HOME</Text>
             </Button>           
             </View>                          
@@ -565,7 +559,7 @@ class Home extends Component {
                       borderRadius:45,
                       width: 300,
                       height:40}}
-                      onPress={() => this.replaceRoute('signup-property-photos')}>
+                      onPress={() => this.replaceRoute('signupPropertyPhotos')}>
                 <Text style={{color:'#fff', fontWeight: 'bold'}}>SNAP A PHOTO OF YOUR HOME</Text>
             </Button>           
             </View>                          
@@ -688,7 +682,7 @@ class Home extends Component {
                       </Button>          
 
 
-                       {/* <Button transparent onPress={() => this.replaceRoute('signup-property-photos')}>
+                       {/* <Button transparent onPress={() => this.replaceRoute('signupPropertyPhotos')}>
                           <Indicator
                             position='right top'
                             value='1'
@@ -755,7 +749,7 @@ class Home extends Component {
                                   borderRadius:45,
                                   width: 300,
                                   height:40}}
-                                  onPress={() => this.replaceRoute('signup-property-photos')}>
+                                  onPress={() => this.replaceRoute('signupPropertyPhotos')}>
                             <Text style={{color:'#fff', fontWeight: 'bold'}}>SNAP A PHOTO OF YOUR HOME</Text>
                         </Button>           
                         </View>                          
@@ -861,7 +855,7 @@ class Home extends Component {
                          <List>
                             <ListItem iconRight>
                               <Icon name='ios-arrow-forward' style={{color:'rgba(0, 122, 255, 1)'}} />
-                              <Text style={{fontWeight: 'bold', color:'rgba(0, 122, 255, 1)'}} onPress={() => this.replaceRoute('signup-property-photos')}>Take a Photo of the Front of the Property</Text>
+                              <Text style={{fontWeight: 'bold', color:'rgba(0, 122, 255, 1)'}} onPress={() => this.replaceRoute('signupPropertyPhotos')}>Take a Photo of the Front of the Property</Text>
                             </ListItem>
                             <ListItem iconRight>
                               <Icon name='ios-arrow-forward' style={{color:'rgba(0, 122, 255, 1)'}} />
@@ -880,7 +874,7 @@ class Home extends Component {
                          <List>
                             <ListItem iconRight>
                               <Icon name='ios-arrow-forward' style={{color:'rgba(0, 122, 255, 1)'}} />
-                              <Text style={{fontWeight: 'bold', color:'rgba(0, 122, 255, 1)'}} onPress={() => this.replaceRoute('signup-property-photos')}>Take a Photo of the Front of the Property</Text>
+                              <Text style={{fontWeight: 'bold', color:'rgba(0, 122, 255, 1)'}} onPress={() => this.replaceRoute('signupPropertyPhotos')}>Take a Photo of the Front of the Property</Text>
                             </ListItem>
                             <ListItem iconRight>
                               <Icon name='ios-arrow-forward' style={{color:'rgba(0, 122, 255, 1)'}} />

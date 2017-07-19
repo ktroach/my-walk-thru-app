@@ -1243,7 +1243,7 @@ class Step1Copy extends Component {
                                   AsyncStorage.setItem("userId", userId)
                                   .then( () => {
                                       //alert('Thank you for Signing Up! ');
-                                      //this.replaceRoute('home');
+                                      //this.replaceRoute('Home');
                                       //leaseBeginDate
 
                                       AsyncStorage.setItem("leaseBeginDate", leaseBeginDate)
@@ -1251,7 +1251,7 @@ class Step1Copy extends Component {
 
                                           alert('Thank you for Signing Up! ');
 
-                                          this.replaceRoute('home');
+                                          this.replaceRoute('Home');
 
                                         }
                                       ).done();
@@ -1259,7 +1259,7 @@ class Step1Copy extends Component {
                                   ).done();
 
                                   // alert('Thank you for Signing Up ('+signUpDate+')');
-                                  // this.replaceRoute('home');
+                                  // this.replaceRoute('Home');
                               }
                           )
                           .done( );
@@ -1273,7 +1273,7 @@ class Step1Copy extends Component {
                     //     {
                     //         AsyncStorage.setItem("userId", userId);
                     //         alert('Thank you for Signing Up ('+signUpDate+')');
-                    //         this.replaceRoute('home');
+                    //         this.replaceRoute('Home');
                     //     }
                     // )
                     // .done( );
@@ -1322,7 +1322,7 @@ class Step1Copy extends Component {
     //         <Container theme={theme} style={{backgroundColor: '#333'}} >
     //             <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
     //                 <Header>
-    //                     <Button transparent onPress={() => this.replaceRoute('signup-step0')}>
+    //                     <Button transparent onPress={() => this.replaceRoute('step0')}>
     //                         <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
     //                     </Button>
     //

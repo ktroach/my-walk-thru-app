@@ -48,7 +48,7 @@ class Step4 extends Component {
              } else {
                 AsyncStorage.setItem("sms_alerts", "false");
              }
-            this.props.replaceRoute(route);
+            this.replaceRouteProxy(route);
          } catch(err) {
             console.log(err);
          }
@@ -72,6 +72,11 @@ class Step4 extends Component {
    replaceRoute(route) {
       this.saveInputs(route);
    }
+
+    replaceRouteProxy(route) {
+        console.log('>>>>> entered: [replaceRoute]: ', route);
+        this.props.navigation.navigate(route);
+    }     
 
    pushNewRoute(route) {
         this.props.pushNewRoute(route);

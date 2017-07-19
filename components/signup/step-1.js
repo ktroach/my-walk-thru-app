@@ -25,6 +25,11 @@ class Step1 extends Component {
       };
    }
 
+    replaceRouteProxy(route) {
+        console.log('>>>>> entered: [replaceRoute]: ', route);
+        this.props.navigation.navigate(route);
+    }     
+
    saveInputs(route) {
       if (this.inputsValidated()) {
          this.setState({validForm: true});
@@ -32,7 +37,7 @@ class Step1 extends Component {
             AsyncStorage.setItem("username", this.state.username);
             AsyncStorage.setItem("email", this.state.email);
             
-            this.props.replaceRoute(route);
+            this.replaceRouteProxy(route);
          } catch(err) {
             console.log(err);
          }
@@ -68,7 +73,7 @@ class Step1 extends Component {
             <Container theme={theme} style={{backgroundColor: '#333'}} >
                 <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
-                        <Button transparent onPress={() => this.replaceRoute('signup-step0')}>
+                        <Button transparent onPress={() => this.replaceRoute('step0')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
