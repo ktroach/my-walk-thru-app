@@ -656,7 +656,9 @@ class Home extends Component {
       };  
 
      let screenWidth = Dimensions.get('window').width - 20;
-     let screenHeight = Dimensions.get('window').height;     
+     let screenHeight = Dimensions.get('window').height; 
+     
+     if(screenWidth>0) screenWidth = screenWidth * 0.8;
 
      let address1 = '';
      if (this.state.user&&this.state.user.property&&this.state.user.property.address1){
@@ -742,7 +744,7 @@ class Home extends Component {
                             </Text>
                           </View>
 
-                          <View style={{marginTop: 5}}>
+                          <View style={{alignSelf: 'center', marginTop: 5}}>
                             <Image
                               style={{width:screenWidth,height:210}}
                               source={require('../../assets/images/3d-house-1.png')}

@@ -268,13 +268,13 @@ class Submittal extends Component {
             });
         }
         } catch(error) {
-        console.log({uploadResponse});
-        console.log({uploadResult});
-        console.log('error:', error);
-        let errorMessage = 'Failed to upload image' + error.message;
-        alert(errorMessage);
+            console.log({uploadResponse});
+            console.log({uploadResult});
+            console.log('error:', error);
+            let errorMessage = 'Failed to upload image' + error.message;
+            alert(errorMessage);
         } finally {
-        console.log('finally');
+            console.log('finally');
         }
     }    
 
@@ -378,9 +378,9 @@ class Submittal extends Component {
         },
         body: JSON.stringify(data)
       }).then((response) => response.json()).then((responseData) => {
-         console.log('responseData: ', responseData);
+        //  console.log('responseData: ', responseData);
 
-         alert('Photo Saved');
+         alert('signature saved');
 
          // change navigation route post save
         //  if (route) {
@@ -513,7 +513,7 @@ class Submittal extends Component {
     };
 
     _signaturePadChange = ({base64DataUrl}) => {
-      console.log("Got new signature: " + base64DataUrl);
+    //   console.log("Got new signature: " + base64DataUrl);
       this.setState({signature: base64DataUrl});
 
     //   this.saveImage();
@@ -542,6 +542,38 @@ class Submittal extends Component {
             }
         });
     }    
+
+    _maybeRenderSignatureValidated(){
+        // console.log('ENTERED [_maybeRenderSignatureValidated]');
+        if (this.state.signature){
+            return (
+                <View style={styles.box}>
+                    <Image
+                        style={{width:200,height:200}}
+                        source={require('../../assets/images/source.gif')}
+                    />
+                </View>
+            );
+        } else {
+            return (
+                                <CardItem style={{height: 200}}>
+                                  <View style={{flex: 1,                                                             
+                                                borderStyle: 'dashed',
+                                                borderWidth: 3,
+                                                borderColor: '#b7c2c6'}}>
+                                      <SignaturePad onError={this._signaturePadError}
+                                                    onChange={this._signaturePadChange}
+                                                    style={
+                                                        {
+                                                            flex: 1, 
+                                                            backgroundColor: '#f7f7f7'
+                                                        }
+                                                        }/>
+                                  </View>
+                                </CardItem>
+            );
+        }
+    }
 
     renderSubmittalForm() {
     //   const checkboxStyle = { margin: 5 }
@@ -592,6 +624,7 @@ class Submittal extends Component {
                                 <CardItem header>
                                     <Text>*** PLEASE READ ***</Text>
                                 </CardItem>
+
                                 {/*<CardItem>
                                     <Text>Tap (Check) the circle to confirm want to submit your WalkThru</Text>
                                     <Checkbox
@@ -636,17 +669,32 @@ class Submittal extends Component {
                                 */}
 
                                 <CardItem>
-                                    <Text>By Signing and Submitting your WALKTHRU, you authorize a copy of this property review to go to your Property Manager for their records:</Text>
-                                </CardItem>                                    
+                                    <Text>By Signing and Submitting your WalkThru, you authorize a copy of this property review to go to your Property Manager for their records:</Text>
+                                </CardItem>                
 
-                                <CardItem style={{height: 200}}>
-                                  <View style={{flex: 1, borderWidth: 1,  borderColor: '#333'}}>
+                                <CardItem>
+                                    <Text>Sign your WalkThru property review by drawing your signature in the box</Text>
+                                </CardItem>     
+
+                                {this._maybeRenderSignatureValidated()}                                        
+
+                                {/* <CardItem style={{height: 200}}>
+                                  <View style={{flex: 1,                                                             
+                                                borderStyle: 'dashed',
+                                                borderWidth: 3,
+                                                borderColor: '#b7c2c6'}}>
                                       <SignaturePad onError={this._signaturePadError}
                                                     onChange={this._signaturePadChange}
-                                                    style={{flex: 1, backgroundColor: '#fff', borderWidth: 1,  borderColor: '#333'}}/>
+                                                    style={
+                                                        {
+                                                            flex: 1, 
+                                                            backgroundColor: '#f7f7f7'
+                                                        }
+                                                        }/>
                                   </View>
-                                </CardItem>
+                                </CardItem> */}
 
+                                
 
                                 <CardItem>
                                     {/*

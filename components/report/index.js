@@ -103,7 +103,7 @@ class Report extends Component {
 
                     <Content padder style={{backgroundColor: 'transparent'}}>
                         <View>
-                             <Text>Getting Your Report Ready...</Text>
+                             <Text>Please wait while we get your Report ready...</Text>
                         </View>     
                         <View>
                             <ActivityIndicator
