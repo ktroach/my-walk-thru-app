@@ -15,6 +15,8 @@ import styles from './styles';
 import moment from 'moment';
 import shortid from 'shortid';
 
+import { WebBrowser } from 'expo';
+
 const flexCenter = {
   flex: 1,
   justifyContent: 'center',
@@ -150,6 +152,16 @@ class Report extends Component {
         Linking.openURL(this.state.reportUrl);
     }
 
+    _openReport = () => {
+        if(!this.state.reportUrl) {
+            alert('Failed to open Report');
+            return;
+        }        
+        WebBrowser.openBrowserAsync(
+            this.state.reportUrl
+        );
+    };       
+
     renderReport() {
         var screenWidth = Dimensions.get('window').width;
         return (
@@ -170,7 +182,7 @@ class Report extends Component {
                     <Content padder style={{backgroundColor: 'transparent'}}>
                         {/*<View style={{flex: 1, width: screenWidth *.97, height: 800}}>*/}
                         <View>
-                            <Button onPress={() => this.openReport()}>
+                            <Button onPress={() => this._openReport()}>
                                Open Report
                             </Button>
                             {/*<WebView

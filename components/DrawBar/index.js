@@ -7,61 +7,44 @@ import {
   List,
   ListItem,
   Content,
-  Icon
+  Icon,
+  Thumbnail
 } from "native-base";
-const routes = ["Home", "Login"];
+
+const routes = ["Home"];
+
 export default class DrawBar extends React.Component {
   static navigationOptions = {
     header: null
   };
   render() {
     return (
-      <Container>
-        <Content>
-          <Image
-            source={{
-              uri: "https://github.com/GeekyAnts/NativeBase-KitchenSink/raw/react-navigation/img/drawer-cover.png"
-            }}
-            style={{
-              height: 120,
-              alignSelf: "stretch",
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                height: 120,
-                alignSelf: "stretch",
-                justifyContent: "center",
-                alignItems: "center"
-              }}
-              onPress={() => this.props.navigation.navigate("DrawerClose")}
-            >
-              <Image
-                square
-                style={{ height: 80, width: 70 }}
-                source={{
-                  uri: "https://github.com/GeekyAnts/NativeBase-KitchenSink/raw/react-navigation/img/logo.png"
-                }}
-              />
-            </TouchableOpacity>
-          </Image>
-          <List
-            dataArray={routes}
-            renderRow={data => {
-              return (
-                <ListItem
-                  button
-                  onPress={() => this.props.navigation.navigate(data)}
-                >
-                  <Text>{data}</Text>
-                </ListItem>
-              );
-            }}
-          />
-        </Content>
-      </Container>
+            <Container style={{backgroundColor: '#fff'}} >
+                <Image source={require('../../assets/images/login2.jpg')} style={{        
+                  flex: 1,
+                  width: null,
+                  height: null,}} >
+                  <Content>
+
+                  <Thumbnail size={150} style={{resizeMode: 'contain', marginTop: 20}} source={require('../../assets/images/logo.png')} />
+
+                  <List
+                    dataArray={routes}
+                    renderRow={data => {
+                      return (
+                        <ListItem
+                          button
+                          onPress={() => this.props.navigation.navigate(data)}
+                        >
+                          <Text>{data}</Text>
+                        </ListItem>
+                      );
+                    }}
+                  />
+                </Content>
+                </Image>
+            </Container>
+
     );
   }
 }

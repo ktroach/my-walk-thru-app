@@ -394,11 +394,14 @@ class Step0 extends Component {
     //         console.error(error);
     //     }).done();      
     // }
+
+    
     
     renderVerification() {
+        // const bg = '../../assets/images/34534.jpg';
       return (
             <Container theme={theme} style={{backgroundColor: '#fff'}} >
-                <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
+                <Image source={require('../../assets/images/login2.jpg')} style={styles.container} >
                     <Header  style={{backgroundColor: '#2B59AC'}}>
                         <Title>
                             SIGN IN 
@@ -408,7 +411,7 @@ class Step0 extends Component {
                        <View style={welcomeStyle.welcomeContainer}>
 
                         <View style={{paddingBottom: 10, marginTop: 10}}>
-                          <Text style={{color:'#C31826', fontSize: 18, fontWeight: 'bold', alignSelf: 'center'}}>
+                          <Text style={{color:'#d9333b', fontSize: 18, fontWeight: 'bold', alignSelf: 'center'}}>
                             WELCOME TO MYWALKTHRU
                           </Text>
                         </View> 
@@ -425,24 +428,32 @@ class Step0 extends Component {
                             </Text>                                                 
                         </View>
                         
-                        <View style={{paddingTop: 20}}>
+                        {/* <View style={{paddingTop: 20}}>
                             {this._renderButton()}
-                        </View>
+                        </View> */}
 
-                        <View style={{paddingTop: 20}}>
+                        <View style={{justifyContent: 'center',
+flex:1,
+margin: 10}}>
                             <TextInput
-                                style={{borderWidth: 2,
-                                        borderColor: 'rgb(68,68,68)', 
+                                style={{
+                                        borderWidth: 2,
+                                        borderColor: 'gray', 
                                         textAlign: 'center', 
-                                        fontSize: 20, 
-                                        height:60, 
-                                        width: 122}}
+                                        fontSize: 28, 
+                                        height: 50, 
+                                        width: 150,
+                                        borderRadius: 20                          
+                                }}
+                                enablesReturnKeyAutomatically={false}
+                                autoFocus={true} 
+                                blurOnSubmit={false}                                
+                                keyboardType='numeric' 
                                 placeholder="" 
                                 secureTextEntry={true} 
                                 autoCapitalize={'none'}
                                 maxLength={4}
                                 value={this.state.verificationCode}
-                                keyboardType="number-pad" 
                                 onChangeText={(verificationCode) => this.onVerificationCodeChanged(verificationCode)}
                             />
                         </View>                        
@@ -462,6 +473,8 @@ class Step0 extends Component {
             </Container>
       );
     }     
+
+    // {/* keyboardType="number-pad"  */}
 
     renderWelcome() {
         return (

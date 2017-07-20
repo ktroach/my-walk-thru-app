@@ -13,7 +13,7 @@ import {
     AsyncStorage,    
     AppRegistry,
     StyleSheet,
-    Text,
+    // Text,
     View,
     ScrollView,
     Linking,
@@ -22,7 +22,11 @@ import {
     Image,
 } from 'react-native';
 
-import { Button } from 'native-base';
+// import { Button } from 'native-base';
+
+
+import { Container, Header, Title, Content, Text, Button, Icon, List, ListItem, Card, CardItem, InputGroup, Input } from 'native-base';
+
 
 import Swiper from 'react-native-swiper';
 
@@ -38,6 +42,8 @@ import { RNS3 } from 'react-native-aws3';
 
 import moment from 'moment';
 import shortid from 'shortid';
+
+import theme from '../../themes/form-theme';
 
 var styles = StyleSheet.create({
   wrapper: {
@@ -67,8 +73,8 @@ var styles = StyleSheet.create({
     backgroundColor: '#9DD6EB',
   },  
   text: {
-    color: '#fff',
-    fontSize: 24,
+    color: '#333',
+    fontSize: 16,
     fontWeight: 'bold',
   }
 });
@@ -84,37 +90,51 @@ export class SignUpComplete extends Component {
             tenantId: '',
             userId: '',
             userModelId: '',
-            photoUrl: ''
+            photoUrl: '',
+            titleText: ''
         }
     } 
 
-    componentWillMount(){
-        
+    _funcYou = function(userId) {
+        // console.log('FUNC YOU ', userId);
+        return Promise.resolve(userId);
     }
 
     componentDidMount() {
-      AsyncStorage.getItem("userId")
-      .then( (userId) =>
-            {
+        let photoUrl = '';
+        AsyncStorage.getItem("userId")
+            .then(this._funcYou)
+            .then(userId => {
+                // console.log('FUNC YOU 2 ', userId);
                 this.setState({userId: userId});
-                // alert(userId);
-                this.fetchUser(userId, function(err, res){
-                    if (err){
-                        console.log(err);
-                    } else {
-                        console.log('snap');
-                        // if(res && res[0]){
-                        //     let userModelId = res[0].id;
-                        //     if(userModelId){
-                        //         this.setState({userModelId: userModelId});
-                        //     }    
-                        // }
-                    }
-
-                });
+                return Promise.resolve(userId);
+            })
+            .then((userId) => {
+                console.log('GO FETCH YOURSELF THEN ', userId);
+                    // this.setState({userId: userId});
+                    // alert(userId);
+                    this.fetchUser(userId, function(err, res){
+                        if (err){
+                            console.log(err);
+                            // return err;
+                        } else {
+                            console.log('sure, why not');
+                        }
+                    });
+                }
+                // classic example of the difference of using callbacks versus promises right here:
+                // this would work as expected had the function returned a promise
+                // instead of a callback.  that is why res is null when the next 
+                // then function is executed.  to fix that fetchUser() would need 
+                // to return a new Promise.
+            ).then((res) => {
+                // res will always be null inside of this function (see above)
+                console.log('FETCHED ', res);
             }
-      )
-      .done();
+        ).done(() => {
+            console.log('done');
+            }
+        );
     }
 
     fetchUser(userId, cb){
@@ -124,17 +144,54 @@ export class SignUpComplete extends Component {
         console.log('query:', query);
 
         fetch(query).then((response) => response.json()).then((res) => {
-            console.log('fetchUser => responseData', res);
+            console.log('fetchUser => responseData', res[0].userId);
 
-            if(res && res[0]){
-                let userModelId = res[0].id;
-                if(userModelId){
-                    this.setState({userModelId: userModelId});
+            let user = {};
+
+            if (Array.isArray(res)){
+                user = res[0];
+            } else {
+                user = res;
+            }      
+
+            // console.log('user:', user);
+            
+            let photoUrl = '';
+            let userModelId = '';
+
+            if (user){
+
+                userModelId = user.id;
+
+                console.log('userModelId:', userModelId);
+                
+                if (user.property && user.property.length>0){
+                    if (user.property.photoUrl && user.property.photoUrl.length>0){
+                        console.log('found property photo: ', user.property.photoUrl);
+                        photoUrl = user.property.photoUrl;
+                    }                            
+                } else {
+                    if (user.photoUrl && user.photoUrl.length>0){
+                        console.log('found property photo: ', user.photoUrl);
+                        photoUrl = user.photoUrl;
+                    }                                   
+                }
+
+                console.log('photoUrl:', photoUrl);
+
+                if (userModelId) {
+                    if (photoUrl){
+                        console.log('1:');
+                        this.setState({userModelId: userModelId, photoUrl: photoUrl, titleText: 'Photo of the Property'});
+                    } else {
+                        console.log('2:');
+                        this.setState({userModelId: userModelId, titleText: 'Snap a photo of the front of the property from the street'});
+                    }
                 }    
             }
 
-
             cb(null, res);
+
         }).catch((error) => {
             console.error(error);
             cb(error, null);
@@ -177,7 +234,16 @@ export class SignUpComplete extends Component {
         this.replaceRoute('categories');
     }    
 
-    takePhoto(userId){
+    takePhotoProxy(userId){
+        this.takePhoto(userId, function(err,res){
+            if (err) return;
+            if (res){
+                this.setState({photoUrl: res});
+            }
+        });
+    }
+
+    takePhoto(userId, cb){
          ImagePicker.launchCameraAsync({
             allowsEditing: true,
             aspect: [4,3]
@@ -270,7 +336,7 @@ export class SignUpComplete extends Component {
                     }).then((response) => response.json()).then((responseData) => {
                         console.log('responseData: ', responseData);
 
-                        
+                        cb(null, photoUrl);
 
                         // AsyncStorage.setItem("snappedFront", url)
                         // .then( () => 
@@ -286,6 +352,7 @@ export class SignUpComplete extends Component {
                         //this.setState({comments: JSON.stringify(responseData)});
                     }).catch((error) => {
                         console.error(error);
+                        cb(error, null);
                     }).done();
 
                   });
@@ -340,7 +407,7 @@ export class SignUpComplete extends Component {
         AsyncStorage.setItem("snappedFront", true)
         .then( () => 
             {
-                alert('Thank you for snapping a pic of your home');
+                // alert('Thank you for snapping a photo of your home');
                 this.replaceRoute('categories');    
             }
         )
@@ -355,100 +422,151 @@ export class SignUpComplete extends Component {
 
     }    
 
-    maybeRenderFrontPhoto(){
+    maybeRenderPropertyPhoto(){
         if (this.state.photoUrl){
             return(
-            <View style={{borderTopRightRadius: 3, borderTopLeftRadius: 3, overflow: 'hidden'}}>
+            <View style={{alignSelf: 'center', borderTopRightRadius: 5, borderTopLeftRadius: 5, overflow: 'hidden'}}>
                 <Image
                     source={{uri: this.state.photoUrl}}
-                    style={{width: 250, height: 250}}
+                    style={{width: 300, height: 200}}
                 />
             </View>            
             );
         } else {
             return(
-            <View>
+            <View style={{alignSelf: 'center', borderTopRightRadius: 5, borderTopLeftRadius: 5, overflow: 'hidden'}}>
+                <Image
+                        source={require('../../assets/images/property-placeholder.jpg')}
+                        style={{width: 300, height: 200}}
+                    />                
             </View>            
             );
         }
     }
 
+    maybeSuggestTakingPhoto(){
+        if (!this.state.photoUrl){
+            return(
+                <CardItem>
+                    <Text style={{
+                                    alignSelf: 'center',
+                                    color: '#333',
+                                    fontSize: 16, 
+                                    fontWeight: 'bold'
+                        }}>
+                        Based on your current location, it appears you are near the property address.  Do you want to 
+                        go ahead and take a photo of the front of the property? We display this on the MyWalkThru 
+                        Report. 
+                    </Text>
+                </CardItem>           
+            );
+        }    
+    }
+
     render(){
         return (
-            <View>
-                 
-                <Swiper style={styles.wrapper} showsButtons={false} loop={false}>
 
-                    {/*<View style={styles.slide1}>
+            <Container theme={theme} style={{backgroundColor: '#fff'}}>
+               <Image source={require('../../assets/images/login2.jpg')} style={{        
+                        flex: 1,
+                        width: null,
+                        height: null}} >          
+                    <Header>
+                        <Button transparent onPress={() => this.replaceRoute('Home')}>
+                            <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
+                        </Button>
 
-                        <Image
-                            source={require('../../assets/images/logo.png')}
-                            style={{width: 200, height: 200}}
-                        />
-                                            
-                        <Text style={styles.text}>Let's take some photos of the Property...</Text>
-                    </View>*/}
-                 
+                        <Title>Property Photo</Title>
 
-                    <View style={styles.slide1}>
-                        
-                        <Image
-                            source={require('../../assets/images/logo.png')}
-                            style={{width: 200, height: 200}}
-                        />
+                        <Button transparent onPress={this.props.openDrawer}>
+                            <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
+                        </Button>
+                    </Header>
 
-                        <Text style={styles.text}>Snap a Photo of the Front</Text>
-                        <Text style={styles.text}>of the Property</Text>
-                        <Text style={styles.text}>from the Street</Text>
+                    <Content padder style={{backgroundColor: 'transparent'}}>
+                        <View style={{
+                              		backgroundColor: '#fff',  		
+  		                            borderRadius: 5
+                        }}>
+                            <Card foregroundColor='#000'>
 
-                        {this.maybeRenderFrontPhoto()}
+                                <CardItem>
+                                    <Text style={{
+                                                    alignSelf: 'center',
+                                                    color: '#333',
+                                                    fontSize: 16, 
+                                                    fontWeight: 'bold'
+                                        }}>
+                                        {this.state.titleText}
+                                    </Text>
+                                </CardItem>
 
-                        <Button rounded block
-                            style={{alignSelf: 'center',
-                                marginTop: 40,
-                                backgroundColor: '#ad241f',
-                                borderRadius:90,
-                                width: 200,
-                                height:40}}
-                                onPress={() => {
-                                    this.takePhoto(this.state.userModelId);
-                                }}
-                            >
-                            <Text style={{color:'#fff', fontWeight: 'bold'}}>Take Photo</Text>
-                        </Button>     
+                                {this.maybeSuggestTakingPhoto}
 
-                        <Button rounded block
-                            style={{alignSelf: 'center',
-                                marginTop: 40,
-                                backgroundColor: '#ad241f',
-                                borderRadius:90,
-                                width: 200,
-                                height:40}}
-                                onPress={() => {
-                                    this.proceedToAreas();
-                                }}
-                            >
-                            <Text style={{color:'#fff', fontWeight: 'bold'}}>Next</Text>
-                        </Button>                              
+                                <CardItem>
+                                    {this.maybeRenderPropertyPhoto()}
+                                </CardItem>
 
-                        <Button rounded block
-                            style={{alignSelf: 'center',
-                                marginTop: 40,
-                                backgroundColor: '#ad241f',
-                                borderRadius:90,
-                                width: 200,
-                                height:40}}
-                                onPress={() => {
-                                    this.proceedToHome();
-                                }}
-                            >
-                            <Text style={{color:'#fff', fontWeight: 'bold'}}>Cancel</Text>
-                        </Button>                                              
-                    </View>
+                                <CardItem>
+                                <View style={{marginTop: 10}}>
+                                <Button rounded block
+                                        style={{alignSelf: 'center',
+                                                marginTop: 1,
+                                                backgroundColor:'#2B59AC',
+                                                borderRadius:45,
+                                                width: 300,
+                                                height:40}}
+                                        onPress={() => {
+                                            this.takePhotoProxy(this.state.userModelId);
+                                        }}
+                                    >
+                                    <Text style={{color:'#fff', fontWeight: 'bold'}}>TAKE PHOTO</Text>
+                                </Button>  
+                                </View>   
 
-                </Swiper> 
+                                <View style={{marginTop: 10}}>        
+                                <Button rounded block
+                                        style={{alignSelf: 'center',
+                                                marginTop: 1,
+                                                backgroundColor:'#2B59AC',
+                                                borderRadius:45,
+                                                width: 300,
+                                                height:40}}
+                                        onPress={() => {
+                                            this.proceedToAreas();
+                                        }}
+                                    >
+                                    <Text style={{color:'#fff', fontWeight: 'bold'}}>NEXT</Text>
+                                </Button>  
+                                </View>                            
 
-            </View>
+                                {/* <View style={{marginTop: 10}}>        
+                                <Button rounded block
+                                        style={{alignSelf: 'center',
+                                                marginTop: 1,
+                                                backgroundColor:'#2B59AC',
+                                                borderRadius:45,
+                                                width: 300,
+                                                height:40}}
+                                        onPress={() => {
+                                            this.proceedToHome();
+                                        }}
+                                    >
+                                    <Text style={{color:'#fff', fontWeight: 'bold'}}>CANCEL</Text>
+                                </Button>  
+                                </View>     */}
+
+                                </CardItem>                        
+
+                            </Card>
+                        </View>
+                    </Content>
+
+                </Image>
+
+            </Container>
+
+ 
         );
     }
 

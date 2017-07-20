@@ -39,6 +39,7 @@ import StepIndicator from 'react-native-step-indicator';
 import { Indicator } from 'nachos-ui';
 
 import Expo from 'expo';
+import { WebBrowser } from 'expo';
 
 import Config from '../../config'
 
@@ -97,6 +98,18 @@ class Home extends Component {
             percentComplete: 0   
        };
     }
+
+    _handleNeedHelpPress = () => {
+      WebBrowser.openBrowserAsync(
+        'http://www.mywalkthru.com/#how-to-use'
+      );
+    };    
+
+    _handleLearnMorePress = () => {
+      WebBrowser.openBrowserAsync(
+        'http://www.mywalkthru.com/#how-to-use'
+      );
+    };    
 
     animate() {
       let progress = 0;
@@ -649,12 +662,23 @@ class Home extends Component {
      if (this.state.user&&this.state.user.property&&this.state.user.property.address1){
         address1 = this.state.user.property.address1;
      }
+
+
+
+      const needHelpLink = (
+        <Text onPress={this._handleNeedHelpPress} 
+              style={{color:'#d9333b', fontWeight: 'bold', fontSize: 18, alignSelf: 'center'}}>
+          Need Help? 
+        </Text>
+      );     
       
       return (
           <Container theme={theme} style={{backgroundColor: '#fff'}}>
-              <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
+              <Image source={require('../../assets/images/login2.jpg')} style={styles.container} >
 
                    <Header  style={{backgroundColor: '#2B59AC'}}>
+
+                     
 
                       <Button
                         transparent
@@ -706,7 +730,7 @@ class Home extends Component {
 
                    <Content padder style={{backgroundColor: 'transparent'}}>
                         <View style={{paddingBottom: 10, marginTop: 10}}>
-                          <Text style={{color:'#C31826', fontSize: 18, fontWeight: 'bold', alignSelf: 'center'}}>
+                          <Text style={{color:'#d9333b', fontSize: 18, fontWeight: 'bold', alignSelf: 'center'}}>
                             WELCOME TO YOUR NEW HOME
                           </Text>
                         </View>  
@@ -717,13 +741,19 @@ class Home extends Component {
                               {address1} 
                             </Text>
                           </View>
+
                           <View style={{marginTop: 5}}>
                             <Image
                               style={{width:screenWidth,height:210}}
                               source={require('../../assets/images/3d-house-1.png')}
                             />
                           </View>  
+
                         </View>                                               
+
+                        <View style={{marginTop: 10}}>
+                          {needHelpLink}
+                        </View>
 
                         {/*<View style={styles.progressContainer}>
                           <Text style={{color:'#3B64C9', fontWeight: 'bold', fontSize: 20}}>YOU HAVE </Text>
@@ -1005,9 +1035,11 @@ class Home extends Component {
      Linking.openURL('http://www.onsightpros.com/');
   }
 
-  _handleLearnMorePress = () => {
-    Linking.openURL('http://www.onsightpros.com/');
-  }
+  // _handleLearnMorePress = () => {
+  //   WebBrowser.openBrowserAsync(
+  //     'https://docs.expo.io/versions/latest/guides/development-mode'
+  //   );
+  // };
 
   _handleHelpPress = () => {
     Linking.openURL('http://www.onsightpros.com/');

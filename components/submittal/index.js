@@ -638,17 +638,17 @@ class Submittal extends Component {
                                 <CardItem>
                                     <Text>By Signing and Submitting your WALKTHRU, you authorize a copy of this property review to go to your Property Manager for their records:</Text>
                                 </CardItem>                                    
-{/*
+
                                 <CardItem style={{height: 200}}>
                                   <View style={{flex: 1, borderWidth: 1,  borderColor: '#333'}}>
                                       <SignaturePad onError={this._signaturePadError}
                                                     onChange={this._signaturePadChange}
                                                     style={{flex: 1, backgroundColor: '#fff', borderWidth: 1,  borderColor: '#333'}}/>
                                   </View>
-                                </CardItem>*/}
+                                </CardItem>
 
 
-                                <CardItem header>
+                                <CardItem>
                                     {/*
                                     <Button rounded block
                                       style={{backgroundColor: '#00c497', paddingHorizontal: 15}} textStyle={{color: '#fff'}}
@@ -658,7 +658,7 @@ class Submittal extends Component {
                                     */}
                                     <Button rounded block
                                       style={{alignSelf: 'center',
-                                              marginTop: 40,
+                                              marginTop: 5,
                                               backgroundColor: '#ad241f',
                                               borderRadius:90,
                                               width: 300,
