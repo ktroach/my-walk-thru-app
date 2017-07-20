@@ -17,6 +17,7 @@ import SignUpPropertyPhotos from '../components/signup/signup-property-photos';
 import SignUpComplete from '../components/signup/signup-complete';
 import SignUpInstructions from '../components/signup/signup-instructions';
 import SignUpResetDemo from '../components/signup/signup-reset-demo';
+import Compose from "../components/compose/";
 
 import HomeDrawerRouter from "./HomeDrawerRouter";
 import { StackNavigator } from "react-navigation";
@@ -49,7 +50,9 @@ export default (StackNav = StackNavigator(
       signupComplete: { screen: SignUpComplete },
       signupInstructions: { screen: SignUpInstructions },
 
-      signupResetDemo: { screen: SignUpResetDemo }
+      signupResetDemo: { screen: SignUpResetDemo },
+
+      sendMessageToPM: { screen: Compose }
 
   },
 	{

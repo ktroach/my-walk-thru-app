@@ -604,7 +604,7 @@ console.log('>>> POST options: ', options);
                renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
                enableEmptySections={true}
                dataSource={source}
-               renderRow={this.renderRow.bind(this)}
+               renderRow={this.renderRow.bind(this)} 
           />
        );
    }

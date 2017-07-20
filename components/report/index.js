@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Image, Linking, ActivityIndicator, TouchableOpacity, Platform, AsyncStorage, WebView, Dimensions } from 'react-native';
+import { Animated, Image, Linking, ActivityIndicator, TouchableOpacity, Platform, AsyncStorage, WebView, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -17,6 +17,8 @@ import shortid from 'shortid';
 
 import { WebBrowser } from 'expo';
 
+import Animation from 'lottie-react-native';
+
 const flexCenter = {
   flex: 1,
   justifyContent: 'center',
@@ -27,11 +29,20 @@ class Report extends Component {
     constructor(props) {
         super(props);
         this.state = {
+             progress: new Animated.Value(0),
             userId: '',
             loaded: false,
             reportUrl: ''
        };
     }
+
+    componentDidMount() {
+        Animated.timing(
+            this.state.progress, {
+            toValue: 1,
+            duration: 5000,
+        }).start();        
+    }    
 
     componentWillMount() {
       AsyncStorage.getItem("userId")
@@ -83,6 +94,47 @@ class Report extends Component {
         }).done();
     }    
 
+    _maybeReportLoading(){
+        // console.log('ENTERED [_maybeReportLoading]');
+        if (!this.state.loaded){
+            return (
+                <View style={{
+                            alignSelf: 'center',
+                            backgroundColor: '#fff',  		
+                            borderRadius: 5}}>
+                    <Animation
+                            style={{
+                                width: 200,
+                                height: 200,
+                            }}
+                            source={require('../../assets/images//snap_loader_black.json')}
+                            progress={this.state.progress}
+                    />                    
+                </View>
+            );
+        } else {
+            return (
+                <View style={{marginTop: 5}}>
+                    <Button rounded block
+                    style={{alignSelf: 'center',
+                            marginTop: 1,
+                            backgroundColor:'#2B59AC',
+                            borderRadius:45,
+                            width: 300,
+                            height:40}}
+                            onPress={() => this._openReport()}>
+                        <Text style={{color:'#fff', fontWeight: 'bold'}}>Open Report</Text>
+                    </Button>           
+                </View>                  
+            );
+        }
+    }
+
+    // <View>
+    //     <Button onPress={() => this._openReport()}>
+    //        Open Report
+    //     </Button>
+    // </View>  
 
     renderLoadingView() {
       var screenHeight = Dimensions.get('window').height;
@@ -103,15 +155,32 @@ class Report extends Component {
 
                     <Content padder style={{backgroundColor: 'transparent'}}>
                         <View>
-                             <Text>Please wait while we get your Report ready...</Text>
+                             <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                                 Please wait while we get your Report ready...
+                            </Text>
                         </View>     
-                        <View>
+
+                        <View style={{
+                                    alignSelf: 'center',
+                                    backgroundColor: '#fff',  		
+                                    borderRadius: 5}}>
+                            <Animation
+                                    style={{
+                                        width: 200,
+                                        height: 200,
+                                    }}
+                                    source={require('../../assets/images//snap_loader_black.json')}
+                                    progress={this.state.progress}
+                            />                    
+                        </View>
+
+                        {/* <View>
                             <ActivityIndicator
                                 animating={!this.state.loaded}
                                 style={[styles.activityIndicator, {height: screenHeight}]}
                                 size="large"
                             />                            
-                        </View>                    
+                        </View>                     */}
                     </Content>
                 </Image>
 
@@ -136,7 +205,7 @@ class Report extends Component {
       this.setState({ firstChecked })
     }
 
-    render() {
+    render() { 
        if (!this.state.loaded) {
             return this.renderLoadingView();
        } else {
@@ -180,16 +249,29 @@ class Report extends Component {
                     </Header>
 
                     <Content padder style={{backgroundColor: 'transparent'}}>
-                        {/*<View style={{flex: 1, width: screenWidth *.97, height: 800}}>*/}
-                        <View>
-                            <Button onPress={() => this._openReport()}>
-                               Open Report
-                            </Button>
-                            {/*<WebView
-                                source={{uri: this.state.reportUrl}}
-                                style={{width: screenWidth *.97, height: 800}}
-                            />                        */}
-                        </View>                         
+
+                        <Card foregroundColor='#333'>
+
+                            <CardItem header>
+                                <Text>Your Report is ready for your review</Text>
+                            </CardItem>    
+
+                            <CardItem>
+                                <Button rounded block
+                                style={{alignSelf: 'center',
+                                        marginTop: 1,
+                                        backgroundColor:'#2B59AC',
+                                        borderRadius:45,
+                                        width: 300,
+                                        height:40}}
+                                        onPress={() => this._openReport()}>
+                                    <Text style={{color:'#fff', fontWeight: 'bold'}}>Open Report</Text>
+                                </Button>           
+                            </CardItem>                                                     
+
+                        </Card>                             
+
+
                     </Content>
                 </Image>
 

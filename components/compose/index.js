@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { openDrawer } from '../../actions/drawer';
 import { popRoute } from '../../actions/route';
 
-import { Container, Header, Title, Content, Text, Button, Icon, Card, CardItem, View } from 'native-base';
+import { Container, Header, Title, Content, Text, Button, Icon, Card, CardItem, View, List, ListItem, CheckBox } from 'native-base';
 
 import theme from '../../themes/form-theme';
 import styles from './styles';
@@ -18,16 +18,21 @@ class Compose extends Component {
         this.props.popRoute();
     }
 
+    replaceRoute(route) {
+      console.log('>>>>> entered: [replaceRoute]: ', route);
+      this.props.navigation.navigate(route);
+    }       
+
     render() {
         return (
-            <Container theme={theme} style={{backgroundColor: '#333'}}>
-               <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
+            <Container theme={theme} style={{backgroundColor: '#fff'}}>
+                <Image source={require('../../assets/images/glow2.png')} style={styles.container} >
                     <Header>
-                        <Button transparent onPress={() => this.popRoute()}>
+                        <Button transparent onPress={() => this.replaceRoute('Home')}>
                             <Icon name='ios-arrow-back' style={{fontSize: 30, lineHeight: 32}} />
                         </Button>
 
-                        <Title>Semd Message</Title>
+                        <Title>Check List</Title>
 
                         <Button transparent onPress={this.props.openDrawer}>
                             <Icon name='ios-menu' style={{fontSize: 30, lineHeight: 32}} />
@@ -35,33 +40,49 @@ class Compose extends Component {
                     </Header>
 
                     <Content padder style={{backgroundColor: 'transparent'}}>
-                        <View style={styles.box}>
-                            <Card foregroundColor='#000'>
-                                <CardItem header>
-                                    <Text>Send MEssage tpo Properyy Manager</Text>
-                                </CardItem>
-
-                                <CardItem header>
-                                    <Text>To : kroach@gmail.com</Text>
-                                </CardItem>
-
-                                <CardItem header>
-                                    <Text>Subject: Enquiry about MWT</Text>
-                                </CardItem>
-
-                                <CardItem>
-                                    <Text>
-                                        tewt tets test tesetset test wets tewrtwrgwrglsl
-                                    </Text>
-                                </CardItem>
-
-                                <CardItem header>
-                                    <Button rounded style={{backgroundColor: '#00c497', paddingHorizontal: 15}} textStyle={{color: '#fff'}}>
-                                        Send
-                                    </Button>
-                                </CardItem>
-                            </Card>
-                        </View>
+                        <List>
+                            <ListItem itemDivider>
+                                <Text>Doors</Text>
+                            </ListItem>
+                            <ListItem >
+                                <Text>Do all the doors open and shut easily?</Text>
+                                 <CheckBox checked={false} />
+                            </ListItem>
+                            <ListItem itemDivider>
+                                <Text>Appliances</Text>
+                            </ListItem>
+                            <ListItem>
+                                <Text>Is the refrigerator running and odor free?</Text>
+                                <CheckBox checked={false} />
+                            </ListItem>
+                            <ListItem>
+                                <Text>Is the freezer defrosted?</Text>
+                                <CheckBox checked={false} />
+                            </ListItem>
+                            <ListItem>
+                                <Text>Check condition of the stove, microwave, and dishwasher</Text>
+                                <CheckBox checked={false} />
+                            </ListItem>      
+                            <ListItem itemDivider>
+                                <Text>Ceilings and Walls</Text>
+                            </ListItem>
+                            <ListItem >
+                                <Text>Is there peeling paint?</Text>
+                                <CheckBox checked={false} />
+                            </ListItem>
+                            <ListItem >
+                                <Text>Cracked plaster?</Text>
+                                <CheckBox checked={false} />
+                            </ListItem>   
+                            <ListItem >
+                                <Text>Signs of mold or mildew?</Text>
+                                <CheckBox checked={false} />
+                            </ListItem>  
+                            <ListItem >
+                                <Text>Any holes or damage?</Text>
+                                <CheckBox checked={false} />
+                            </ListItem>                                                                                                                                   
+                        </List>
                     </Content>
                 </Image>
             </Container>
@@ -72,7 +93,8 @@ class Compose extends Component {
 function bindAction(dispatch) {
     return {
         openDrawer: ()=>dispatch(openDrawer()),
-        popRoute: () => dispatch(popRoute())
+        popRoute: () => dispatch(popRoute()),
+        replaceRoute:(route)=>dispatch(replaceRoute(route))
     }
 }
 

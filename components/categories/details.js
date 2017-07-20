@@ -486,7 +486,10 @@ class CategoryDetails extends React.Component {
    renderRow(item) {
      return (
         <View>
-            <DetailRow itemId={item.id} allObservedSwitchIsOn={this.state.allObservedSwitchIsOn} />
+            <DetailRow itemId={item.id} 
+                        allObservedSwitchIsOn={this.state.allObservedSwitchIsOn}
+                        navigation={this.props.navigation}
+                         />
         </View>
         );
    }

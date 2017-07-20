@@ -1,6 +1,10 @@
-import Expo from 'expo';
-
 import React, { Component } from 'react';
+
+import Expo, {
+  Asset,
+  Components,
+} from 'expo';
+
 import { Provider } from 'react-redux';
 
 // import { createStore } from 'redux';
@@ -14,6 +18,7 @@ import {
   StatusBar,
   StyleSheet,
   View,
+  Image
 } from 'react-native';
 
 import {
@@ -22,14 +27,7 @@ import {
 
 import MainStackRouter from "./routes/MainStackRouter";
 
-// import setup from './setup';
-
-// import App from './App';
-
-// import cacheAssetsAsync from './utilities/cacheAssetsAsync';
-
-// import AppWithNavigationState from './AppNavigator';
-
+import cacheAssetsAsync from './utilities/cacheAssetsAsync';
 
 class AppContainer extends React.Component {
 
@@ -45,11 +43,28 @@ class AppContainer extends React.Component {
        };
    }
 
+  componentWillMount() {
+    this._cacheResourcesAsync();
+  }  
+
+  async _cacheResourcesAsync() {
+    const images = [
+      require('./assets/images/3d-house-1.png'),
+      require('./assets/images/logo.png'),
+      require('./assets/images/mwtlogo.png'),
+      require('./assets/images/login2.jpg'),
+      require('./assets/images/glow2.png'),
+    ];
+
+    for (let image of images) {
+      await Asset.fromModule(image).downloadAsync();
+    }
+
+    this.setState({isReady: true});
+  }
+
   render() {
     if (this.state.appIsReady) {
-      // return(
-      //     <App />
-      // );      
       return(
          <Provider store={this.state.store}>
              <MainStackRouter store={this.state.store}  />
@@ -57,7 +72,7 @@ class AppContainer extends React.Component {
       );
     } else {
       return (
-        <Expo.Components.AppLoading />
+        <Components.AppLoading />
       );
     }
   }

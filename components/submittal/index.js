@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Image, Linking, ActivityIndicator, TouchableOpacity, Platform, AsyncStorage, WebView, Dimensions } from 'react-native';
+import { Animated, Image, Linking, ActivityIndicator, TouchableOpacity, Platform, AsyncStorage, WebView, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 
 import { openDrawer } from '../../actions/drawer';
@@ -23,6 +23,8 @@ import SignaturePad from 'react-native-signature-pad';
 import moment from 'moment';
 import shortid from 'shortid';
 
+import Animation from 'lottie-react-native';
+
 // import FileSystem from 'react-native-filesystem';
 
 // import * as RNFS from 'react-native-fs';
@@ -37,6 +39,7 @@ class Submittal extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            progress: new Animated.Value(0),
             updating: false,
             processStatus: '',
             firstChecked: false,
@@ -51,8 +54,15 @@ class Submittal extends Component {
     }
 
     componentDidMount() {
+
+        Animated.timing(
+            this.state.progress, {
+            toValue: 1,
+            duration: 5000,
+        }).start();        
+
       AsyncStorage.getItem("userId")
-      .then( (userId) =>
+         .then( (userId) =>
             {
                 this.setState({loaded: true});
                 this.setState({userId: userId});
@@ -547,11 +557,18 @@ class Submittal extends Component {
         // console.log('ENTERED [_maybeRenderSignatureValidated]');
         if (this.state.signature){
             return (
-                <View style={styles.box}>
-                    <Image
-                        style={{width:200,height:200}}
-                        source={require('../../assets/images/source.gif')}
-                    />
+                <View style={{
+                            alignSelf: 'center',
+                            backgroundColor: '#fff',  		
+                            borderRadius: 5}}>
+                    <Animation
+                            style={{
+                                width: 200,
+                                height: 200,
+                            }}
+                            source={require('../../assets/images//check_mark.json')}
+                            progress={this.state.progress}
+                    />                    
                 </View>
             );
         } else {
@@ -612,7 +629,7 @@ class Submittal extends Component {
                     </View>                        */}
 
                         <View style={styles.box}>
-                            <Card foregroundColor='#000'>
+                            <Card foregroundColor='#333'>
 
                                 {/*<CardItem header>
                                     <Image

@@ -680,18 +680,18 @@ class Home extends Component {
 
                    <Header  style={{backgroundColor: '#2B59AC'}}>
 
-                     
-
                       <Button
                         transparent
                         onPress={() => {
-                          DrawerNav.dispatch(
+                          this.replaceRoute("sendMessageToPM");
+
+                          {/* DrawerNav.dispatch(
                             NavigationActions.reset({
                               index: 0,
                               actions: [NavigationActions.navigate({ routeName: "Home" })]
                             })
                           );
-                          DrawerNav.goBack();
+                          DrawerNav.goBack(); */}
                         }}
                       >
                         <Indicator
